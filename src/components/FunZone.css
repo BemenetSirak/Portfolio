@@ -1,0 +1,4 @@
+.fun-zone{padding:12px;border-radius:10px}
+.game-area{display:flex;gap:10px;align-items:center}
+.controller{font-size:28px}
+.screen{padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff3e8,#fbe7ff)}

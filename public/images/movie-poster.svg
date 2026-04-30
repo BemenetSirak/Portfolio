@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">
+  <rect width="300" height="450" rx="12" fill="#f6f7fb" stroke="#e2e8f0"/>
+  <g transform="translate(20,24)">
+    <rect width="260" height="180" rx="8" fill="#0b2a4a"/>
+    <text x="130" y="100" fill="#e6f0ff" font-family="Arial" font-size="20" text-anchor="middle">Poster</text>
+    <rect y="206" width="260" height="18" rx="6" fill="#fff1d6"/>
+    <text x="12" y="222" fill="#2b2b2b" font-family="Arial" font-size="14">Movie Title</text>
+    <text x="12" y="242" fill="#6b7280" font-family="Arial" font-size="12">Year • Rating</text>
+  </g>
+</svg>

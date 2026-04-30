@@ -1,0 +1,4 @@
+.music-player{padding:12px;border-radius:10px}
+.samples-list{display:flex;gap:8px;list-style:none;padding:0;margin:8px 0}
+.samples-list button{padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+.samples-list button.playing{background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));color:#081226;border:none}

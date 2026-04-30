@@ -1,0 +1,12 @@
+.fun-cursor{position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:var(--cursor-blend,screen)}
+.fun-dot{width:var(--cursor-size);height:var(--cursor-size);border-radius:50%;background:linear-gradient(135deg,var(--cursor-start),var(--cursor-end));box-shadow:0 8px 22px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center}
+.fun-dot::after{content:"";width:var(--cursor-ring-size);height:var(--cursor-ring-size);border-radius:50%;border:2px solid rgba(255,255,255,0.08);position:absolute;transform:translate(-50%,-50%);opacity:0.85;animation:ring 1.6s infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:.9}50%{transform:scale(1.05);opacity:.6}100%{transform:scale(.9);opacity:.85}}
+
+/* hide or tone down cursor for professional flows */
+html[data-theme='dark'] .flow-professional .fun-cursor,
+html[data-theme='lite'] .flow-professional .fun-cursor,
+html[data-theme='light'] .flow-professional .fun-cursor{
+	opacity:0.28;transform:translate(-50%,-50%) scale(0.9);
+}
+

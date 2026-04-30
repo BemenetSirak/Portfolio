@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#001219"/>
+    </linearGradient>
+    <style>
+      .bg{fill:url(#g1)}
+      .card{fill:#07224b;stroke:#1951a6;stroke-width:2}
+      .muted{fill:#9fb6d9}
+      .title{fill:#e6f0ff;font-family:Arial, Helvetica, sans-serif;font-size:36px;font-weight:700}
+      .label{fill:#cfe2ff;font-family:Arial, Helvetica, sans-serif;font-size:18px}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="675" rx="12"/>
+
+  <!-- Left: Professional photo area -->
+  <g transform="translate(80,80)">
+    <rect x="0" y="0" width="360" height="480" rx="10" class="card"/>
+    <rect x="12" y="12" width="336" height="200" rx="8" fill="#0b2a4a"/>
+    <!-- circular avatar placeholder -->
+    <circle cx="168" cy="112" r="64" fill="#163862" stroke="#6fb1ff" stroke-width="4"/>
+    <text x="168" y="240" text-anchor="middle" class="title">Professional</text>
+    <text x="168" y="270" text-anchor="middle" class="label">Photo • Title • Contact</text>
+  </g>
+
+  <!-- Right: Details -->
+  <g transform="translate(480,60)">
+    <text x="0" y="40" class="title">Recruiter View</text>
+    <rect x="0" y="60" width="620" height="520" rx="10" fill="#07183a" stroke="#113a6b"/>
+
+    <!-- Sections -->
+    <g transform="translate(24,86)">
+      <text x="0" y="0" class="label">Summary</text>
+      <rect x="0" y="12" width="560" height="70" rx="6" fill="#0b233f"/>
+      <text x="12" y="40" fill="#dbeeff" font-family="Arial" font-size="14">Experienced Frontend Engineer — React, TypeScript, accessible UI</text>
+
+      <text x="0" y="110" class="label">Experience</text>
+      <rect x="0" y="122" width="560" height="120" rx="6" fill="#0b233f"/>
+      <g fill="#dbeeff" font-family="Arial" font-size="14">
+        <text x="12" y="150">• Senior Frontend Engineer at Acme Corp (2021–Present)</text>
+        <text x="12" y="176">• UI Engineer at NomadLabs (2018–2021)</text>
+        <text x="12" y="202">• Projects: Design system, e-commerce UI, performance optimizations</text>
+      </g>
+
+      <text x="0" y="260" class="label">Projects</text>
+      <rect x="0" y="272" width="560" height="120" rx="6" fill="#0b233f"/>
+      <g fill="#dbeeff" font-family="Arial" font-size="14">
+        <text x="12" y="300">• Portfolio Platform — Component library + tests</text>
+        <text x="12" y="326">• Analytics Dashboard — 10k req/s optimized</text>
+        <text x="12" y="352">• Accessibility Audit & Fixes — WCAG AA</text>
+      </g>
+
+      <text x="0" y="420" class="label">Contact</text>
+      <rect x="0" y="432" width="560" height="60" rx="6" fill="#093056"/>
+      <text x="12" y="462" fill="#aee6ff" font-family="Arial" font-size="14">Email: you@domain.com • LinkedIn: /in/you</text>
+    </g>
+  </g>
+
+  <!-- Footer note -->
+  <text x="80" y="620" fill="#6a9ccf" font-family="Arial" font-size="12">Demo: Recruiter-focused layout emphasizing experience, projects, and contact.</text>
+</svg>

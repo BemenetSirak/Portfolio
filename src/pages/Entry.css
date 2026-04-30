@@ -1,0 +1,8 @@
+.entry-root{padding:48px 24px;text-align:center}
+.entry-grid{display:flex;gap:24px;justify-content:center;margin-top:24px}
+.entry-card{width:320px;padding:20px;border-radius:12px;border:1px solid rgba(0,0,0,0.08);background:#fff;box-shadow:0 6px 18px rgba(11,22,42,0.06);cursor:pointer}
+.entry-card h2{margin:0 0 8px}
+.entry-card p{margin:0;color:#444}
+.entry-card.recruiter{background:linear-gradient(180deg,#0b2a4a,#08223d);color:#e6f0ff;border:1px solid rgba(255,255,255,0.06)}
+.entry-card.visitor{background:linear-gradient(180deg,#fff6ea,#fff0d9);color:#222;border:1px solid rgba(0,0,0,0.06)}
+.tip{margin-top:18px;color:#666;font-size:14px}

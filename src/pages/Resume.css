@@ -1,0 +1,12 @@
+.resume-root{padding:24px;display:flex;flex-direction:column;gap:12px}
+.resume-header{display:flex;justify-content:space-between;align-items:center}
+.resume-article{padding:18px}
+.resume-item{margin-bottom:12px}
+.button{display:inline-block;padding:8px 12px;background:var(--accent);color:white;border-radius:8px;text-decoration:none}
+.link{background:none;border:1px solid transparent;color:var(--accent);cursor:pointer;margin-left:8px}
+.muted{color:var(--muted)}
+
+@media print{
+  body *{visibility:visible}
+  .theme-toggle, .link, .button{display:none}
+}

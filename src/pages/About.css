@@ -1,0 +1,8 @@
+.about-root{padding:24px;display:flex;flex-direction:column;gap:18px}
+.about-header{display:flex;justify-content:space-between;align-items:center}
+.about-bio{padding:16px}
+.about-timeline ul{list-style:none;padding:0}
+.timeline-item{margin-bottom:12px}
+.about-skills{padding:16px}
+.button{display:inline-block;margin-top:12px;padding:8px 12px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none}
+.muted{color:var(--muted)}

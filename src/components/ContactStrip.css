@@ -1,0 +1,2 @@
+.contact-strip{padding:12px;border-radius:10px;display:flex;align-items:center;justify-content:space-between}
+.contact-strip .icons a{margin-right:8px;padding:6px 8px;border-radius:6px;background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));color:#05142a;text-decoration:none}

@@ -1,0 +1,27 @@
+/* Visitor hero - playful styling */
+.visitor-hero{display:flex;gap:24px;align-items:center;padding:28px;background:linear-gradient(180deg,#fff8f3,#fff3f0);border-radius:12px}
+.visitor-hero .hero-img{width:220px;height:220px;flex-shrink:0;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.visitor-hero .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
+.visitor-hero .hero-body{flex:1}
+.visitor-hero h1{font-size:var(--h1-size);margin:0 0 6px;color:#111827}
+.visitor-hero .muted{color:var(--muted);margin-bottom:8px}
+.visitor-hero p{line-height:1.45;color:var(--text);margin-bottom:8px}
+.visitor-hero .hero-actions{margin-top:12px}
+
+/* playful headline bounce */
+.visitor-hero h1{display:inline-block;transform-origin:center;animation:pop .9s ease both}
+@keyframes pop{0%{transform:translateY(6px) scale(.98);opacity:0}60%{transform:translateY(-3px) scale(1.02);opacity:1}100%{transform:translateY(0) scale(1)}}
+
+/* reveal trigger */
+.visitor-hero.reveal{opacity:0;transform:translateY(12px)}
+.visitor-hero.reveal.show{opacity:1;transform:none;transition:all .5s cubic-bezier(.2,.9,.3,1)}
+
+/* playful text accent for movie mentions */
+.visitor-hero p strong{background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));-webkit-background-clip:text;background-clip:text;color:transparent}
+.visitor-hero{display:flex;gap:18px;padding:20px;align-items:center}
+.hero-img img{width:420px;border-radius:12px}
+.hero-body{flex:1}
+.hero-actions .button{padding:10px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer}
+@media (max-width:900px){.visitor-hero{flex-direction:column}.hero-img img{width:100%}}
+.visitor-hero{animation:fadeInUp 600ms ease both}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}

@@ -1,0 +1,18 @@
+/* Recruiter hero - professional styling */
+.recruiter-hero{display:flex;gap:20px;align-items:center;padding:24px}
+.recruiter-left{flex:1}
+.recruiter-right{width:260px;height:260px;display:flex;align-items:center;justify-content:center}
+.recruiter-right img{max-width:100%;border-radius:8px;box-shadow:0 12px 34px rgba(0,0,0,0.25)}
+.recruiter-hero h1{font-size:var(--h1-size);margin:0 0 6px}
+.recruiter-hero .muted{color:var(--muted);margin-bottom:10px}
+.recruiter-hero p{line-height:1.45;color:var(--text)}
+.recruiter-hero .hero-actions{margin-top:12px}
+
+/* reveal trigger when JS adds .show (used via mounting) */
+.recruiter-hero.reveal{opacity:0;transform:translateY(12px)}
+.recruiter-hero.reveal.show{opacity:1;transform:translateY(0);transition:all .5s cubic-bezier(.2,.9,.3,1)}
+.recruiter-hero{display:flex;gap:24px;align-items:center;padding:20px}
+.recruiter-left{flex:1}
+.recruiter-right img{width:420px;border-radius:8px}
+.hero-actions .button{padding:10px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer}
+@media (max-width:900px){.recruiter-hero{flex-direction:column}.recruiter-right img{width:100%}}

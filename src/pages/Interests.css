@@ -1,0 +1,28 @@
+/* Layout inspired by supplied reference: left 'Things I Love' card and right content area */
+.interests-root{padding:18px;display:flex;flex-direction:column;gap:16px}
+.interests-header{display:flex;justify-content:space-between;align-items:center}
+.interests-grid{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+
+.things-card{padding:16px;border-radius:12px}
+.things-card h2{margin:0 0 6px}
+.things-card .muted{margin-bottom:12px;color:var(--muted)}
+.things-tabs{display:flex;gap:8px;margin-bottom:12px}
+.things-tabs button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;cursor:pointer}
+.things-tabs button.active{background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));color:#0b1220;border:none}
+.things-visual{margin-top:12px;border-radius:8px;overflow:hidden}
+.things-visual img{width:100%;height:auto;display:block}
+
+.interests-main{display:flex;flex-direction:column;gap:14px}
+.panel.content{padding:16px;border-radius:10px}
+.panel.content h2{margin-top:0}
+
+/* movies panel gets more space and uses existing InteractiveMovies layout */
+.panel.movies{min-height:220px}
+
+@media(max-width:880px){
+  .interests-grid{grid-template-columns:1fr;}
+  .things-visual img{height:180px;object-fit:cover}
+}
+
+.interests-tabs button:focus{outline:2px solid rgba(37,99,235,0.24);outline-offset:4px}
+

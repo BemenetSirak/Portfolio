@@ -1,0 +1,12 @@
+.layout-root{padding:24px}
+.layout-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.layout-main{display:flex;gap:24px}
+.left-col{width:300px}
+.right-col{flex:1}
+.photo-card{height:180px;background:var(--panel);color:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.contact-card{margin-top:12px;padding:12px;border-radius:8px;background:var(--panel)}
+.visitor-widgets{display:flex;gap:12px}
+.card{padding:18px;background:var(--panel);border-radius:10px;box-shadow:var(--card-shadow)}
+.muted{color:var(--muted)}
+.link{background:none;border:1px solid transparent;color:var(--accent);cursor:pointer}
+.theme-toggle{border:1px solid transparent;background:transparent;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--text)}
