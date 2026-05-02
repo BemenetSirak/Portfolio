@@ -7,7 +7,13 @@ import VisitorLayout from './layouts/VisitorLayout'
 function App() {
   const [entry, setEntry] = useState(() => {
     try {
-      return sessionStorage.getItem('entry') || null
+      const stored = sessionStorage.getItem('entry') || null
+      if (!stored) {
+        // Deep-link: ?tab=movies (or any tab) auto-enters the visitor view
+        const tab = new URLSearchParams(window.location.search).get('tab')
+        if (tab) return 'visitor'
+      }
+      return stored
     } catch (e) {
       return null
     }

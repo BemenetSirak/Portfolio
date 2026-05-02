@@ -58,13 +58,15 @@ body {
   width: 1126px;
   max-width: 100%;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  text-align: left;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
+
+/* entry page is the one place that still needs center alignment */
+.entry-root { text-align: center; }
 
 h1,
 h2 {

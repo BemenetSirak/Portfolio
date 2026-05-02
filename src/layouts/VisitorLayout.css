@@ -1,0 +1,36 @@
+.visitor-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  text-align: left;
+}
+
+.visitor-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 24px 40px;
+  flex: 1;
+  text-align: left;
+}
+
+/* Facts + Gallery side by side */
+.facts-gallery-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* Visitor nav links in header */
+.visitor-nav {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+@media (max-width: 720px) {
+  .facts-gallery-row  { grid-template-columns: 1fr; }
+  .visitor-nav        { display: none; }
+  .visitor-main       { padding: 0 14px 28px; }
+}

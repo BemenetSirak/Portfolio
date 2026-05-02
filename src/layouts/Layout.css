@@ -1,12 +1,73 @@
-.layout-root{padding:24px}
-.layout-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.layout-main{display:flex;gap:24px}
-.left-col{width:300px}
-.right-col{flex:1}
-.photo-card{height:180px;background:var(--panel);color:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.contact-card{margin-top:12px;padding:12px;border-radius:8px;background:var(--panel)}
-.visitor-widgets{display:flex;gap:12px}
-.card{padding:18px;background:var(--panel);border-radius:10px;box-shadow:var(--card-shadow)}
-.muted{color:var(--muted)}
-.link{background:none;border:1px solid transparent;color:var(--accent);cursor:pointer}
-.theme-toggle{border:1px solid transparent;background:transparent;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--text)}
+.layout-root {
+  padding: 24px;
+  text-align: left;
+}
+
+.layout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  position: relative;
+  z-index: 100;
+}
+
+#root[data-theme='dark'] .layout-header {
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+.layout-main {
+  display: flex;
+  gap: 24px;
+  text-align: left;
+}
+
+.left-col  { width: 300px; }
+.right-col { flex: 1; }
+
+.photo-card {
+  height: 180px;
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.card {
+  padding: 18px;
+  background: var(--panel);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+/* theme-toggle is styled in theme.css via .link fallback */
+.theme-toggle {
+  border: 1px solid rgba(0,0,0,0.1);
+  background: var(--panel);
+  padding: 7px 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.theme-toggle:hover {
+  box-shadow: var(--card-shadow);
+}
+
+#root[data-theme='dark'] .theme-toggle {
+  border-color: rgba(255,255,255,0.10);
+  background: var(--panel);
+}

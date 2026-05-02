@@ -1,61 +1,146 @@
-:root{
-  --bg: #fff7f2;
+:root {
+  /* Neutral page background (entry / fallback) */
+  --bg: #f8f9fb;
   --panel: #ffffff;
   --text: #0f172a;
-  --muted: #6b7280;
+  --muted: #64748b;
   --accent: #2563eb;
-  --card-shadow: 0 6px 18px rgba(11,22,42,0.06);
-  /* typography - default (professional-like) */
-  --ff-sans: Inter, system-ui, Arial, sans-serif;
-  --ff-display: 'Poppins', Inter, system-ui, Arial, sans-serif;
+  --card-shadow:
+    0 2px 4px rgba(11,22,42,0.04),
+    0 6px 16px rgba(11,22,42,0.07),
+    0 16px 32px rgba(11,22,42,0.04);
+  --card-shadow-hover:
+    0 4px 8px rgba(11,22,42,0.06),
+    0 12px 28px rgba(11,22,42,0.10),
+    0 24px 48px rgba(11,22,42,0.06);
+
+  --ff-sans: 'Inter', system-ui, Arial, sans-serif;
+  --ff-display: 'Nunito', 'Inter', system-ui, Arial, sans-serif;
+
   --base-size: 16px;
-  --h1-size: 2.2rem;
-  --h2-size: 1.25rem;
-  --lead-size: 1rem;
   --text-weight: 400;
   --muted-weight: 400;
-  --flow-style: professional; /* professional | playful */
-  /* cursor customization */
+
   --cursor-size: 18px;
   --cursor-ring-size: 36px;
-  --cursor-start: #ffd166;
-  --cursor-end: #fcbf49;
+  --cursor-start: #fbbf24;
+  --cursor-end: #f97316;
   --cursor-blend: screen;
 }
 
-/* dark theme scoped to app root */
-#root[data-theme='dark']{
-  --bg: #071026;
-  --panel: #07183a;
-  --text: #e6f0ff;
+/* ── Dark theme ─────────────────────────────────────── */
+#root[data-theme='dark'] {
+  --bg: #0a1020;
+  --panel: #0d1b30;
+  --text: #e2eaf6;
   --muted: #94a3b8;
   --accent: #60a5fa;
-  --card-shadow: none;
-  --ff-sans: Inter, system-ui, Arial, sans-serif;
-  --ff-display: 'Poppins', Inter, system-ui, Arial, sans-serif;
-  --h1-size: 2.2rem;
-  --h2-size: 1.15rem;
-  --lead-size: 1rem;
-  --flow-style: professional;
-  --cursor-size: 14px;
-  --cursor-ring-size: 34px;
+  --card-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 8px 20px rgba(0,0,0,0.35);
+  --card-shadow-hover: 0 4px 10px rgba(0,0,0,0.30), 0 14px 30px rgba(0,0,0,0.42);
+  --ff-sans: 'Inter', system-ui, Arial, sans-serif;
+  --ff-display: 'Nunito', 'Inter', system-ui, Arial, sans-serif;
   --cursor-start: #60a5fa;
   --cursor-end: #2563eb;
-  --cursor-blend: screen;
 }
 
-body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:var(--base-size)}
-.panel{background:var(--panel);box-shadow:var(--card-shadow);border-radius:10px}
+/* ── Base ─────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ff-sans);
+  font-size: var(--base-size);
+}
 
-/* typographic helpers */
-.flow-professional h1,.flow-professional h2{font-family:var(--ff-display);font-weight:600;color:var(--text)}
-.flow-professional p,.flow-professional .muted{font-family:var(--ff-sans);color:var(--muted);font-weight:var(--muted-weight)}
+.panel {
+  background: var(--panel);
+  box-shadow: var(--card-shadow);
+  border-radius: 14px;
+}
 
-.flow-playful h1{font-family:var(--ff-display);font-weight:700;color:var(--accent);letter-spacing:0.6px}
-.flow-playful p{font-family:var(--ff-sans);color:var(--text)}
-.flow-playful .muted{color:var(--muted);font-style:italic}
+/* ── Per-flow page backgrounds ─────────────────────── */
+.flow-professional {
+  background: #edf2f7;   /* cool blue-white — clean & professional */
+  min-height: 100svh;
+}
 
-/* small utility for animated entrance */
-.reveal{opacity:0;transform:translateY(8px);transition:opacity .48s ease,transform .48s cubic-bezier(.2,.9,.3,1)}
-.reveal.show{opacity:1;transform:translateY(0)}
+.flow-playful {
+  background: #fdf7f1;   /* warm cream — inviting & personal */
+  min-height: 100svh;
+}
 
+#root[data-theme='dark'] .flow-professional,
+#root[data-theme='dark'] .flow-playful {
+  background: var(--bg);
+}
+
+/* ── Layout header h1 reset ─────────────────────────── */
+/* The Vite starter sets h1 to 56px globally; reset it for
+   layout contexts so the name/title in the header is label-sized */
+.layout-header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  font-family: var(--ff-display);
+}
+
+.layout-header p.muted {
+  font-size: 0.82rem;
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+/* ── Typographic helpers ─────────────────────────────── */
+.flow-professional h2,
+.flow-professional h3 {
+  font-family: var(--ff-display);
+  font-weight: 700;
+  color: var(--text);
+}
+.flow-professional p,
+.flow-professional .muted {
+  color: var(--muted);
+}
+
+.flow-playful h1 {
+  font-family: var(--ff-display);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.4px;
+}
+.flow-playful h2,
+.flow-playful h3 {
+  font-family: var(--ff-display);
+  font-weight: 700;
+  color: var(--text);
+}
+.flow-playful p { color: var(--text); }
+.flow-playful .muted { color: var(--muted); }
+
+/* ── Link / button text utilities ───────────────────── */
+.link {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.link:hover { background: rgba(37,99,235,0.06); }
+
+.muted { color: var(--muted); }
+
+/* ── Animated entrance ───────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.52s ease, transform 0.52s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}

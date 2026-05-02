@@ -1,4 +1,42 @@
-.fun-zone{padding:12px;border-radius:10px}
-.game-area{display:flex;gap:10px;align-items:center}
-.controller{font-size:28px}
-.screen{padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff3e8,#fbe7ff)}
+.fun-facts {
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fffbf0, #fff8f3);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.fun-facts h3 {
+  font-family: var(--ff-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+
+.facts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.facts-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--text);
+  font-family: var(--ff-sans);
+  line-height: 1.45;
+}
+
+.fact-check {
+  flex-shrink: 0;
+}
+
+#root[data-theme='dark'] .fun-facts {
+  background: linear-gradient(135deg, #0d1b2a, #0b1726);
+}

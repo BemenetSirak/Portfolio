@@ -1,2 +1,50 @@
-.contact-strip{padding:12px;border-radius:10px;display:flex;align-items:center;justify-content:space-between}
-.contact-strip .icons a{margin-right:8px;padding:6px 8px;border-radius:6px;background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));color:#05142a;text-decoration:none}
+.contact-strip {
+  padding: 28px 24px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.contact-strip h3 {
+  font-family: var(--ff-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.contact-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.18s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.18s ease;
+}
+
+.social-btn:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+}
+
+/* Distinct colors per network */
+.soc-ig   { background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.soc-gh   { background: #24292e; }
+.soc-li   { background: #0a66c2; }
+.soc-tw   { background: #1d9bf0; }
+.soc-mail { background: #10b981; }

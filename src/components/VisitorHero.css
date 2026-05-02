@@ -1,27 +1,178 @@
-/* Visitor hero - playful styling */
-.visitor-hero{display:flex;gap:24px;align-items:center;padding:28px;background:linear-gradient(180deg,#fff8f3,#fff3f0);border-radius:12px}
-.visitor-hero .hero-img{width:220px;height:220px;flex-shrink:0;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.visitor-hero .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
-.visitor-hero .hero-body{flex:1}
-.visitor-hero h1{font-size:var(--h1-size);margin:0 0 6px;color:#111827}
-.visitor-hero .muted{color:var(--muted);margin-bottom:8px}
-.visitor-hero p{line-height:1.45;color:var(--text);margin-bottom:8px}
-.visitor-hero .hero-actions{margin-top:12px}
+/* ── Visitor Hero ─────────────────────────────────────── */
+.visitor-hero {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 40px 36px;
+  border-radius: 20px;
+  background: linear-gradient(140deg, #fff8f3 55%, #ffe8d6 100%);
+  position: relative;
+  overflow: visible;
+  margin-bottom: 12px;
+}
 
-/* playful headline bounce */
-.visitor-hero h1{display:inline-block;transform-origin:center;animation:pop .9s ease both}
-@keyframes pop{0%{transform:translateY(6px) scale(.98);opacity:0}60%{transform:translateY(-3px) scale(1.02);opacity:1}100%{transform:translateY(0) scale(1)}}
+/* ── Body (left side) ─── */
+.hero-body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  text-align: left;
+}
 
-/* reveal trigger */
-.visitor-hero.reveal{opacity:0;transform:translateY(12px)}
-.visitor-hero.reveal.show{opacity:1;transform:none;transition:all .5s cubic-bezier(.2,.9,.3,1)}
+.hero-greeting {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 2px;
+}
 
-/* playful text accent for movie mentions */
-.visitor-hero p strong{background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));-webkit-background-clip:text;background-clip:text;color:transparent}
-.visitor-hero{display:flex;gap:18px;padding:20px;align-items:center}
-.hero-img img{width:420px;border-radius:12px}
-.hero-body{flex:1}
-.hero-actions .button{padding:10px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer}
-@media (max-width:900px){.visitor-hero{flex-direction:column}.hero-img img{width:100%}}
-.visitor-hero{animation:fadeInUp 600ms ease both}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.visitor-hero h1 {
+  font-family: var(--ff-display);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.hero-tagline {
+  font-family: var(--ff-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.hero-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 22px;
+  max-width: 360px;
+}
+
+.explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: var(--ff-display);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.2s ease;
+}
+.explore-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15,23,42,0.22);
+}
+.explore-btn:active { transform: translateY(0); }
+
+/* ── Visual (right side) ─── */
+.hero-visual {
+  position: relative;
+  flex-shrink: 0;
+  width: 300px;
+  height: 300px;
+}
+
+.hero-blob {
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(ellipse 120% 90% at 60% 55%, #ffd6b8 0%, #ffcba8 45%, transparent 72%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.hero-char {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+/* ── Floating hobby icons ─── */
+.float-icon {
+  position: absolute;
+  z-index: 3;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fi-gaming { top: 8%;  left: -14%;  animation: floatA 3.2s ease-in-out infinite; }
+.fi-travel { top: 2%;  right: 8%;   animation: floatB 3.6s ease-in-out infinite; }
+.fi-photo  { top: 42%; right: -12%; animation: floatA 4.0s ease-in-out infinite 0.4s; }
+.fi-music  { bottom: 10%; left: -10%; animation: floatB 3.4s ease-in-out infinite 0.8s; }
+
+@keyframes floatA {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50%       { transform: translateY(-10px) rotate(3deg); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translateY(0px) rotate(2deg); }
+  50%       { transform: translateY(-8px) rotate(-2deg); }
+}
+
+/* ── Sparkle accents ─── */
+.sparkle {
+  position: absolute;
+  z-index: 2;
+  border-radius: 2px;
+  background: var(--cursor-start);
+  opacity: 0.7;
+  animation: sparkSpin 4s linear infinite;
+}
+.sp-1 { width: 10px; height: 10px; top: 18%; left: 18%; animation-delay: 0s; }
+.sp-2 { width: 8px;  height: 8px;  bottom: 22%; right: 20%; animation-delay: 1.3s; }
+.sp-3 { width: 6px;  height: 6px;  top: 65%;  left: 30%; animation-delay: 2.6s; }
+
+@keyframes sparkSpin {
+  0%   { transform: rotate(0deg) scale(1); opacity: 0.7; }
+  50%  { transform: rotate(180deg) scale(1.3); opacity: 1; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.7; }
+}
+
+/* ── Reveal entrance ─── */
+.visitor-hero.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.visitor-hero.reveal.show {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.52s ease, transform 0.52s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* ── Dark theme ─── */
+#root[data-theme='dark'] .visitor-hero {
+  background: linear-gradient(140deg, #0d1b2a 55%, #112030 100%);
+}
+#root[data-theme='dark'] .visitor-hero h1 { color: var(--text); }
+#root[data-theme='dark'] .hero-blob {
+  background: radial-gradient(ellipse 120% 90% at 60% 55%, #1e3a5f 0%, #162d47 45%, transparent 72%);
+}
+#root[data-theme='dark'] .float-icon { background: #0b1a30; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+#root[data-theme='dark'] .explore-btn { background: #3b82f6; }
+
+/* ── Responsive ─── */
+@media (max-width: 900px) {
+  .visitor-hero { flex-direction: column; text-align: center; padding: 28px 20px; }
+  .hero-body { text-align: center; }
+  .hero-desc { max-width: 100%; }
+  .hero-visual { width: 220px; height: 220px; }
+  .fi-gaming, .fi-music { left: -6%; }
+  .fi-travel, .fi-photo  { right: -6%; }
+}

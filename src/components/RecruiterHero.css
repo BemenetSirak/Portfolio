@@ -1,18 +1,87 @@
-/* Recruiter hero - professional styling */
-.recruiter-hero{display:flex;gap:20px;align-items:center;padding:24px}
-.recruiter-left{flex:1}
-.recruiter-right{width:260px;height:260px;display:flex;align-items:center;justify-content:center}
-.recruiter-right img{max-width:100%;border-radius:8px;box-shadow:0 12px 34px rgba(0,0,0,0.25)}
-.recruiter-hero h1{font-size:var(--h1-size);margin:0 0 6px}
-.recruiter-hero .muted{color:var(--muted);margin-bottom:10px}
-.recruiter-hero p{line-height:1.45;color:var(--text)}
-.recruiter-hero .hero-actions{margin-top:12px}
+/* ── Adjustable text-color variables (override in theme.css or inline for dark mode) ── */
+.recruiter-hero {
+  --rh-heading-color: var(--text);
+  --rh-text-color:    var(--text);
+  --rh-muted-color:   var(--muted);
+  --rh-label-color:   var(--muted);
+}
 
-/* reveal trigger when JS adds .show (used via mounting) */
-.recruiter-hero.reveal{opacity:0;transform:translateY(12px)}
-.recruiter-hero.reveal.show{opacity:1;transform:translateY(0);transition:all .5s cubic-bezier(.2,.9,.3,1)}
-.recruiter-hero{display:flex;gap:24px;align-items:center;padding:20px}
-.recruiter-left{flex:1}
-.recruiter-right img{width:420px;border-radius:8px}
-.hero-actions .button{padding:10px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer}
-@media (max-width:900px){.recruiter-hero{flex-direction:column}.recruiter-right img{width:100%}}
+#root[data-theme='dark'] .recruiter-hero {
+  --rh-heading-color: #e6f0ff;
+  --rh-text-color:    #c8d9f0;
+  --rh-muted-color:   #8ba4c8;
+  --rh-label-color:   #6b8fb0;
+}
+
+/* ── Layout ── */
+.recruiter-hero {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 20px;
+}
+
+.recruiter-left  { flex: 1; }
+
+.recruiter-right {
+  width: 260px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recruiter-right img {
+  max-width: 100%;
+  width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Typography using variables ── */
+.recruiter-hero h1 {
+  font-size: var(--h1-size, 2rem);
+  margin: 0 0 6px;
+  color: var(--rh-heading-color);
+}
+
+.recruiter-hero .muted {
+  color: var(--rh-muted-color);
+  margin-bottom: 10px;
+}
+
+.recruiter-hero p {
+  line-height: 1.55;
+  color: var(--rh-text-color);
+}
+
+.recruiter-hero .hero-actions {
+  margin-top: 12px;
+}
+
+.hero-actions .button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* ── Reveal animation ── */
+.recruiter-hero.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.recruiter-hero.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@media (max-width: 900px) {
+  .recruiter-hero { flex-direction: column; }
+  .recruiter-right img { width: 100%; }
+}
