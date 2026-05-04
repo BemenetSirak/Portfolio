@@ -20,12 +20,20 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* override global index.css h1/h2 colors inside recruiter */
+/* override global h1/h2/p rules that come from theme.css .flow-professional */
+.flow-professional .rl-root h1,
+.flow-professional .rl-root h2,
+.flow-professional .rl-root h3,
 .rl-root h1,
 .rl-root h2,
 .rl-root h3 {
   color: var(--rl-heading);
   font-family: 'Nunito', 'Inter', sans-serif;
+}
+
+.flow-professional .rl-root p,
+.rl-root p {
+  color: var(--rl-muted);
 }
 
 /* ── Sticky header ── */
@@ -201,20 +209,21 @@
 }
 
 .rl-name {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2rem, 4vw, 3rem) !important; /* override index.css h1 { 56px } */
   font-weight: 900;
-  color: var(--rl-heading);
-  margin: 0 0 6px;
+  color: var(--rl-heading) !important;
+  margin: 0 0 6px !important;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 
 .rl-role {
-  font-size: 1.15rem;
+  font-size: 1rem;
   color: var(--rl-accent-lt);
   font-weight: 700;
   margin: 0 0 16px;
   font-family: 'Nunito', inherit;
+  letter-spacing: 0.1px;
 }
 
 .rl-bio {
@@ -409,31 +418,44 @@
 .rl-projects-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
+/* Base card — compact (QA Dashboard, Pipeline Validator) */
 .rl-project-card {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 14px;
+  border-radius: 14px;
   border: 1px solid var(--rl-border);
-  text-decoration: none;
   background: var(--rl-card-2);
-  transition: border-color 0.15s, transform 0.15s;
-  cursor: default;
+  transition: border-color 0.2s, transform 0.2s;
 }
 
 .rl-project-card:hover {
-  border-color: rgba(96, 165, 250, 0.35);
+  border-color: rgba(96, 165, 250, 0.30);
   transform: translateY(-2px);
+}
+
+/* Featured variant (Portfolio) — accent border + slightly more padding */
+.rl-project-card--featured {
+  border-color: rgba(96, 165, 250, 0.22);
+  background: linear-gradient(160deg, #0d1f40 0%, #0c1a36 100%);
+}
+
+.rl-project-card--featured:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+/* Top row: thumb + meta */
+.rl-project-top {
+  display: flex;
+  gap: 14px;
+  align-items: center;
 }
 
 .rl-project-thumb {
   width: 72px;
   height: 56px;
-  border-radius: 8px;
+  border-radius: 10px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -452,12 +474,61 @@
 }
 
 .rl-project-tagline {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--rl-muted);
   margin: 0 0 2px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+/* Description paragraph */
+.rl-project-desc {
+  font-size: 0.82rem;
+  color: var(--rl-muted);
+  line-height: 1.6;
+  margin: 10px 0 0;
+}
+
+/* Highlights list */
+.rl-project-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1px solid var(--rl-border);
+  padding-top: 12px;
+}
+
+.rl-project-highlights li {
+  font-size: 0.80rem;
+  color: var(--rl-text);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.rl-project-highlights li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--rl-accent-lt);
+  font-size: 10px;
+  top: 3px;
+}
+
+/* GitHub link */
+.rl-project-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--rl-accent-lt);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.rl-project-link:hover { opacity: 0.75; }
 
 .rl-project-title {
   font-size: 0.92rem;
@@ -521,9 +592,22 @@
 .rl-skill-sep {
   flex-shrink: 0;
   margin-bottom: 22px;
+  /* hide arrows when wrapping to keep layout clean */
+}
+
+/* Group separators visually on second row */
+@media (max-width: 860px) {
+  .rl-skill-sep { display: none; }
+  .rl-skills-row { gap: 14px; }
 }
 
 /* ── Education ── */
+.rl-edu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .rl-edu-item {
   display: flex;
   gap: 14px;
@@ -554,7 +638,38 @@
 .rl-edu-years {
   font-size: 0.78rem;
   color: var(--rl-muted);
+  margin: 0 0 4px;
+}
+
+.rl-edu-note {
+  font-size: 0.75rem;
+  color: var(--rl-muted);
   margin: 0;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Location inline in company ── */
+.rl-tl-location {
+  color: var(--rl-muted);
+  font-weight: 400;
+}
+
+/* ── Core Strengths tags ── */
+.rl-strengths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rl-strength-tag {
+  font-size: 0.78rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(96, 165, 250, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  color: var(--rl-accent-lt);
+  font-weight: 500;
 }
 
 /* ── Certifications ── */
@@ -599,6 +714,150 @@
   font-size: 0.78rem;
   color: var(--rl-muted);
   flex-shrink: 0;
+}
+
+/* ── Resume section ── */
+.rl-resume-card {}
+
+.rl-resume-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.rl-resume-block {
+  padding: 20px 0;
+  border-top: 1px solid var(--rl-border);
+}
+
+.rl-resume-block:first-of-type {
+  border-top: none;
+  padding-top: 12px;
+}
+
+.rl-resume-block-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--rl-muted);
+  margin: 0 0 12px;
+}
+
+.rl-resume-body {
+  font-size: 0.88rem;
+  color: var(--rl-text);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Skills */
+.rl-resume-skill-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rl-resume-skill-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rl-resume-skill-cat {
+  font-size: 0.78rem;
+  color: var(--rl-muted);
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.rl-resume-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rl-resume-tag {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(96, 165, 250, 0.10);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  color: var(--rl-accent-lt);
+  font-weight: 600;
+}
+
+/* Experience / Education entries */
+.rl-resume-exp {
+  margin-bottom: 18px;
+}
+.rl-resume-exp:last-child { margin-bottom: 0; }
+
+.rl-resume-exp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.rl-resume-role {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--rl-heading);
+  margin: 0 0 2px;
+}
+
+.rl-resume-company {
+  font-size: 0.80rem;
+  color: var(--rl-accent-lt);
+  margin: 0;
+  font-weight: 500;
+}
+
+.rl-resume-dates {
+  font-size: 0.75rem;
+  color: var(--rl-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.rl-resume-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rl-resume-bullets li {
+  font-size: 0.83rem;
+  color: var(--rl-text);
+  line-height: 1.55;
+  padding-left: 14px;
+  position: relative;
+}
+
+.rl-resume-bullets li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--rl-accent);
+  font-size: 10px;
+  top: 3px;
+}
+
+.rl-resume-note {
+  font-size: 0.78rem;
+  color: var(--rl-muted);
+  margin: 6px 0 0;
+  font-style: italic;
+  line-height: 1.5;
 }
 
 /* ── Contact ── */

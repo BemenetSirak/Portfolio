@@ -8,6 +8,7 @@ const NAV = [
   { label: 'Projects',   id: 'rl-projects' },
   { label: 'Skills',     id: 'rl-skills' },
   { label: 'Education',  id: 'rl-education' },
+  { label: 'Resume',     id: 'rl-resume' },
   { label: 'Contact',    id: 'rl-contact' },
 ]
 
@@ -36,7 +37,7 @@ export default function RecruiterLayout({ onBack }) {
 
           <div className="rl-header-actions">
             <a href="/assets/resume.pdf" download className="rl-btn-primary rl-btn-sm">
-              Download CV
+              Download Resume
             </a>
             <button className="rl-nav-link rl-switch-btn" onClick={onBack}>
               ← Switch
@@ -103,7 +104,9 @@ export default function RecruiterLayout({ onBack }) {
                   <div className="rl-tl-body">
                     <div className="rl-tl-dot" />
                     <h3 className="rl-tl-role">{e.role}</h3>
-                    <p className="rl-tl-company">{e.company}</p>
+                    <p className="rl-tl-company">
+                      {e.company}{e.location ? <span className="rl-tl-location"> · {e.location}</span> : null}
+                    </p>
                     <ul className="rl-tl-bullets">
                       {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
                     </ul>
@@ -117,18 +120,33 @@ export default function RecruiterLayout({ onBack }) {
             <h2 className="rl-section-heading">Featured Projects</h2>
             <div className="rl-projects-grid">
               {profile.projects.map((p, i) => (
-                <a key={i} href={p.url} className="rl-project-card" onClick={e => e.preventDefault()}>
-                  <div className="rl-project-thumb" style={{ background: p.gradient }}>
-                    <span className="rl-project-initial">{p.title[0]}</span>
-                  </div>
-                  <div className="rl-project-body">
-                    <p className="rl-project-tagline">{p.tagline}</p>
-                    <h3 className="rl-project-title">{p.title}</h3>
-                    <div className="rl-tech-list">
-                      {p.tech.map(t => <span key={t} className="rl-tech-tag">{t}</span>)}
+                <div key={i} className={`rl-project-card${p.highlights?.length ? ' rl-project-card--featured' : ''}`}>
+                  <div className="rl-project-top">
+                    <div className="rl-project-thumb" style={{ background: p.gradient }}>
+                      <span className="rl-project-initial">{p.title[0]}</span>
+                    </div>
+                    <div className="rl-project-body">
+                      <p className="rl-project-tagline">{p.tagline}</p>
+                      <h3 className="rl-project-title">{p.title}</h3>
+                      <div className="rl-tech-list">
+                        {p.tech.map(t => <span key={t} className="rl-tech-tag">{t}</span>)}
+                      </div>
                     </div>
                   </div>
-                </a>
+                  {p.description && (
+                    <p className="rl-project-desc">{p.description}</p>
+                  )}
+                  {p.highlights?.length > 0 && (
+                    <ul className="rl-project-highlights">
+                      {p.highlights.map((h, j) => <li key={j}>{h}</li>)}
+                    </ul>
+                  )}
+                  {p.url && p.url !== '#' && (
+                    <a href={p.url} target="_blank" rel="noreferrer" className="rl-project-link">
+                      View on GitHub →
+                    </a>
+                  )}
+                </div>
               ))}
             </div>
           </section>
@@ -162,32 +180,110 @@ export default function RecruiterLayout({ onBack }) {
 
           <section id="rl-education" className="rl-card">
             <h2 className="rl-section-heading">Education</h2>
-            {profile.education.map((e, i) => (
-              <div key={i} className="rl-edu-item">
-                <div className="rl-edu-icon">🎓</div>
-                <div>
-                  <h3 className="rl-edu-degree">{e.degree}</h3>
-                  <p className="rl-edu-school">{e.school}</p>
-                  <p className="rl-edu-years">{e.from} – {e.to}</p>
-                </div>
-              </div>
-            ))}
-          </section>
-
-          <section className="rl-card">
-            <h2 className="rl-section-heading">Certifications</h2>
-            <div className="rl-certs">
-              {profile.certifications.map((c, i) => (
-                <div key={i} className="rl-cert-row">
-                  <div className="rl-cert-check">✓</div>
-                  <span className="rl-cert-name">{c.name}</span>
-                  <span className="rl-cert-year">{c.year}</span>
+            <div className="rl-edu-list">
+              {profile.education.map((e, i) => (
+                <div key={i} className="rl-edu-item">
+                  <div className="rl-edu-icon">🎓</div>
+                  <div>
+                    <h3 className="rl-edu-degree">{e.degree}</h3>
+                    <p className="rl-edu-school">{e.school}</p>
+                    <p className="rl-edu-years">{e.from} – {e.to}</p>
+                    {e.note && <p className="rl-edu-note">{e.note}</p>}
+                  </div>
                 </div>
               ))}
             </div>
           </section>
 
+          <section className="rl-card">
+            <h2 className="rl-section-heading">Core Strengths</h2>
+            <div className="rl-strengths">
+              {['Data Analysis', 'Power BI Dashboards', 'OOP', 'Process Improvement', 'Reporting Automation', 'Federal Compliance', 'SQL Querying', 'Agile Collaboration'].map(s => (
+                <span key={s} className="rl-strength-tag">{s}</span>
+              ))}
+            </div>
+          </section>
+
         </div>
+
+        {/* ── Resume ── */}
+        <section id="rl-resume" className="rl-card rl-resume-card">
+          <div className="rl-resume-top">
+            <h2 className="rl-section-heading">Resume</h2>
+            <a href="/assets/resume.pdf" download className="rl-btn-outline rl-btn-sm">
+              Download PDF
+            </a>
+          </div>
+
+          {/* Summary */}
+          <div className="rl-resume-block">
+            <h3 className="rl-resume-block-title">Summary</h3>
+            <p className="rl-resume-body">{profile.summary}</p>
+          </div>
+
+          {/* Skills */}
+          <div className="rl-resume-block">
+            <h3 className="rl-resume-block-title">Skills</h3>
+            <div className="rl-resume-skill-groups">
+              <div className="rl-resume-skill-group">
+                <span className="rl-resume-skill-cat">Programming Languages</span>
+                <div className="rl-resume-tags">
+                  {['Java', 'Python', 'SQL'].map(s => <span key={s} className="rl-resume-tag">{s}</span>)}
+                </div>
+              </div>
+              <div className="rl-resume-skill-group">
+                <span className="rl-resume-skill-cat">Software & Tools</span>
+                <div className="rl-resume-tags">
+                  {['Power BI', 'Git', 'Microsoft Excel'].map(s => <span key={s} className="rl-resume-tag">{s}</span>)}
+                </div>
+              </div>
+              <div className="rl-resume-skill-group">
+                <span className="rl-resume-skill-cat">Core Strengths</span>
+                <div className="rl-resume-tags">
+                  {['Data Analysis', 'OOP', 'Process Improvement', 'Reporting Automation'].map(s => <span key={s} className="rl-resume-tag">{s}</span>)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div className="rl-resume-block">
+            <h3 className="rl-resume-block-title">Professional Experience</h3>
+            {profile.experience.map((e, i) => (
+              <div key={i} className="rl-resume-exp">
+                <div className="rl-resume-exp-row">
+                  <div>
+                    <h4 className="rl-resume-role">{e.role}</h4>
+                    <p className="rl-resume-company">
+                      {e.company}{e.location ? ` · ${e.location}` : ''}
+                    </p>
+                  </div>
+                  <span className="rl-resume-dates">{e.from} – {e.to}</span>
+                </div>
+                <ul className="rl-resume-bullets">
+                  {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Education */}
+          <div className="rl-resume-block">
+            <h3 className="rl-resume-block-title">Education</h3>
+            {profile.education.map((e, i) => (
+              <div key={i} className="rl-resume-exp">
+                <div className="rl-resume-exp-row">
+                  <div>
+                    <h4 className="rl-resume-role">{e.degree}</h4>
+                    <p className="rl-resume-company">{e.school}</p>
+                  </div>
+                  <span className="rl-resume-dates">{e.from} – {e.to}</span>
+                </div>
+                {e.note && <p className="rl-resume-note">{e.note}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* ── Contact ── */}
         <section id="rl-contact" className="rl-card rl-contact-card">
@@ -199,6 +295,10 @@ export default function RecruiterLayout({ onBack }) {
             <a href={`mailto:${profile.contact.email}`} className="rl-contact-link">
               <span className="rl-contact-icon">✉</span>
               {profile.contact.email}
+            </a>
+            <a href={`tel:${profile.contact.phone}`} className="rl-contact-link">
+              <span className="rl-contact-icon">📞</span>
+              {profile.contact.phone}
             </a>
             <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="rl-contact-link">
               <span className="rl-contact-icon">in</span>
