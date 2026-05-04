@@ -1,6 +1,139 @@
-.resume-root{padding:24px;display:flex;flex-direction:column;gap:12px}
-.resume-header{display:flex;justify-content:space-between;align-items:center}
-.resume-article{padding:18px}
+/* ── Resume overlay — light + dark theme ── */
+.rv-root {
+  padding: 28px 24px 56px;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.rv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  margin-bottom: 4px;
+}
+#root[data-theme='dark'] .rv-header { border-bottom-color: rgba(255,255,255,0.09); }
+
+.rv-name {
+  font-family: var(--ff-display);
+  font-size: 1.6rem !important;
+  font-weight: 900;
+  color: var(--text) !important;
+  margin: 0 0 3px !important;
+}
+
+.rv-title {
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.rv-contact-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.rv-contact-link { font-size: 0.78rem; color: var(--muted); text-decoration: none; }
+.rv-contact-link:hover { color: var(--accent); }
+
+.rv-header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+.rv-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: var(--ff-display);
+}
+.rv-btn-ghost {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.10);
+  color: var(--muted);
+  font-size: 0.875rem;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.rv-btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+#root[data-theme='dark'] .rv-btn-ghost { border-color: rgba(255,255,255,0.12); }
+
+/* Body */
+.rv-body { display: flex; flex-direction: column; }
+
+.rv-section {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+#root[data-theme='dark'] .rv-section { border-bottom-color: rgba(255,255,255,0.07); }
+.rv-section:last-child { border-bottom: none; }
+
+.rv-section-title {
+  font-family: var(--ff-display);
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--accent) !important;
+  margin: 0 0 14px !important;
+}
+
+.rv-body-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin: 0; }
+
+.rv-skill-groups { display: flex; flex-direction: column; gap: 10px; }
+.rv-skill-group { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rv-skill-cat { font-size: 0.78rem; color: var(--muted); min-width: 160px; flex-shrink: 0; }
+.rv-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.rv-tag {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(37,99,235,0.08);
+  border: 1px solid rgba(37,99,235,0.16);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.rv-exp-item { margin-bottom: 18px; }
+.rv-exp-item:last-child { margin-bottom: 0; }
+.rv-exp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.rv-exp-role { font-size: 0.92rem !important; font-weight: 700; color: var(--text) !important; margin: 0 0 2px !important; }
+.rv-exp-company { font-size: 0.8rem; color: var(--accent); margin: 0; font-weight: 500; }
+.rv-exp-dates { font-size: 0.75rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+
+.rv-bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
+.rv-bullets li { font-size: 0.84rem; color: var(--text); line-height: 1.55; padding-left: 14px; position: relative; }
+.rv-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 10px; top: 3px; }
+
+.rv-note { font-size: 0.78rem; color: var(--muted); margin: 6px 0 0; font-style: italic; line-height: 1.5; }
+
+.rv-projects { display: flex; flex-direction: column; gap: 14px; }
+.rv-project-item {
+  padding: 14px 16px;
+  background: rgba(37,99,235,0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(37,99,235,0.10);
+}
+
+@media print {
+  .rv-header-actions { display: none; }
+  .rv-root { padding: 16px; }
+}
 .resume-item{margin-bottom:12px}
 .button{display:inline-block;padding:8px 12px;background:var(--accent);color:white;border-radius:8px;text-decoration:none}
 .link{background:none;border:1px solid transparent;color:var(--accent);cursor:pointer;margin-left:8px}

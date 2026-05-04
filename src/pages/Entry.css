@@ -1,12 +1,221 @@
-.entry-root{padding:48px 24px;text-align:center}
-.entry-grid{display:flex;gap:24px;justify-content:center;margin-top:24px}
-.entry-card{width:320px;padding:20px;border-radius:12px;border:1px solid rgba(0,0,0,0.08);background:#fff;box-shadow:0 6px 18px rgba(11,22,42,0.06);cursor:pointer}
-.entry-card h2{margin:0 0 8px}
-.entry-card p{margin:0;color:#444}
-.entry-card.recruiter{background:linear-gradient(180deg,#0b2a4a,#08223d);color:#e6f0ff;border:1px solid rgba(255,255,255,0.06)}
-.entry-card.recruiter h2{color:#e6f0ff}
-.entry-card.recruiter p{color:rgba(230,240,255,0.82)}
-.entry-card.visitor{background:linear-gradient(180deg,#fff6ea,#fff0d9);color:#222;border:1px solid rgba(0,0,0,0.06)}
-.entry-card.visitor h2{color:#1a1a1a}
-.entry-card.visitor p{color:#4a4a4a}
-.tip{margin-top:18px;color:#666;font-size:14px}
+/* ─────────────────────────────────────────────────────────
+   Entry / Landing page — dark dual-experience design
+───────────────────────────────────────────────────────── */
+
+.entry-root {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #07091a;
+  overflow: hidden;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+/* Extend dark bg to full viewport (bypasses #root max-width constraint) */
+.entry-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: #07091a;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* ── Ambient glow blobs ── */
+.entry-glow {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(100px);
+  opacity: 0.35;
+}
+
+.entry-glow-left {
+  background: radial-gradient(circle, #1d4ed8 0%, transparent 70%);
+  top: -80px;
+  left: -120px;
+}
+
+.entry-glow-right {
+  background: radial-gradient(circle, #6d28d9 0%, transparent 70%);
+  bottom: -80px;
+  right: -120px;
+}
+
+/* ── Content wrapper (above glows) ── */
+.entry-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* ── Heading ── */
+.entry-title {
+  font-family: 'Nunito', 'Inter', sans-serif;
+  font-size: clamp(2rem, 5vw, 2.75rem) !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  margin: 0 0 10px !important;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.entry-subtitle {
+  font-size: 1rem;
+  color: rgba(180, 200, 240, 0.75);
+  margin: 0 0 36px;
+}
+
+/* ── Card grid ── */
+.entry-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ── Cards ── */
+.entry-card {
+  width: 300px;
+  padding: 28px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  text-align: center;
+  background: none;
+}
+
+.entry-card:hover {
+  transform: translateY(-4px);
+}
+
+.entry-card.recruiter {
+  background: linear-gradient(160deg, #0d1f4a 0%, #091838 100%);
+  box-shadow: 0 8px 32px rgba(29, 78, 216, 0.18);
+}
+
+.entry-card.recruiter:hover {
+  border-color: rgba(96, 165, 250, 0.35);
+  box-shadow: 0 16px 48px rgba(29, 78, 216, 0.28);
+}
+
+.entry-card.visitor {
+  background: linear-gradient(160deg, #1e0d4a 0%, #160938 100%);
+  box-shadow: 0 8px 32px rgba(109, 40, 217, 0.18);
+}
+
+.entry-card.visitor:hover {
+  border-color: rgba(167, 139, 250, 0.35);
+  box-shadow: 0 16px 48px rgba(109, 40, 217, 0.28);
+}
+
+/* ── Icon container ── */
+.entry-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.recruiter-icon {
+  background: rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.visitor-icon {
+  background: rgba(109, 40, 217, 0.18);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+/* ── Card text ── */
+.entry-card-title {
+  font-family: 'Nunito', 'Inter', sans-serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+}
+
+.entry-card-desc {
+  font-size: 0.875rem !important;
+  line-height: 1.6;
+  color: rgba(180, 200, 240, 0.72) !important;
+  margin: 0 !important;
+  max-width: 240px;
+}
+
+/* ── CTA button inside card ── */
+.entry-card-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: 'Nunito', 'Inter', sans-serif;
+  letter-spacing: 0.1px;
+  pointer-events: none;
+}
+
+.recruiter-btn {
+  background: #2563eb;
+  color: #fff;
+}
+
+.entry-card.recruiter:hover .recruiter-btn {
+  background: #1d4ed8;
+}
+
+.visitor-btn {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.entry-card.visitor:hover .visitor-btn {
+  background: #6d28d9;
+}
+
+/* ── Tip ── */
+.entry-tip {
+  margin-top: 28px;
+  font-size: 0.875rem;
+  color: rgba(180, 200, 240, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.entry-tip strong {
+  color: rgba(220, 235, 255, 0.9);
+}
+
+.tip-fire {
+  font-size: 1rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 660px) {
+  .entry-grid { flex-direction: column; align-items: center; }
+  .entry-card  { width: 100%; max-width: 340px; }
+}

@@ -2,29 +2,22 @@ import React from 'react'
 import './FunZone.css'
 
 const FACTS = [
-  { text: 'I can code for hours with lo-fi music on' },
-  { text: "I've visited 12+ places and counting" },
-  { text: 'My go-to drink is iced latte' },
-  { text: 'I love solving puzzles and riddles' },
+  { icon: '⚽', text: "Lifelong Arsenal fan — the Invincibles sealed it. I also play 5-a-side every week and love every minute of it." },
+  { icon: '📜', text: "History obsessive. The Aksumite Empire, Medieval Europe, the Ottomans, WWII — I consume documentaries and podcasts constantly." },
+  { icon: '✝️', text: "Ethiopian Orthodox Christian. One of the oldest churches in the world — Ge'ez liturgy, ancient fasting traditions, and roots in Axum." },
+  { icon: '🎬', text: "Historical dramas are my weakness — Peaky Blinders, Narcos, The Last Kingdom. Shawshank Redemption is untouchable cinema." },
+  { icon: '🕍', text: "Fascinated by early church history — the Council of Nicaea, the Desert Fathers, and Christianity's ancient African roots." },
+  { icon: '🏔️', text: "I hike to reset. The Simien Mountains of Ethiopia and the Tour du Mont Blanc are at the top of my bucket list." },
 ]
-
-function Check() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="fact-check">
-      <circle cx="8" cy="8" r="8" fill="#d1fae5"/>
-      <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#10b981" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
 
 export default function FunZone() {
   return (
     <div className="fun-facts panel">
-      <h3>Fun Facts About Me</h3>
+      <h3>Things About Me</h3>
       <ul className="facts-list">
         {FACTS.map((f, i) => (
           <li key={i}>
-            <Check />
+            <span className="fact-icon" aria-hidden="true">{f.icon}</span>
             <span>{f.text}</span>
           </li>
         ))}

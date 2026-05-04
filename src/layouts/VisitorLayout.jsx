@@ -52,7 +52,7 @@ function VisitorLayout({ onBack }) {
 
         <div className="facts-gallery-row">
           <FunZone />
-          <Gallery images={['/images/history.jpg', '/images/football.jpg', '/images/fun.jpg']} />
+          <Gallery />
         </div>
 
         <ContactStrip contact={profile.contact} />

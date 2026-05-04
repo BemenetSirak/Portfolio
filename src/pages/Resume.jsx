@@ -1,64 +1,112 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import profile from '../data/profileData'
 import './Resume.css'
 
-function Resume({ onClose }) {
-  const printRef = useRef()
-
-  function handlePrint() {
-    window.print()
-  }
-
+export default function Resume({ onClose }) {
   return (
-    <div className="resume-root">
-      <div className="resume-header">
-        <h1>Resume — {profile.name}</h1>
+    <div className="rv-root">
+      <header className="rv-header">
         <div>
-          <a className="button" href="/assets/resume.pdf" download>
-            Download PDF
-          </a>
-          <button className="button" onClick={handlePrint} style={{marginLeft:8}}>
-            Print
-          </button>
-          <button onClick={onClose} className="link" style={{marginLeft:8}}>Close</button>
+          <h1 className="rv-name">{profile.name}</h1>
+          <p className="rv-title">{profile.title}</p>
+          <div className="rv-contact-row">
+            <a href={`mailto:${profile.contact.email}`} className="rv-contact-link">✉ {profile.contact.email}</a>
+            {profile.contact.phone && <span className="rv-contact-link">📞 {profile.contact.phone}</span>}
+            <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="rv-contact-link">in LinkedIn</a>
+          </div>
         </div>
-      </div>
+        <div className="rv-header-actions">
+          <a href="/assets/resume.pdf" download className="rv-btn-primary">Download PDF</a>
+          <button onClick={onClose} className="rv-btn-ghost">Close</button>
+        </div>
+      </header>
 
-      <article className="resume-article panel" ref={printRef}>
-        <section className="resume-summary">
-          <h2>Summary</h2>
-          <p>{profile.summary}</p>
+      <div className="rv-body">
+
+        {/* Summary */}
+        <section className="rv-section">
+          <h2 className="rv-section-title">Summary</h2>
+          <p className="rv-body-text">{profile.summary}</p>
         </section>
 
-        <section>
-          <h2>Experience</h2>
+        {/* Skills */}
+        <section className="rv-section">
+          <h2 className="rv-section-title">Skills</h2>
+          <div className="rv-skill-groups">
+            <div className="rv-skill-group">
+              <span className="rv-skill-cat">Programming Languages</span>
+              <div className="rv-tags">
+                {['Java', 'Python', 'SQL'].map(s => <span key={s} className="rv-tag">{s}</span>)}
+              </div>
+            </div>
+            <div className="rv-skill-group">
+              <span className="rv-skill-cat">Software & Tools</span>
+              <div className="rv-tags">
+                {['Power BI', 'Git', 'Microsoft Excel'].map(s => <span key={s} className="rv-tag">{s}</span>)}
+              </div>
+            </div>
+            <div className="rv-skill-group">
+              <span className="rv-skill-cat">Core Strengths</span>
+              <div className="rv-tags">
+                {['Data Analysis', 'OOP', 'Process Improvement', 'Reporting Automation'].map(s => <span key={s} className="rv-tag">{s}</span>)}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Experience */}
+        <section className="rv-section">
+          <h2 className="rv-section-title">Professional Experience</h2>
           {profile.experience.map((e, i) => (
-            <div key={i} className="resume-item">
-              <h3>{e.role} — {e.company}</h3>
-              <p className="muted">{e.from} — {e.to}</p>
-              <ul>
+            <div key={i} className="rv-exp-item">
+              <div className="rv-exp-row">
+                <div>
+                  <h3 className="rv-exp-role">{e.role}</h3>
+                  <p className="rv-exp-company">{e.company}{e.location ? ` · ${e.location}` : ''}</p>
+                </div>
+                <span className="rv-exp-dates">{e.from} – {e.to}</span>
+              </div>
+              <ul className="rv-bullets">
                 {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
               </ul>
             </div>
           ))}
         </section>
 
-        <section>
-          <h2>Projects</h2>
-          <ul>
-            {profile.projects.map((p, i) => (
-              <li key={i}><strong>{p.title}</strong> — {p.description} <span className="muted">({p.tech.join(', ')})</span></li>
-            ))}
-          </ul>
+        {/* Education */}
+        <section className="rv-section">
+          <h2 className="rv-section-title">Education</h2>
+          {profile.education.map((e, i) => (
+            <div key={i} className="rv-exp-item">
+              <div className="rv-exp-row">
+                <div>
+                  <h3 className="rv-exp-role">{e.degree}</h3>
+                  <p className="rv-exp-company">{e.school}</p>
+                </div>
+                <span className="rv-exp-dates">{e.from} – {e.to}</span>
+              </div>
+              {e.note && <p className="rv-note">{e.note}</p>}
+            </div>
+          ))}
         </section>
 
-        <section>
-          <h2>Contact</h2>
-          <p>Email: <a href={`mailto:${profile.contact.email}`}>{profile.contact.email}</a></p>
+        {/* Projects */}
+        <section className="rv-section">
+          <h2 className="rv-section-title">Projects</h2>
+          <div className="rv-projects">
+            {profile.projects.map((p, i) => (
+              <div key={i} className="rv-project-item">
+                <h3 className="rv-exp-role">{p.title}</h3>
+                <p className="rv-body-text" style={{ margin: '2px 0 6px' }}>{p.description}</p>
+                <div className="rv-tags">
+                  {p.tech.map(t => <span key={t} className="rv-tag">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
-      </article>
+
+      </div>
     </div>
   )
 }
-
-export default Resume
