@@ -78,7 +78,7 @@ export default function ThingsILove() {
           <div
             key="history"
             className="love-panel panel-bg"
-            style={{ backgroundImage: 'url(/images/history.jpg)', backgroundPosition: 'center 25%' }}
+            style={{ backgroundImage: 'url(/images/history-knights.jpg)', backgroundPosition: 'center 25%' }}
           >
             <div className="panel-bg-content">
               <h4>History Through the Ages</h4>
@@ -101,7 +101,7 @@ export default function ThingsILove() {
           <div
             key="religion"
             className="love-panel panel-bg"
-            style={{ backgroundImage: 'url(/images/religion.jpg)', backgroundPosition: 'center 30%' }}
+            style={{ backgroundImage: 'url(/images/orthodox-cross-filigree.jpg)', backgroundPosition: 'center center', backgroundSize: 'contain', backgroundColor: '#0a0a0a' }}
           >
             <div className="panel-bg-content">
               <h4>Ethiopian Orthodox Christianity</h4>
@@ -129,8 +129,14 @@ export default function ThingsILove() {
         {active === 'football' && (
           <div
             key="football"
-            className="love-panel panel-bg"
-            style={{ backgroundImage: 'url(/images/football.jpg)', backgroundPosition: 'center top' }}
+            className="love-panel panel-bg arsenal-panel"
+            style={{
+              background: 'linear-gradient(135deg, #0a0a14 0%, #1a0505 60%, #2a0808 100%)',
+              backgroundImage: 'url(/images/arsenal-logo.svg)',
+              backgroundSize: '320px auto',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 48px center',
+            }}
           >
             <div className="panel-bg-content">
               <h4>Arsenal FC &amp; the Beautiful Game</h4>
