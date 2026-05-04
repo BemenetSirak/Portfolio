@@ -69,35 +69,42 @@ export default function MoviesPanel() {
 
         {/* Detail */}
         {selected && (
-          <div className="mp-detail" key={`${subTab}-${selected.id}`}>
-            <h4 className="mp-detail-title">{selected.title}</h4>
-            <p className="mp-detail-year">{selected.year}</p>
+          <div
+            className={`mp-detail${selected.poster ? ' mp-detail--poster' : ''}`}
+            key={`${subTab}-${selected.id}`}
+            style={selected.poster ? { backgroundImage: `url(${selected.poster})` } : undefined}
+          >
+            {selected.poster && <div className="mp-detail-overlay" />}
+            <div className="mp-detail-inner">
+              <h4 className="mp-detail-title">{selected.title}</h4>
+              <p className="mp-detail-year">{selected.year}</p>
 
-            <div className="mp-badges">
-              <span className="badge genre">{selected.genre}</span>
-            </div>
-
-            <div className="mp-scores">
-              <div className="score-row">
-                <StarIcon />
-                <span className="score-label">IMDB</span>
-                <span className="score-val imdb-val">{selected.imdb}<span className="score-max">/10</span></span>
+              <div className="mp-badges">
+                <span className="badge genre">{selected.genre}</span>
               </div>
-              <div className="score-row">
-                <StarIcon />
-                <span className="score-label">My Pick</span>
-                <span className="score-val my-val">{selected.rating}<span className="score-max">/10</span></span>
-                <ScoreDots value={selected.rating} />
-              </div>
-              {selected.recommended && (
-                <span className="rec-badge">Recommended</span>
-              )}
-            </div>
 
-            <p className="mp-short">{selected.short}</p>
-            <p className="mp-notes">
-              <strong>My take:</strong> {selected.notes}
-            </p>
+              <div className="mp-scores">
+                <div className="score-row">
+                  <StarIcon />
+                  <span className="score-label">IMDB</span>
+                  <span className="score-val imdb-val">{selected.imdb}<span className="score-max">/10</span></span>
+                </div>
+                <div className="score-row">
+                  <StarIcon />
+                  <span className="score-label">My Pick</span>
+                  <span className="score-val my-val">{selected.rating}<span className="score-max">/10</span></span>
+                  <ScoreDots value={selected.rating} />
+                </div>
+                {selected.recommended && (
+                  <span className="rec-badge">Recommended</span>
+                )}
+              </div>
+
+              <p className="mp-short">{selected.short}</p>
+              <p className="mp-notes">
+                <strong>My take:</strong> {selected.notes}
+              </p>
+            </div>
           </div>
         )}
       </div>

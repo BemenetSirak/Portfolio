@@ -101,12 +101,64 @@
   background: var(--bg, #fdf8f4);
   border: 1px solid rgba(0,0,0,0.06);
   animation: detailFade 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 @keyframes detailFade {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Poster variant */
+.mp-detail--poster {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  border: none;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.mp-detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 10, 24, 0.30) 0%,
+    rgba(6, 10, 24, 0.70) 45%,
+    rgba(6, 10, 24, 0.96) 100%
+  );
+  z-index: 0;
+}
+
+.mp-detail-inner {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+}
+
+.mp-detail--poster .mp-detail-title { color: #fff; }
+.mp-detail--poster .mp-detail-year  { color: rgba(255,255,255,0.60); }
+.mp-detail--poster .mp-short        { color: rgba(255,255,255,0.85); }
+.mp-detail--poster .mp-notes        { color: rgba(255,255,255,0.65); }
+.mp-detail--poster .mp-notes strong { color: rgba(255,255,255,0.90); }
+.mp-detail--poster .score-label     { color: rgba(255,255,255,0.60); }
+.mp-detail--poster .score-row svg   { color: #f59e0b; }
+.mp-detail--poster .badge.genre {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.90);
+  backdrop-filter: blur(4px);
+}
+.mp-detail--poster .rec-badge {
+  background: rgba(16,185,129,0.20);
+  color: #6ee7b7;
+}
+.mp-detail--poster .dot              { background: rgba(255,255,255,0.20); }
+.mp-detail--poster .dot.filled       { background: var(--accent); }
 
 .mp-detail-title {
   font-family: var(--ff-display);
