@@ -5,17 +5,35 @@ const INTERESTS = [
   { id: 'history',  label: 'History',  icon: '/icons/icon-history.svg',  desc: 'Ancient empires to Cold War' },
   { id: 'religion', label: 'Religion', icon: '/icons/icon-religion.svg', desc: 'Ethiopian Orthodox traditions' },
   { id: 'movies',   label: 'Movies',   icon: '/icons/icon-movies.svg',   desc: 'Top 10 films & shows' },
-  { id: 'football', label: 'Football', icon: '/icons/icon-football.svg', desc: 'Arsenal & 5-a-side' },
+  { id: 'football', label: 'Football', icon: '/icons/icon-football.svg', desc: 'Arsenal & Volo league' },
   { id: 'hiking',   label: 'Hiking',   icon: '/icons/icon-hiking.svg',   desc: 'Mountain trails' },
 ]
 
-const HIGHLIGHTS = [
-  { emoji: '⚽', label: 'Football',  text: 'Arsenal fan + weekly 5-a-side player' },
-  { emoji: '📜', label: 'History',   text: 'Aksumite Empire, Medieval Europe, Cold War' },
-  { emoji: '✝️', label: 'Faith',     text: 'Ethiopian Orthodox — 1,600 years of tradition' },
-  { emoji: '🎬', label: 'Cinema',    text: 'Shawshank, Peaky Blinders, Attack on Titan' },
-  { emoji: '🏔️', label: 'Hiking',   text: 'Simien Mountains & Tour du Mont Blanc on the list' },
-  { emoji: '🕍', label: 'Church',    text: 'Fascinated by early church history & the Desert Fathers' },
+const PHOTO_TEASERS = [
+  {
+    src: '/images/gallery/eth-orthodox-murals.jpg',
+    label: 'Faith',
+    caption: 'Ethiopian Orthodox',
+    tab: 'religion',
+  },
+  {
+    src: '/images/gallery/football-team.jpg',
+    label: 'Football',
+    caption: 'Game Night Volo League',
+    tab: 'football',
+  },
+  {
+    src: '/images/gallery/hiking-sedona-canyon.jpg',
+    label: 'Hiking',
+    caption: 'Sedona, AZ',
+    tab: 'hiking',
+  },
+  {
+    src: '/images/history-knights.jpg',
+    label: 'History',
+    caption: 'Medieval Europe',
+    tab: 'history',
+  },
 ]
 
 function openTab(id, onClose) {
@@ -41,7 +59,7 @@ export default function ExploreOverview({ onClose }) {
         <div className="eo-header">
           <div>
             <h2 className="eo-title">Explore My World</h2>
-            <p className="eo-subtitle">Everything you'll find on this page — tap to jump there</p>
+            <p className="eo-subtitle">Everything you'll find on this page tap to jump there</p>
           </div>
           <button className="eo-close" onClick={onClose} aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -52,42 +70,26 @@ export default function ExploreOverview({ onClose }) {
 
         <div className="eo-body">
 
-          {/* Things I Love */}
+          {/* Photo teasers */}
           <section className="eo-section">
             <h3 className="eo-section-label">
               <span className="eo-section-dot" />
-              Things I Love
+              A Glimpse
             </h3>
-            <div className="eo-interests-row">
-              {INTERESTS.map(item => (
+            <div className="eo-photos-grid">
+              {PHOTO_TEASERS.map((p) => (
                 <button
-                  key={item.id}
-                  className="eo-interest-btn"
-                  onClick={() => openTab(item.id, onClose)}
+                  key={p.tab}
+                  className="eo-photo-card"
+                  onClick={() => openTab(p.tab, onClose)}
+                  style={{ backgroundImage: `url(${p.src})` }}
+                  aria-label={`Open ${p.label} tab`}
                 >
-                  <img src={item.icon} alt="" width="32" height="32" className="eo-interest-icon" />
-                  <span className="eo-interest-label">{item.label}</span>
-                  <span className="eo-interest-desc">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* Highlights */}
-          <section className="eo-section">
-            <h3 className="eo-section-label">
-              <span className="eo-section-dot" />
-              Highlights
-            </h3>
-            <div className="eo-highlights-grid">
-              {HIGHLIGHTS.map((h, i) => (
-                <div key={i} className="eo-highlight">
-                  <span className="eo-highlight-emoji">{h.emoji}</span>
-                  <div>
-                    <span className="eo-highlight-label">{h.label}</span>
-                    <span className="eo-highlight-text">{h.text}</span>
+                  <div className="eo-photo-overlay">
+                    <span className="eo-photo-label">{p.label}</span>
+                    <span className="eo-photo-caption">{p.caption}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>

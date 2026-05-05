@@ -97,16 +97,16 @@ export default function RecruiterLayout({ onBack }) {
             <div className="rl-timeline">
               {profile.experience.map((e, i) => (
                 <div key={i} className="rl-tl-item">
-                  <div className="rl-tl-left">
-                    <span className="rl-tl-dates">{e.from} – {e.to}</span>
+                  <div className="rl-tl-marker">
+                    <div className="rl-tl-dot" />
                     <div className="rl-tl-line" />
                   </div>
                   <div className="rl-tl-body">
-                    <div className="rl-tl-dot" />
                     <h3 className="rl-tl-role">{e.role}</h3>
                     <p className="rl-tl-company">
                       {e.company}{e.location ? <span className="rl-tl-location"> · {e.location}</span> : null}
                     </p>
+                    <span className="rl-tl-dates">{e.from} – {e.to}</span>
                     <ul className="rl-tl-bullets">
                       {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
                     </ul>

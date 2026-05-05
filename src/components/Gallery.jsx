@@ -4,7 +4,7 @@ import './Gallery.css'
 const IMAGES = [
   { src: '/images/gallery/hiking-sedona-canyon.jpg',    caption: 'Sedona, AZ',             tag: 'Hiking' },
   { src: '/images/gallery/hiking-sedona-climb.jpg',     caption: 'Slickrock Trail, Sedona', tag: 'Hiking' },
-  { src: '/images/gallery/football-jersey.jpg',         caption: 'B. Sirak — #5',           tag: 'Football' },
+  { src: '/images/gallery/football-jersey.jpg',         caption: 'B. Sirak #5',           tag: 'Football' },
   { src: '/images/gallery/football-team.jpg',           caption: 'Game Night',              tag: 'Football' },
   { src: '/images/gallery/arsenal-badge.jpg',           caption: 'Arsenal FC',              tag: 'Football' },
   { src: '/images/gallery/eth-orthodox-murals.jpg',     caption: 'Ethiopian Church Murals', tag: 'Faith' },

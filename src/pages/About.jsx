@@ -6,42 +6,42 @@ const FACTS = [
   {
     emoji: '🇪🇹',
     title: 'Ethiopian Roots',
-    body: "Born and raised with deep Ethiopian heritage. My culture, language, and identity are something I carry with immense pride.",
+    body: "Born and raised in Addis, Very family oriented, I have a lot of my family in Ethiopia so very blessed.",
   },
   {
     emoji: '✝️',
     title: 'Ethiopian Orthodox Faith',
-    body: "Raised in the Ethiopian Orthodox Tewahedo Church — one of the oldest Christian traditions in the world, tracing back to the 4th century and Emperor Ezana of Axum.",
+    body: "Raised in the Ethiopian Orthodox Tewahedo Church (Oriental Orthodox). I love my religion, and trying to grow everyday.",
   },
   {
     emoji: '📜',
     title: 'History Obsessive',
-    body: "From the Aksumite Empire and Medieval Europe to the Ottoman Empire and the Cold War — I read, watch, and listen to history constantly. It never gets old.",
+    body: "I love history. Cant stop listening to history channels.",
   },
   {
     emoji: '⚽',
-    title: 'Arsenal & 5-a-Side',
-    body: "Lifelong Arsenal supporter — the Invincibles sealed it for me. I also play 5-a-side football every week. One of the best stress relievers there is.",
+    title: 'Arsenal & Sunday League',
+    body: "Big Arsenal Fan. I also play Sunday League football every week. One of the best stress relievers there is.",
   },
   {
     emoji: '🎬',
     title: 'Cinema & Historical Dramas',
-    body: "The Shawshank Redemption is perfection. Peaky Blinders, Narcos, The Last Kingdom, and Attack on Titan are at the top of my list. History in a story? I'm watching.",
+    body: "Vikings is perfection. Peaky Blinders, The Last Kingdom, and Outlaw King are at the top of my list. History in a story? I'm watching.",
   },
   {
     emoji: '🕍',
     title: 'Early Church History',
-    body: "Fascinated by the early church — the Council of Nicaea, the Desert Fathers, and Christianity's ancient African roots. The Ethiopian church preserved traditions the rest of the world forgot.",
+    body: "Fascinated by the early church  the Council of Ephesus, the Desert Fathers, and Christianity's ancient roots.",
   },
   {
     emoji: '🏔️',
     title: 'Hiking & the Outdoors',
-    body: "Mountains are my reset button. The Simien Mountains of Ethiopia top my bucket list, along with the Laugavegur Trail in Iceland and the Tour du Mont Blanc.",
+    body: "Mountains are my reset button. I hike every now and then with my friends. Hiking down the Grand Canyon has been my favourite so far. Not the whole thing FYI.",
   },
   {
     emoji: '💻',
     title: 'Data & Tech',
-    body: "I love turning messy data into clear stories. Power BI, SQL, Python — the toolkit that bridges engineering quality and business insight.",
+    body: "I enjoy my work in data and tech. I have a background in QA and BI analytics, and I'm always exploring new tools and projects in the space.",
   },
 ]
 

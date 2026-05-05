@@ -70,7 +70,7 @@ export default function DemoRoadmap() {
       </div>
 
       <footer className="demo-footer panel">
-        <h4>Step-by-step breakdown — what you need to do</h4>
+        <h4>Step-by-step breakdown, what I need to do</h4>
         <ol>
           <li>Plan & Structure</li>
           <li>Set Up Project</li>

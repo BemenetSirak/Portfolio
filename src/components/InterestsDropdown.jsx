@@ -3,7 +3,7 @@ import './InterestsDropdown.css'
 
 const INTERESTS = [
   { id: 'history',  label: 'History',  icon: '/icons/icon-history.svg',  desc: 'Ancient empires, Medieval Europe & modern conflicts' },
-  { id: 'religion', label: 'Religion', icon: '/icons/icon-religion.svg', desc: 'Ethiopian Orthodox Christianity & traditions' },
+  { id: 'religion', label: 'Religion', icon: '/icons/icon-religion.svg', desc: 'Oriental Orthodox, specificall Ethopian Orthodox Christianity & traditions' },
   { id: 'movies',   label: 'Movies',   icon: '/icons/icon-movies.svg',   desc: 'Top 10 films & shows with ratings and notes' },
   { id: 'football', label: 'Football', icon: '/icons/icon-football.svg', desc: 'Arsenal FC and recreational 5-a-side' },
   { id: 'hiking',   label: 'Hiking',   icon: '/icons/icon-hiking.svg',   desc: 'Mountain trails and bucket-list routes' },

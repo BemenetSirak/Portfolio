@@ -10,7 +10,7 @@ export default function InteractiveMovies({ movies }) {
     <section className="movies-root">
       <div className="movies-intro panel">
         <h2>Movies & Shows</h2>
-        <p>I enjoy films and TV shows across genres — here are my top picks. Click any item to see my rating and thoughts.</p>
+        <p>Movies and TV shows are my passion. I would say historical fiction is my favourite genre, but I love almost all genres except for horror movies. Click any item to see my rating and thoughts.</p>
       </div>
 
       <div className="movies-grid">

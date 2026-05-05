@@ -33,7 +33,7 @@ export default function Interests({ onClose, initialTab }) {
           {tab === 'history' && (
             <section className="panel content history">
               <h2>My History</h2>
-              <p>I grew up exploring technology and building small projects. I love data and have a background in QA and BI analytics.</p>
+              <p>I am a passionate individual with a diverse range of interests and experiences. Coding, builing new things, and interacting with new tech is my growing passion.</p>
               <p>Key moments: learning to code, first data visualization project, moving into BI analytics.</p>
             </section>
           )}
@@ -48,8 +48,8 @@ export default function Interests({ onClose, initialTab }) {
           {tab === 'football' && (
             <section className="panel content football">
               <h2>Football</h2>
-              <p>I'm a fan of football — I follow major leagues and enjoy playing casually.</p>
-              <p>Favorite teams: Demo FC, Sample United.</p>
+              <p>I'm a fan of football  I follow Premier league and enjoy playing casually.</p>
+              <p>Favorite teams: Arsenal FC, Bayern Munich.</p>
             </section>
           )}
 
@@ -61,9 +61,9 @@ export default function Interests({ onClose, initialTab }) {
           <section className="panel fun content">
             <h2>Fun Facts</h2>
             <ul>
-              <li>I love analog synths and making small beats.</li>
-              <li>I'm into photography and hiking.</li>
-              <li>I make a mean cup of coffee.</li>
+              <li>I love watching movies 24/7</li>
+              <li>I'm into traveling and hiking.</li>
+              <li>I absolutley and utterly love coffee.</li>
             </ul>
           </section>
         </main>
