@@ -324,6 +324,19 @@
 }
 
 /* ─────────────────────────────────────────────────────
+   Theme overrides — hero is always dark regardless of
+   light/dark mode. .flow-playful rules in theme.css
+   (h1 → accent color, p → var(--text)) would otherwise
+   clobber the white text on the dark background.
+───────────────────────────────────────────────────── */
+.visitor-hero h1.vh-name      { color: #fff !important; }
+.visitor-hero p.vh-greeting   { color: rgba(255,255,255,0.45) !important; }
+.visitor-hero p.vh-desc       { color: rgba(255,255,255,0.46) !important; }
+.visitor-hero .vh-role        { color: rgba(255,255,255,0.78) !important; }
+.visitor-hero .vh-role-dash   { color: #fbbf24 !important; }
+.visitor-hero .vh-cursor      { color: #fbbf24 !important; }
+
+/* ─────────────────────────────────────────────────────
    Responsive
 ───────────────────────────────────────────────────── */
 @media (max-width: 820px) {
