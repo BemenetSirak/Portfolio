@@ -48,7 +48,6 @@ export default function ContactStrip({ contact }) {
     { label: 'Instagram', href: contact.instagram || '#', icon: <IgIcon />, cls: 'soc-ig' },
     { label: 'GitHub',    href: contact.github    || '#', icon: <GhIcon />, cls: 'soc-gh' },
     { label: 'LinkedIn',  href: contact.linkedin  || '#', icon: <LiIcon />, cls: 'soc-li' },
-    { label: 'Twitter',   href: contact.twitter   || '#', icon: <TwIcon />, cls: 'soc-tw' },
     { label: 'Email',     href: `mailto:${contact.email}`, icon: <MailIcon />, cls: 'soc-mail' },
   ]
 
