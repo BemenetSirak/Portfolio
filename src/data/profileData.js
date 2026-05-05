@@ -31,7 +31,7 @@ const profile = {
       note: 'Coursework: Intro to CS 101 & 102, Calculus I, II, III',
     },
     {
-      degree: 'Relevant Coursework — Computer Science',
+      degree: 'B.S. in Computer Science',
       school: 'Christopher Newport University',
       from: 2021,
       to: 2024,
@@ -174,6 +174,18 @@ const profile = {
         { heading: 'Why I Hike', body: "It's a great time to spend with people without outside distraction." },
         { heading: 'Favourite Terrain', body: 'Old Rag is always a great one. Shenandoah has a great collection of hikes.' },
         { heading: 'How Often', body: 'I try and go with my friends every two or three months.' },
+      ],
+    },
+    {
+      id: 'coffee',
+      title: 'Coffee & the Art of the Sit-Down',
+      bg: null,
+      extraClass: 'coffee-gradient',
+      intro: 'Coffee is not just a drink its the buty of life. It is the best thing ever, and the fact that its origin is in Ethhiopia makes it even better',
+      bullets: [
+        { heading: 'Ethiopian Coffee ', body: 'The full ceremony roasting the beans, brewing three rounds, it would make anyone a fan. It also adds to the social life with neigbours.' },
+        { heading: 'The Social Side', body: 'In Ethiopia, coffee is never really a solo thing. It is an excuse to slow down and actually talk to people. It makes the bonds closer.' },
+        { heading: 'The Taste', body: 'I love the taste of coffee, the bitterness, the aroma, the warmth. I dont understand people who dont drink coffee at all.' },
       ],
     },
   ],

@@ -33,8 +33,8 @@
   to   { transform: rotate(360deg); }
 }
 @keyframes counterSpin {
-  from { transform: translateX(134px) translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translateX(134px) translate(-50%, -50%) rotate(-360deg); }
+  from { transform: translateX(168px) translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translateX(168px) translate(-50%, -50%) rotate(-360deg); }
 }
 
 @keyframes orbPulse {
@@ -238,8 +238,8 @@
   position: relative;
   z-index: 2;
   flex-shrink: 0;
-  width: 340px;
-  height: 340px;
+  width: 420px;
+  height: 420px;
 }
 
 /* Dashed orbit ring */
@@ -247,8 +247,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 294px;
-  height: 294px;
+  width: 368px;
+  height: 368px;
   border-radius: 50%;
   border: 1px dashed rgba(255,255,255,0.10);
   animation: ringBreath 4s ease-in-out infinite;
@@ -307,7 +307,7 @@
   position: absolute;
   width: 46px;
   height: 46px;
-  transform: translateX(134px) translate(-50%, -50%);
+  transform: translateX(168px) translate(-50%, -50%);
   animation: counterSpin 14s linear infinite;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.11);
@@ -351,7 +351,7 @@
   .vh-name { font-size: 2.6rem; }
   .vh-role-row { justify-content: center; }
   .vh-desc { max-width: 100%; margin-left: auto; margin-right: auto; }
-  .vh-visual { width: 280px; height: 280px; transform: scale(0.85); }
+  .vh-visual { width: 280px; height: 280px; transform: scale(0.72); }
 }
 
 @media (max-width: 480px) {

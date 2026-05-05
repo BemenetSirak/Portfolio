@@ -9,6 +9,7 @@ const TABS = [
   { id: 'movies',   label: 'Movies',   icon: '/icons/icon-movies.svg',   delay: 120 },
   { id: 'football', label: 'Football', icon: '/icons/icon-football.svg', delay: 180 },
   { id: 'hiking',   label: 'Hiking',   icon: '/icons/icon-hiking.svg',   delay: 240 },
+  { id: 'coffee',   label: 'Coffee',   icon: '/icons/icon-coffee.svg',   delay: 300 },
 ]
 
 function getTabFromURL() {
