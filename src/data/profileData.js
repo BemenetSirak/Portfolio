@@ -181,7 +181,7 @@ const profile = {
       title: 'Coffee & the Art of the Sit-Down',
       bg: null,
       extraClass: 'coffee-gradient',
-      intro: 'Coffee is not just a drink its the buty of life. It is the best thing ever, and the fact that its origin is in Ethhiopia makes it even better',
+      intro: 'Coffee is not just a drink its the beauty of life. It is the best thing ever, and the fact that its origin is in Ethiopia makes it even better',
       bullets: [
         { heading: 'Ethiopian Coffee ', body: 'The full ceremony roasting the beans, brewing three rounds, it would make anyone a fan. It also adds to the social life with neigbours.' },
         { heading: 'The Social Side', body: 'In Ethiopia, coffee is never really a solo thing. It is an excuse to slow down and actually talk to people. It makes the bonds closer.' },
