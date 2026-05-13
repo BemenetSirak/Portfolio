@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="mtnSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#07121e"/>
+      <stop offset="30%"  stop-color="#0d2038"/>
+      <stop offset="65%"  stop-color="#133a28"/>
+      <stop offset="100%" stop-color="#0d2a1c"/>
+    </linearGradient>
+    <linearGradient id="mtnFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#1a2d3f"/>
+      <stop offset="100%" stop-color="#0d1e2c"/>
+    </linearGradient>
+    <linearGradient id="mtnMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#1a3828"/>
+      <stop offset="100%" stop-color="#0d2018"/>
+    </linearGradient>
+    <linearGradient id="mtnFore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#0f2a18"/>
+      <stop offset="100%" stop-color="#060e0a"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#e8e4cc" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#d4d0b8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#c0bc98" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#a0c8b0" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#a0c8b0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="450" fill="url(#mtnSky)"/>
+
+  <!-- Stars -->
+  <g fill="white">
+    <circle cx="40"  cy="35"  r="1.1" opacity="0.75"/>
+    <circle cx="110" cy="22"  r="0.8" opacity="0.60"/>
+    <circle cx="180" cy="48"  r="1.0" opacity="0.70"/>
+    <circle cx="245" cy="18"  r="0.7" opacity="0.55"/>
+    <circle cx="310" cy="40"  r="1.2" opacity="0.80"/>
+    <circle cx="390" cy="12"  r="0.9" opacity="0.65"/>
+    <circle cx="455" cy="55"  r="0.7" opacity="0.55"/>
+    <circle cx="510" cy="28"  r="1.0" opacity="0.70"/>
+    <circle cx="570" cy="15"  r="0.8" opacity="0.62"/>
+    <circle cx="625" cy="44"  r="1.1" opacity="0.72"/>
+    <circle cx="700" cy="20"  r="0.9" opacity="0.65"/>
+    <circle cx="760" cy="50"  r="0.7" opacity="0.55"/>
+    <circle cx="80"  cy="78"  r="0.8" opacity="0.50"/>
+    <circle cx="200" cy="80"  r="0.6" opacity="0.45"/>
+    <circle cx="480" cy="72"  r="0.7" opacity="0.48"/>
+    <circle cx="740" cy="80"  r="0.8" opacity="0.50"/>
+    <circle cx="340" cy="60"  r="0.6" opacity="0.45"/>
+    <circle cx="660" cy="65"  r="0.7" opacity="0.48"/>
+  </g>
+
+  <!-- Moon halo glow -->
+  <circle cx="118" cy="70" r="50" fill="url(#moonHalo)"/>
+
+  <!-- Moon -->
+  <circle cx="118" cy="70" r="26" fill="url(#moonGlow)" opacity="0.92"/>
+  <!-- Moon crescent shadow -->
+  <circle cx="126" cy="64" r="22" fill="url(#mtnSky)" opacity="0.65"/>
+  <!-- Moon subtle craters -->
+  <circle cx="108" cy="75" r="3"  fill="rgba(0,0,0,0.12)"/>
+  <circle cx="122" cy="82" r="2"  fill="rgba(0,0,0,0.10)"/>
+  <circle cx="100" cy="63" r="1.8" fill="rgba(0,0,0,0.09)"/>
+
+  <!-- Far background mountains (distant, blue-grey) -->
+  <path d="
+    M0,295
+    L60,205 L100,228 L155,178 L210,215
+    L270,168 L320,200 L375,155 L425,190
+    L485,148 L535,183 L590,145 L640,178
+    L700,150 L750,182 L800,160
+    L800,450 L0,450 Z
+  " fill="url(#mtnFar)" opacity="0.62"/>
+
+  <!-- Mid-layer mountains -->
+  <path d="
+    M0,335
+    L50,250 L90,272 L140,228 L195,262
+    L245,212 L300,250 L355,205 L410,244
+    L465,200 L520,238 L575,195 L630,234
+    L685,198 L740,232 L800,210
+    L800,450 L0,450 Z
+  " fill="url(#mtnMid)"/>
+
+  <!-- Snow on mid peaks -->
+  <g fill="rgba(215,228,235,0.30)">
+    <polygon points="245,212 260,224 272,218 284,228 298,220 310,230 325,250 300,250"/>
+    <polygon points="355,205 370,218 382,212 394,222 408,214 420,224 435,244 410,244"/>
+    <polygon points="465,200 480,213 492,207 504,218 518,210 530,220 545,238 520,238"/>
+    <polygon points="575,195 590,208 602,202 614,213 628,205 640,216 655,234 630,234"/>
+  </g>
+
+  <!-- Foreground mountains -->
+  <path d="
+    M0,380
+    L70,305 L120,328 L175,282 L235,318
+    L295,270 L355,308 L415,265 L475,305
+    L535,262 L595,302 L655,260 L715,298
+    L775,268 L800,285
+    L800,450 L0,450 Z
+  " fill="url(#mtnFore)"/>
+
+  <!-- Tree silhouettes along foreground base -->
+  <g fill="#060e0a">
+    <!-- Front row -->
+    <polygon points="18,428  28,400  38,428"/>
+    <polygon points="42,432  54,402  66,432"/>
+    <polygon points="78,426  90,396  102,426"/>
+    <polygon points="115,430 128,398 141,430"/>
+    <polygon points="155,424 169,392 183,424"/>
+    <polygon points="196,428 210,396 224,428"/>
+    <polygon points="250,426 265,393 280,426"/>
+    <polygon points="292,430 307,396 322,430"/>
+    <polygon points="338,424 354,390 370,424"/>
+    <polygon points="385,428 401,394 417,428"/>
+    <polygon points="435,425 452,391 469,425"/>
+    <polygon points="488,429 504,395 520,429"/>
+    <polygon points="538,424 556,390 574,424"/>
+    <polygon points="590,428 607,393 624,428"/>
+    <polygon points="642,425 660,391 678,425"/>
+    <polygon points="694,428 712,394 730,428"/>
+    <polygon points="748,426 766,392 784,426"/>
+    <!-- Back row (taller, behind) -->
+    <polygon points="0,414   13,378  26,414"/>
+    <polygon points="58,410  72,372  86,410"/>
+    <polygon points="128,408 143,368 158,408"/>
+    <polygon points="215,412 231,371 247,412"/>
+    <polygon points="308,409 325,368 342,409"/>
+    <polygon points="398,411 416,369 434,411"/>
+    <polygon points="498,408 517,366 536,408"/>
+    <polygon points="598,410 618,367 638,410"/>
+    <polygon points="700,409 720,367 740,409"/>
+    <polygon points="765,412 785,369 800,412"/>
+  </g>
+
+  <!-- Subtle atmospheric haze near horizon -->
+  <linearGradient id="haze" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%"  stop-color="#1a3828" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#1a3828" stop-opacity="0.18"/>
+  </linearGradient>
+  <rect y="220" width="800" height="120" fill="url(#haze)"/>
+</svg>

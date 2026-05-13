@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="cofBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0500"/>
+      <stop offset="40%" stop-color="#2d1300"/>
+      <stop offset="75%" stop-color="#5c2800"/>
+      <stop offset="100%" stop-color="#7a3400"/>
+    </linearGradient>
+    <radialGradient id="beanA" cx="38%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#6b3a12"/>
+      <stop offset="55%" stop-color="#3d1e06"/>
+      <stop offset="100%" stop-color="#1f0e02"/>
+    </radialGradient>
+    <radialGradient id="beanB" cx="38%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#7a4418"/>
+      <stop offset="55%" stop-color="#4a2408"/>
+      <stop offset="100%" stop-color="#251203"/>
+    </radialGradient>
+    <linearGradient id="ciniBody" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b8865a"/>
+      <stop offset="40%" stop-color="#d4a070"/>
+      <stop offset="100%" stop-color="#a07040"/>
+    </linearGradient>
+    <linearGradient id="ciniBody2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b07850"/>
+      <stop offset="40%" stop-color="#c89060"/>
+      <stop offset="100%" stop-color="#986038"/>
+    </linearGradient>
+    <linearGradient id="rekbot" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5c3810"/>
+      <stop offset="100%" stop-color="#3a2008"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#cofBg)"/>
+
+  <!-- Ambient warm glow behind cups -->
+  <radialGradient id="warmGlow" cx="70%" cy="70%" r="40%">
+    <stop offset="0%" stop-color="#7a3400" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#0f0500" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="800" height="450" fill="url(#warmGlow)"/>
+
+  <!-- ── Scattered coffee beans ── -->
+
+  <!-- Bean: top-left large -->
+  <g transform="translate(65,72) rotate(28)">
+    <ellipse cx="0" cy="0" rx="38" ry="24" fill="url(#beanA)" opacity="0.72"/>
+    <path d="M0,-21 C2.5,-9 -2.5,9 0,21" stroke="#100600" stroke-width="3" fill="none" opacity="0.75"/>
+    <ellipse cx="-10" cy="-7" rx="11" ry="7" fill="rgba(255,170,70,0.07)" transform="rotate(-28)"/>
+  </g>
+
+  <!-- Bean: top-right -->
+  <g transform="translate(718,58) rotate(-18)">
+    <ellipse cx="0" cy="0" rx="32" ry="20" fill="url(#beanA)" opacity="0.62"/>
+    <path d="M0,-17 C2,-7 -2,7 0,17" stroke="#100600" stroke-width="2.5" fill="none" opacity="0.72"/>
+  </g>
+
+  <!-- Bean: far right mid -->
+  <g transform="translate(772,215) rotate(12)">
+    <ellipse cx="0" cy="0" rx="42" ry="26" fill="url(#beanB)" opacity="0.52"/>
+    <path d="M0,-23 C3,-10 -3,10 0,23" stroke="#100600" stroke-width="3" fill="none" opacity="0.68"/>
+  </g>
+
+  <!-- Bean: far left mid -->
+  <g transform="translate(28,208) rotate(-38)">
+    <ellipse cx="0" cy="0" rx="30" ry="19" fill="url(#beanA)" opacity="0.58"/>
+    <path d="M0,-16 C2,-7 -2,7 0,16" stroke="#100600" stroke-width="2.5" fill="none" opacity="0.68"/>
+  </g>
+
+  <!-- Bean: top-center -->
+  <g transform="translate(390,22) rotate(50)">
+    <ellipse cx="0" cy="0" rx="20" ry="13" fill="url(#beanA)" opacity="0.40"/>
+    <path d="M0,-10 C1.2,-4 -1.2,4 0,10" stroke="#100600" stroke-width="2" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Bean: upper-right cluster -->
+  <g transform="translate(570,30) rotate(-12)">
+    <ellipse cx="0" cy="0" rx="27" ry="17" fill="url(#beanB)" opacity="0.48"/>
+    <path d="M0,-14 C1.5,-6 -1.5,6 0,14" stroke="#100600" stroke-width="2.2" fill="none" opacity="0.65"/>
+  </g>
+  <g transform="translate(605,55) rotate(40)">
+    <ellipse cx="0" cy="0" rx="18" ry="11" fill="url(#beanA)" opacity="0.42"/>
+    <path d="M0,-9 C1,-3.5 -1,3.5 0,9" stroke="#100600" stroke-width="1.8" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Bean: bottom-left -->
+  <g transform="translate(108,388) rotate(16)">
+    <ellipse cx="0" cy="0" rx="34" ry="21" fill="url(#beanB)" opacity="0.45"/>
+    <path d="M0,-18 C2,-8 -2,8 0,18" stroke="#100600" stroke-width="2.5" fill="none" opacity="0.65"/>
+  </g>
+
+  <!-- Bean: bottom-right -->
+  <g transform="translate(676,398) rotate(-22)">
+    <ellipse cx="0" cy="0" rx="36" ry="22" fill="url(#beanA)" opacity="0.42"/>
+    <path d="M0,-19 C2.5,-8 -2.5,8 0,19" stroke="#100600" stroke-width="2.5" fill="none" opacity="0.62"/>
+  </g>
+
+  <!-- Bean: left-lower -->
+  <g transform="translate(40,330) rotate(55)">
+    <ellipse cx="0" cy="0" rx="24" ry="15" fill="url(#beanA)" opacity="0.38"/>
+    <path d="M0,-12 C1.5,-5 -1.5,5 0,12" stroke="#100600" stroke-width="2" fill="none" opacity="0.58"/>
+  </g>
+
+  <!-- Bean: right-lower -->
+  <g transform="translate(760,340) rotate(-45)">
+    <ellipse cx="0" cy="0" rx="26" ry="16" fill="url(#beanB)" opacity="0.40"/>
+    <path d="M0,-13 C1.5,-5.5 -1.5,5.5 0,13" stroke="#100600" stroke-width="2" fill="none" opacity="0.58"/>
+  </g>
+
+  <!-- ── Ethiopian Cini Cups (3-cup ceremony set) ── -->
+
+  <!-- Rekbot (woven grass tray base) -->
+  <ellipse cx="575" cy="350" rx="105" ry="16" fill="url(#rekbot)" opacity="0.85"/>
+  <!-- Tray rim highlight -->
+  <ellipse cx="575" cy="350" rx="105" ry="16" fill="none" stroke="#7a5020" stroke-width="1.5" opacity="0.5"/>
+  <!-- Tray weave pattern lines -->
+  <g stroke="#6a4018" stroke-width="0.8" opacity="0.4">
+    <ellipse cx="575" cy="350" rx="90" ry="13"/>
+    <ellipse cx="575" cy="350" rx="75" ry="11"/>
+  </g>
+
+  <!-- Cup 1 – left cup -->
+  <g transform="translate(520,280)">
+    <!-- Cup shadow -->
+    <ellipse cx="0" cy="66" rx="20" ry="4" fill="#0f0500" opacity="0.5"/>
+    <!-- Cup body (trapezoid: wider at top) -->
+    <path d="M-19,-2 L-23,60 L23,60 L19,-2 Z" fill="url(#ciniBody2)"/>
+    <!-- Left-side shading -->
+    <path d="M-19,-2 L-23,60 L-16,60 L-13,-2 Z" fill="rgba(0,0,0,0.18)"/>
+    <!-- Right highlight -->
+    <path d="M10,-2 L8,60 L18,60 L19,-2 Z" fill="rgba(255,255,255,0.06)"/>
+    <!-- Top opening ellipse -->
+    <ellipse cx="0" cy="-2" rx="19" ry="5.5" fill="#7a4a1e"/>
+    <!-- Coffee liquid -->
+    <ellipse cx="0" cy="-2" rx="15" ry="4" fill="#1a0800" opacity="0.95"/>
+    <!-- Rim edge -->
+    <ellipse cx="0" cy="-2" rx="19" ry="5.5" fill="none" stroke="#9a6030" stroke-width="1.5"/>
+    <!-- Decorative band near rim -->
+    <path d="M-18,8 L18,8" stroke="#9a6030" stroke-width="1" opacity="0.4"/>
+    <!-- Bottom base -->
+    <ellipse cx="0" cy="60" rx="23" ry="5" fill="#8a5828" opacity="0.8"/>
+  </g>
+
+  <!-- Cup 2 – center cup (slightly forward / larger) -->
+  <g transform="translate(578,268)">
+    <ellipse cx="0" cy="72" rx="22" ry="4.5" fill="#0f0500" opacity="0.5"/>
+    <path d="M-21,-2 L-25,68 L25,68 L21,-2 Z" fill="url(#ciniBody)"/>
+    <path d="M-21,-2 L-25,68 L-18,68 L-14,-2 Z" fill="rgba(0,0,0,0.16)"/>
+    <path d="M12,-2 L10,68 L20,68 L21,-2 Z" fill="rgba(255,255,255,0.07)"/>
+    <ellipse cx="0" cy="-2" rx="21" ry="6" fill="#8a5428"/>
+    <ellipse cx="0" cy="-2" rx="16.5" ry="4.5" fill="#1a0800" opacity="0.95"/>
+    <ellipse cx="0" cy="-2" rx="21" ry="6" fill="none" stroke="#b07840" stroke-width="1.6"/>
+    <path d="M-20,9 L20,9" stroke="#b07840" stroke-width="1" opacity="0.4"/>
+    <ellipse cx="0" cy="68" rx="25" ry="5.5" fill="#9a6430" opacity="0.8"/>
+  </g>
+
+  <!-- Cup 3 – right cup -->
+  <g transform="translate(635,276)">
+    <ellipse cx="0" cy="66" rx="20" ry="4" fill="#0f0500" opacity="0.5"/>
+    <path d="M-19,-2 L-23,62 L23,62 L19,-2 Z" fill="url(#ciniBody2)"/>
+    <path d="M-19,-2 L-23,62 L-16,62 L-13,-2 Z" fill="rgba(0,0,0,0.17)"/>
+    <path d="M10,-2 L8,62 L18,62 L19,-2 Z" fill="rgba(255,255,255,0.06)"/>
+    <ellipse cx="0" cy="-2" rx="19" ry="5.5" fill="#7a4a1e"/>
+    <ellipse cx="0" cy="-2" rx="15" ry="4" fill="#1a0800" opacity="0.95"/>
+    <ellipse cx="0" cy="-2" rx="19" ry="5.5" fill="none" stroke="#9a6030" stroke-width="1.5"/>
+    <path d="M-18,8 L18,8" stroke="#9a6030" stroke-width="1" opacity="0.4"/>
+    <ellipse cx="0" cy="62" rx="23" ry="5" fill="#8a5828" opacity="0.8"/>
+  </g>
+
+  <!-- Steam wisps -->
+  <g fill="none" stroke-linecap="round" opacity="0.35">
+    <path d="M520,273 C523,264 518,255 521,246 C524,237 519,228 522,219" stroke="#d4a870" stroke-width="1.8"/>
+    <path d="M526,276 C530,268 525,260 527,252" stroke="#d4a870" stroke-width="1.2"/>
+    <path d="M578,261 C581,251 576,241 579,231 C582,221 577,211 580,201" stroke="#d4a870" stroke-width="2"/>
+    <path d="M584,264 C588,256 583,247 586,239" stroke="#d4a870" stroke-width="1.3"/>
+    <path d="M635,269 C638,260 633,251 636,242 C639,233 634,224 637,215" stroke="#d4a870" stroke-width="1.8"/>
+  </g>
+
+  <!-- Small fallen beans near the cups -->
+  <g transform="translate(492,340) rotate(-18)">
+    <ellipse cx="0" cy="0" rx="13" ry="8" fill="#4a2008" opacity="0.9"/>
+    <path d="M0,-7 C0.9,-2.5 -0.9,2.5 0,7" stroke="#1a0800" stroke-width="2" fill="none"/>
+  </g>
+  <g transform="translate(658,344) rotate(22)">
+    <ellipse cx="0" cy="0" rx="12" ry="7.5" fill="#4a2008" opacity="0.85"/>
+    <path d="M0,-6.5 C0.8,-2.5 -0.8,2.5 0,6.5" stroke="#1a0800" stroke-width="1.8" fill="none"/>
+  </g>
+  <g transform="translate(504,352) rotate(42)">
+    <ellipse cx="0" cy="0" rx="10" ry="6" fill="#3d1a06" opacity="0.8"/>
+    <path d="M0,-5 C0.7,-2 -0.7,2 0,5" stroke="#1a0800" stroke-width="1.6" fill="none"/>
+  </g>
+  <g transform="translate(648,358) rotate(-35)">
+    <ellipse cx="0" cy="0" rx="11" ry="6.5" fill="#3d1a06" opacity="0.78"/>
+    <path d="M0,-5.5 C0.7,-2 -0.7,2 0,5.5" stroke="#1a0800" stroke-width="1.6" fill="none"/>
+  </g>
+</svg>

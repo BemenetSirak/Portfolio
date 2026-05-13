@@ -167,8 +167,9 @@ const profile = {
     {
       id: 'hiking',
       title: 'Trails, Mountains & Open Skies',
-      bg: null,
-      extraClass: 'hiking-gradient',
+      bg: '/images/hiking-canyon.jpg',
+      bgPosition: 'center 40%',
+      extraClass: '',
       intro: 'Hiking is a fun exercise for me — love it when I start, hate every second by the halfway point, want more by the end.',
       bullets: [
         { heading: 'Why I Hike', body: "It's a great time to spend with people without outside distraction." },
@@ -179,8 +180,9 @@ const profile = {
     {
       id: 'coffee',
       title: 'Coffee & the Art of the Sit-Down',
-      bg: null,
-      extraClass: 'coffee-gradient',
+      bg: '/images/Coffee.jpg',
+      bgPosition: 'center 60%',
+      extraClass: '',
       intro: 'Coffee is not just a drink its the beauty of life. It is the best thing ever, and the fact that its origin is in Ethiopia makes it even better',
       bullets: [
         { heading: 'Ethiopian Coffee ', body: 'The full ceremony roasting the beans, brewing three rounds, it would make anyone a fan. It also adds to the social life with neigbours.' },
