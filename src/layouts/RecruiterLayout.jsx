@@ -315,6 +315,35 @@ export default function RecruiterLayout({ onBack }) {
             ))}
           </div>
 
+          {/* Projects */}
+          <div className="rl-resume-block">
+            <h3 className="rl-resume-block-title">Projects</h3>
+            {profile.projects.map((p, i) => (
+              <div key={i} className="rl-resume-exp">
+                <div className="rl-resume-exp-row">
+                  <div>
+                    <h4 className="rl-resume-role">{p.title}</h4>
+                    <p className="rl-resume-company">{p.tagline}</p>
+                  </div>
+                  {p.url && p.url !== '#' && (
+                    <a href={p.url} target="_blank" rel="noreferrer" className="rl-resume-dates" style={{ color: 'var(--rl-accent-lt)', fontSize: '0.8rem' }}>
+                      GitHub →
+                    </a>
+                  )}
+                </div>
+                {p.description && <p className="rl-resume-body" style={{ margin: '6px 0 6px' }}>{p.description}</p>}
+                {p.highlights?.length > 0 && (
+                  <ul className="rl-resume-bullets">
+                    {p.highlights.map((h, j) => <li key={j}>{h}</li>)}
+                  </ul>
+                )}
+                <div className="rl-resume-tags" style={{ marginTop: 8 }}>
+                  {p.tech.map(t => <span key={t} className="rl-resume-tag">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+
           {/* Education */}
           <div className="rl-resume-block">
             <h3 className="rl-resume-block-title">Education</h3>

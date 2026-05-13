@@ -103,6 +103,22 @@ const profile = {
       highlights: [],
     },
     {
+      title: "Tiggy's Kingdom",
+      tagline: 'React · TypeScript · Node.js · Full-Stack',
+      description:
+        "A full-featured children's content platform built with React 19 + TypeScript and a Node.js/Express backend. Features subscription-based access to lessons and activities, an integrated e-commerce shop with cart and order management, user authentication with protected routes, and a custom admin dashboard for content management.",
+      url: 'https://github.com/BemenetSirak',
+      tech: ['React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Vite'],
+      gradient: 'linear-gradient(135deg, #0a1a2e 0%, #1a3a5c 100%)',
+      highlights: [
+        'Full-stack monorepo: React + Vite frontend, Node.js + Express REST API backend',
+        'Auth system with protected routes, forgot-password flow, and role-based admin access',
+        'E-commerce: shop, cart, checkout, and order history with Stripe integration',
+        'Subscription tier gating lessons, stories, activities, and calendar content',
+        'Admin panel for content, orders, and subscriber management',
+      ],
+    },
+    {
       title: 'Laemat Recipe App',
       tagline: 'React · Node.js · Full-Stack',
       description:
