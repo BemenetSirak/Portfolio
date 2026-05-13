@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import profile from '../data/profileData'
 import './RecruiterLayout.css'
 
@@ -17,6 +17,8 @@ function scrollTo(id) {
 }
 
 export default function RecruiterLayout({ onBack }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <div className="rl-root">
 
@@ -42,8 +44,54 @@ export default function RecruiterLayout({ onBack }) {
             <button className="rl-nav-link rl-switch-btn" onClick={onBack}>
               ← Switch
             </button>
+            <button
+              className="rl-hamburger"
+              onClick={() => setMenuOpen(s => !s)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? (
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              )}
+            </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <nav className="rl-mobile-drawer" aria-label="Mobile navigation">
+            {NAV.map(l => (
+              <button
+                key={l.id}
+                className="rl-mobile-nav-item"
+                onClick={() => { scrollTo(l.id); setMenuOpen(false) }}
+              >
+                {l.label}
+              </button>
+            ))}
+            <div className="rl-mobile-drawer-actions">
+              <a
+                href="/assets/resume.pdf"
+                download
+                className="rl-btn-primary rl-btn-sm"
+                onClick={() => setMenuOpen(false)}
+              >
+                Download Resume
+              </a>
+              <button
+                className="rl-nav-link rl-switch-btn"
+                onClick={() => { onBack(); setMenuOpen(false) }}
+              >
+                ← Switch
+              </button>
+            </div>
+          </nav>
+        )}
       </header>
 
       <main className="rl-main">
