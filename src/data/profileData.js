@@ -107,7 +107,6 @@ const profile = {
       tagline: 'React · TypeScript · Node.js · Full-Stack',
       description:
         "A full-featured children's content platform built with React 19 + TypeScript and a Node.js/Express backend. Features subscription-based access to lessons and activities, an integrated e-commerce shop with cart and order management, user authentication with protected routes, and a custom admin dashboard for content management.",
-      url: 'https://github.com/BemenetSirak',
       tech: ['React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Vite'],
       gradient: 'linear-gradient(135deg, #0a1a2e 0%, #1a3a5c 100%)',
       highlights: [
@@ -117,16 +116,25 @@ const profile = {
         'Subscription tier gating lessons, stories, activities, and calendar content',
         'Admin panel for content, orders, and subscriber management',
       ],
+      screenshots: [
+        { src: '/images/projects/tiggys/home.png', label: 'Home' },
+        { src: '/images/projects/tiggys/watch-episodes.png', label: 'Watch / Episodes' },
+        { src: '/images/projects/tiggys/bookshop.png', label: 'Bookshop' },
+        { src: '/images/projects/tiggys/stories-coming-soon.png', label: 'Free Stories' },
+        { src: '/images/projects/tiggys/register.png', label: 'Register' },
+        { src: '/images/projects/tiggys/sign-in.png', label: 'Sign In' },
+        { src: '/images/projects/tiggys/admin-dashboard.png', label: 'Admin Dashboard' },
+      ],
     },
     {
       title: 'Laemat Recipe App',
       tagline: 'React · Node.js · Full-Stack',
       description:
         'Full-stack recipe web application built as an npm workspaces monorepo. Features recipe browsing, category filtering, and search — with a React + Tailwind frontend and a Node.js + Express REST API backend.',
-      url: 'https://github.com/Laemat-labs/laemat-web',
       tech: ['React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express', 'Vite'],
       gradient: 'linear-gradient(135deg, #2a1a10 0%, #8b3a0f 100%)',
       highlights: [],
+      screenshots: [],
     },
   ],
 

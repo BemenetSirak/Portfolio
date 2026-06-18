@@ -527,6 +527,224 @@
 }
 .rl-project-link:hover { opacity: 0.75; }
 
+/* "View Screenshots" trigger — opens the screenshots panel */
+.rl-view-shots-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Subtle "Under Construction" badge — a small corner tag, not a bold stripe */
+.rl-under-construction {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(20, 16, 4, 0.55);
+  border: 1px solid rgba(245, 183, 0, 0.35);
+  color: #ffd76b;
+  font-weight: 700;
+  font-size: 0.56rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 3px 7px;
+  border-radius: 6px;
+  backdrop-filter: blur(2px);
+}
+
+.rl-under-construction--lg {
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  top: 26px;
+  left: 26px;
+}
+
+/* Screenshots panel (modal grid, mirrors the visitor "Explore" overview) */
+.rl-shots-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 8, 20, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.rl-shots-panel {
+  background: var(--rl-card);
+  border: 1px solid var(--rl-border);
+  border-radius: 22px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90svh;
+  overflow-y: auto;
+}
+
+.rl-shots-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 0;
+  gap: 12px;
+}
+
+.rl-shots-title {
+  font-family: 'Nunito', inherit;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--rl-heading);
+  margin: 0 0 4px;
+}
+
+.rl-shots-subtitle {
+  font-size: 0.8rem;
+  color: var(--rl-muted);
+  margin: 0;
+}
+
+.rl-shots-close {
+  background: none;
+  border: 1px solid var(--rl-border);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--rl-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.rl-shots-close:hover { color: var(--rl-text); border-color: var(--rl-accent-lt); }
+
+.rl-shots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 18px 24px 24px;
+}
+
+.rl-shot-card {
+  position: relative;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--rl-border);
+  background: #000;
+  padding: 0;
+  cursor: zoom-in;
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.18s;
+}
+
+.rl-shot-card:hover {
+  transform: scale(1.03);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.rl-shot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  filter: blur(2px) saturate(0.7) brightness(0.82);
+  display: block;
+}
+
+.rl-shot-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(20, 16, 4, 0.55);
+  border: 1px solid rgba(245, 183, 0, 0.35);
+  color: #ffd76b;
+  font-weight: 700;
+  font-size: 0.56rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 6px;
+  backdrop-filter: blur(2px);
+}
+
+.rl-shot-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  padding: 16px 10px 8px;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .rl-shots-grid { grid-template-columns: 1fr 1fr; }
+  .rl-shot-card  { height: 90px; }
+}
+
+/* Lightbox */
+.rl-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+}
+
+.rl-lightbox-body {
+  position: relative;
+  max-width: min(900px, 100%);
+  max-height: 90vh;
+  background: var(--rl-card-2);
+  border: 1px solid var(--rl-border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.rl-lightbox-img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: blur(1.5px) saturate(0.7) brightness(0.85);
+}
+
+.rl-lightbox-caption {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--rl-muted);
+  text-align: center;
+}
+
+.rl-lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--rl-border);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+
 .rl-project-title {
   font-size: 0.92rem;
   font-weight: 700;

@@ -18,6 +18,8 @@ function scrollTo(id) {
 
 export default function RecruiterLayout({ onBack }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [lightbox, setLightbox] = useState(null)
+  const [shotsPanel, setShotsPanel] = useState(null)
 
   return (
     <div className="rl-root">
@@ -189,10 +191,14 @@ export default function RecruiterLayout({ onBack }) {
                       {p.highlights.map((h, j) => <li key={j}>{h}</li>)}
                     </ul>
                   )}
-                  {p.url && p.url !== '#' && (
-                    <a href={p.url} target="_blank" rel="noreferrer" className="rl-project-link">
-                      View on GitHub →
-                    </a>
+                  {p.screenshots?.length > 0 && (
+                    <button
+                      type="button"
+                      className="rl-project-link rl-view-shots-btn"
+                      onClick={() => setShotsPanel(p)}
+                    >
+                      View Screenshots →
+                    </button>
                   )}
                 </div>
               ))}
@@ -200,6 +206,50 @@ export default function RecruiterLayout({ onBack }) {
           </section>
 
         </div>
+
+        {shotsPanel && (
+          <div className="rl-shots-backdrop" onClick={() => setShotsPanel(null)} role="dialog" aria-modal="true" aria-label={`${shotsPanel.title} screenshots`}>
+            <div className="rl-shots-panel" onClick={e => e.stopPropagation()}>
+              <div className="rl-shots-header">
+                <div>
+                  <h3 className="rl-shots-title">{shotsPanel.title}</h3>
+                  <p className="rl-shots-subtitle">Preview only — still under active development</p>
+                </div>
+                <button className="rl-shots-close" onClick={() => setShotsPanel(null)} aria-label="Close">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div className="rl-shots-grid">
+                {shotsPanel.screenshots.map((s, k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className="rl-shot-card"
+                    onClick={() => setLightbox(s)}
+                    aria-label={`View screenshot: ${s.label}`}
+                  >
+                    <img src={s.src} alt={s.label} className="rl-shot-img" loading="lazy" />
+                    <span className="rl-shot-tag" aria-hidden="true">Under Construction</span>
+                    <span className="rl-shot-caption">{s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {lightbox && (
+          <div className="rl-lightbox-backdrop" onClick={() => setLightbox(null)}>
+            <div className="rl-lightbox-body" onClick={e => e.stopPropagation()}>
+              <button className="rl-lightbox-close" onClick={() => setLightbox(null)} aria-label="Close">×</button>
+              <img src={lightbox.src} alt={lightbox.label} className="rl-lightbox-img" />
+              <span className="rl-under-construction rl-under-construction--lg" aria-hidden="true">Under Construction</span>
+              <p className="rl-lightbox-caption">{lightbox.label} — preview only, not a live link</p>
+            </div>
+          </div>
+        )}
 
         {/* ── Skills ── */}
         <section id="rl-skills" className="rl-card rl-skills-card">
@@ -325,7 +375,7 @@ export default function RecruiterLayout({ onBack }) {
                     <h4 className="rl-resume-role">{p.title}</h4>
                     <p className="rl-resume-company">{p.tagline}</p>
                   </div>
-                  {p.url && p.url !== '#' && (
+                  {!p.screenshots?.length && p.url && p.url !== '#' && (
                     <a href={p.url} target="_blank" rel="noreferrer" className="rl-resume-dates" style={{ color: 'var(--rl-accent-lt)', fontSize: '0.8rem' }}>
                       GitHub →
                     </a>
