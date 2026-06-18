@@ -573,6 +573,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  animation: rl-fade-in 0.2s ease both;
 }
 
 .rl-shots-panel {
@@ -584,6 +585,7 @@
   max-width: 640px;
   max-height: 90svh;
   overflow-y: auto;
+  animation: rl-pop-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
 }
 
 .rl-shots-header {
@@ -639,12 +641,15 @@
   background: #000;
   padding: 0;
   cursor: zoom-in;
-  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.18s;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.18s, box-shadow 0.18s;
 }
 
-.rl-shot-card:hover {
-  transform: scale(1.03);
-  border-color: rgba(96, 165, 250, 0.4);
+.rl-shot-card:hover,
+.rl-shot-card:focus-visible {
+  transform: scale(1.05) translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
 }
 
 .rl-shot-img {
@@ -652,7 +657,7 @@
   height: 100%;
   object-fit: cover;
   object-position: top;
-  filter: blur(2px) saturate(0.7) brightness(0.82);
+  filter: blur(0.8px) saturate(0.92) brightness(0.94);
   display: block;
 }
 
@@ -698,6 +703,7 @@
   justify-content: center;
   padding: 24px;
   z-index: 1000;
+  animation: rl-fade-in 0.2s ease both;
 }
 
 .rl-lightbox-body {
@@ -712,6 +718,18 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+  animation: rl-pop-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+@keyframes rl-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes rl-pop-in {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .rl-lightbox-img {
@@ -719,7 +737,7 @@
   max-height: 70vh;
   object-fit: contain;
   border-radius: 8px;
-  filter: blur(1.5px) saturate(0.7) brightness(0.85);
+  filter: blur(0.6px) saturate(0.92) brightness(0.95);
 }
 
 .rl-lightbox-caption {
