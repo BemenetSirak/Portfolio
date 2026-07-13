@@ -259,14 +259,14 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   transform: translate(-50%, -50%);
   z-index: 2;
 }
 .vh-orb-glow {
   position: absolute;
-  inset: -22px;
+  inset: -30px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(251,191,36,0.38) 0%, transparent 70%);
   animation: orbPulse 3.6s ease-in-out infinite;
