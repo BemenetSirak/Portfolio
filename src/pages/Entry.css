@@ -4,6 +4,7 @@
 
 .entry-root {
   position: relative;
+  z-index: 0;
   min-height: 100svh;
   display: flex;
   align-items: center;
@@ -14,14 +15,38 @@
   text-align: center;
 }
 
-/* Extend dark bg to full viewport (bypasses #root max-width constraint) */
-.entry-root::after {
-  content: '';
+/* ── Full-bleed background photo (bypasses #root max-width constraint) ── */
+.entry-bg-wrap {
   position: fixed;
   inset: 0;
+  z-index: -3;
+  overflow: hidden;
   background: #07091a;
-  z-index: -2;
-  pointer-events: none;
+}
+
+.entry-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transform: scale(1.08);
+  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  animation: entryKenBurns 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes entryKenBurns {
+  from { filter: brightness(0.92); }
+  to   { filter: brightness(1.02); }
+}
+
+.entry-bg-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(4, 6, 18, 0.4) 0%, rgba(5, 7, 22, 0.3) 40%, rgba(4, 6, 18, 0.72) 100%),
+    radial-gradient(ellipse 70% 55% at 50% 40%, rgba(7, 9, 26, 0.5), transparent 72%);
 }
 
 /* ── Ambient glow blobs ── */
@@ -33,19 +58,48 @@
   pointer-events: none;
   z-index: 0;
   filter: blur(100px);
-  opacity: 0.35;
+  opacity: 0.4;
+  mix-blend-mode: screen;
 }
 
 .entry-glow-left {
   background: radial-gradient(circle, #1d4ed8 0%, transparent 70%);
   top: -80px;
   left: -120px;
+  animation: entryDriftLeft 16s ease-in-out infinite;
 }
 
 .entry-glow-right {
   background: radial-gradient(circle, #6d28d9 0%, transparent 70%);
   bottom: -80px;
   right: -120px;
+  animation: entryDriftRight 18s ease-in-out infinite;
+}
+
+@keyframes entryDriftLeft {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(40px, 30px) scale(1.08); }
+}
+
+@keyframes entryDriftRight {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-35px, -25px) scale(1.1); }
+}
+
+/* ── Mount-in reveal ── */
+.entry-el {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.entry-visible .entry-el-1 { animation: entryRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.14s forwards; }
+.entry-visible .entry-el-2 { animation: entryRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.22s forwards; }
+.entry-visible .entry-el-3 { animation: entryRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.30s forwards; }
+.entry-visible .entry-el-4 { animation: entryRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.38s forwards; }
+.entry-visible .entry-el-5 { animation: entryRise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.46s forwards; }
+
+@keyframes entryRise {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Content wrapper (above glows) ── */
@@ -62,18 +116,20 @@
 /* ── Heading ── */
 .entry-title {
   font-family: 'Nunito', 'Inter', sans-serif;
-  font-size: clamp(2rem, 5vw, 2.75rem) !important;
+  font-size: clamp(2.25rem, 6vw, 3.25rem) !important;
   font-weight: 900 !important;
   color: #ffffff !important;
   margin: 0 0 10px !important;
   letter-spacing: -0.5px;
   line-height: 1.15;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 }
 
 .entry-subtitle {
-  font-size: 1rem;
-  color: rgba(180, 200, 240, 0.75);
+  font-size: 1.05rem;
+  color: rgba(225, 232, 250, 0.88);
   margin: 0 0 36px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Card grid ── */
@@ -96,33 +152,61 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   text-align: center;
   background: none;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --glow-x: 50%;
+  --glow-y: 50%;
+  transform: perspective(800px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0);
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.entry-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.14), transparent 60%);
 }
 
 .entry-card:hover {
-  transform: translateY(-4px);
+  transform: perspective(800px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-6px);
+}
+
+.entry-card:hover::before {
+  opacity: 1;
 }
 
 .entry-card.recruiter {
-  background: linear-gradient(160deg, #0d1f4a 0%, #091838 100%);
-  box-shadow: 0 8px 32px rgba(29, 78, 216, 0.18);
+  background: linear-gradient(160deg, rgba(13, 31, 74, 0.22) 0%, rgba(9, 24, 56, 0.30) 100%);
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .entry-card.recruiter:hover {
-  border-color: rgba(96, 165, 250, 0.35);
-  box-shadow: 0 16px 48px rgba(29, 78, 216, 0.28);
+  border-color: rgba(96, 165, 250, 0.5);
+  background: linear-gradient(160deg, rgba(13, 31, 74, 0.34) 0%, rgba(9, 24, 56, 0.42) 100%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 40px rgba(29, 78, 216, 0.25);
 }
 
 .entry-card.visitor {
-  background: linear-gradient(160deg, #1e0d4a 0%, #160938 100%);
-  box-shadow: 0 8px 32px rgba(109, 40, 217, 0.18);
+  background: linear-gradient(160deg, rgba(30, 13, 74, 0.22) 0%, rgba(22, 9, 56, 0.30) 100%);
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .entry-card.visitor:hover {
-  border-color: rgba(167, 139, 250, 0.35);
-  box-shadow: 0 16px 48px rgba(109, 40, 217, 0.28);
+  border-color: rgba(167, 139, 250, 0.5);
+  background: linear-gradient(160deg, rgba(30, 13, 74, 0.34) 0%, rgba(22, 9, 56, 0.42) 100%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 40px rgba(109, 40, 217, 0.25);
 }
 
 /* ── Icon container ── */
@@ -200,10 +284,11 @@
 .entry-tip {
   margin-top: 28px;
   font-size: 0.875rem;
-  color: rgba(180, 200, 240, 0.65);
+  color: rgba(210, 222, 250, 0.85);
   display: flex;
   align-items: center;
   gap: 6px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
 .entry-tip strong {

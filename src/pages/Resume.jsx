@@ -1,5 +1,6 @@
 import React from 'react'
 import profile from '../data/profileData'
+import ExperienceTimeline from '../components/ExperienceTimeline'
 import './Resume.css'
 
 export default function Resume({ onClose }) {
@@ -57,20 +58,10 @@ export default function Resume({ onClose }) {
         {/* Experience */}
         <section className="rv-section">
           <h2 className="rv-section-title">Professional Experience</h2>
-          {profile.experience.map((e, i) => (
-            <div key={i} className="rv-exp-item">
-              <div className="rv-exp-row">
-                <div>
-                  <h3 className="rv-exp-role">{e.role}</h3>
-                  <p className="rv-exp-company">{e.company}{e.location ? ` · ${e.location}` : ''}</p>
-                </div>
-                <span className="rv-exp-dates">{e.from} – {e.to}</span>
-              </div>
-              <ul className="rv-bullets">
-                {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
-              </ul>
-            </div>
-          ))}
+          <ExperienceTimeline
+            items={profile.experience}
+            endLabel="Currently exploring new opportunities"
+          />
         </section>
 
         {/* Education */}

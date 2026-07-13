@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import profile from '../data/profileData'
 import './Layout.css'
 import ThemeToggle from '../components/ThemeToggle'
@@ -30,6 +30,25 @@ function VisitorLayout({ onBack }) {
   const [interestsTab, setInterestsTab]   = useState(null)
   const [menuOpen, setMenuOpen]           = useState(false)
   const [interestsExp, setInterestsExp]   = useState(false)
+
+  // Reveal-on-scroll for anything tagged .v-reveal.
+  useEffect(() => {
+    const els = document.querySelectorAll('.v-reveal')
+    if (!els.length) return
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('v-reveal--visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12 }
+    )
+    els.forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [showAbout, showResume, showInterests])
 
   if (showAbout)     return <About    onClose={() => setShowAbout(false)} />
   if (showResume)    return <Resume   onClose={() => setShowResume(false)} />
@@ -141,14 +160,18 @@ function VisitorLayout({ onBack }) {
           onExplore={(tab) => { setInterestsTab(tab); setShowInterests(true) }}
         />
 
-        <ThingsILove />
+        <div className="v-reveal">
+          <ThingsILove />
+        </div>
 
-        <div className="facts-gallery-row">
+        <div className="facts-gallery-row v-reveal">
           <FunZone />
           <Gallery />
         </div>
 
-        <ContactStrip contact={profile.contact} />
+        <div className="v-reveal">
+          <ContactStrip contact={profile.contact} />
+        </div>
       </main>
 
       <FunCursor />

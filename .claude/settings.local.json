@@ -3,7 +3,17 @@
     "allow": [
       "Bash(mkdir -p /private/tmp/claude-501/-Users-bemen-Portfolio/4525fbba-0817-4782-b920-5e969df36183/scratchpad/pw)",
       "Bash(npm init *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(python3 -c ' *)",
+      "Bash(NODE_PATH=/Users/bemen/.npm/_npx/e41f203b7505f1fb/node_modules node /private/tmp/claude-501/-Users-bemen-Portfolio/0eb749a2-05a3-4895-a748-09f1f32fcc05/scratchpad/screenshot.js)",
+      "Bash(pkill -f \"npm run dev\")",
+      "Bash(pkill -f \"vite\")",
+      "Bash(sips -g pixelWidth -g pixelHeight public/images/visitor-hero.jpg)",
+      "Bash(find /Users/bemen/Desktop -newer /Users/bemen/Portfolio/public/images/entry-bg.jpg -type f \\\\\\( -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.png\" \\\\\\) 2>/dev/null)",
+      "Read(//Users/bemen/Desktop/**)",
+      "Read(//private/tmp/**)",
+      "Bash(find / -maxdepth 3 -iname \"*readonly*\")",
+      "Read(//private/var/folders/**)"
     ]
   }
 }

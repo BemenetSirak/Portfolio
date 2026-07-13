@@ -11,12 +11,17 @@ const ROLES = [
 ]
 
 const ORBIT_ICONS = [
-  { src: '/icons/icon-football.svg',  label: 'Football', delay: '0s'     },
-  { src: '/icons/icon-history.svg',   label: 'History',  delay: '-2.8s'  },
-  { src: '/icons/icon-movies.svg',    label: 'Movies',   delay: '-5.6s'  },
-  { src: '/icons/icon-religion.svg',  label: 'Religion', delay: '-8.4s'  },
-  { src: '/icons/icon-hiking.svg',    label: 'Hiking',   delay: '-11.2s' },
+  { id: 'football', src: '/icons/icon-football.svg',  label: 'Football', delay: '0s'     },
+  { id: 'history',  src: '/icons/icon-history.svg',   label: 'History',  delay: '-2.8s'  },
+  { id: 'movies',   src: '/icons/icon-movies.svg',    label: 'Movies',   delay: '-5.6s'  },
+  { id: 'religion', src: '/icons/icon-religion.svg',  label: 'Religion', delay: '-8.4s'  },
+  { id: 'hiking',   src: '/icons/icon-hiking.svg',    label: 'Hiking',   delay: '-11.2s' },
 ]
+
+function goToThingsILove(tab) {
+  window.dispatchEvent(new CustomEvent('openInterestTab', { detail: { tab } }))
+  document.getElementById('things-i-love')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 // Stable pseudo-random particles (deterministic so no hydration mismatch)
 const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
@@ -111,23 +116,29 @@ export default function VisitorHero({ name, onExplore }) {
         </div>
 
         {/* ── Right: Orbital visual ── */}
-        <div className="vh-visual vh-el vh-el-6" aria-hidden="true">
-          <div className="vh-orbit-ring" />
+        <div className="vh-visual vh-el vh-el-6">
+          <div className="vh-orbit-ring" aria-hidden="true" />
 
           {/* Central glowing orb */}
-          <div className="vh-orb">
+          <div className="vh-orb" aria-hidden="true">
             <div className="vh-orb-glow" />
             <div className="vh-orb-face">
-              <span className="vh-orb-letter">{firstName[0]}</span>
+              <img className="vh-orb-photo" src="/images/visitor-hero-photo.jpg" alt="" />
             </div>
           </div>
 
           {/* Orbiting interest icons */}
           {ORBIT_ICONS.map((icon, i) => (
             <div key={i} className="vh-orbit-dot" style={{ animationDelay: icon.delay }}>
-              <div className="vh-orbit-icon" style={{ animationDelay: icon.delay }}>
-                <img src={icon.src} alt={icon.label} width="22" height="22" />
-              </div>
+              <button
+                type="button"
+                className="vh-orbit-icon"
+                style={{ animationDelay: icon.delay }}
+                onClick={() => goToThingsILove(icon.id)}
+                aria-label={`Jump to ${icon.label} in Things I Love`}
+              >
+                <img src={icon.src} alt="" width="30" height="30" />
+              </button>
             </div>
           ))}
         </div>

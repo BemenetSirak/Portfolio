@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import profile from '../data/profileData'
+import ExperienceTimeline from '../components/ExperienceTimeline'
 import './RecruiterLayout.css'
 
 const NAV = [
@@ -71,6 +72,28 @@ export default function RecruiterLayout({ onBack }) {
   const [pastHero, setPastHero] = useState(false)
   const [selectedSkill, setSelectedSkill] = useState(null)
   const [toast, setToast] = useState(null)
+  const [photoFailed, setPhotoFailed] = useState(false)
+  const [heroVisible, setHeroVisible] = useState(false)
+  const photoFrameRef = useRef(null)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setHeroVisible(true))
+  }, [])
+
+  function handlePhotoTilt(e) {
+    const el = photoFrameRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width - 0.5
+    const py = (e.clientY - rect.top) / rect.height - 0.5
+    el.style.transform = `perspective(700px) rotateX(${(-py * 8).toFixed(2)}deg) rotateY(${(px * 8).toFixed(2)}deg)`
+  }
+
+  function resetPhotoTilt() {
+    const el = photoFrameRef.current
+    if (!el) return
+    el.style.transform = ''
+  }
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [paletteQuery, setPaletteQuery] = useState('')
   const [paletteIndex, setPaletteIndex] = useState(0)
@@ -294,13 +317,13 @@ export default function RecruiterLayout({ onBack }) {
       <main className="rl-main">
 
         {/* ── Hero ── */}
-        <section id="rl-hero" className="rl-hero">
+        <section id="rl-hero" className={`rl-hero${heroVisible ? ' rl-hero--visible' : ''}`}>
           <div className="rl-hero-left">
-            <span className="rl-greeting">Hello, I'm</span>
-            <h1 className="rl-name">{profile.name}</h1>
-            <p className="rl-role">{profile.title}</p>
-            <p className="rl-bio">{profile.summary}</p>
-            <div className="rl-hero-cta">
+            <span className="rl-greeting rl-hero-el rl-hero-el-1">Hello, I'm</span>
+            <h1 className="rl-name rl-hero-el rl-hero-el-2">{profile.name}</h1>
+            <p className="rl-role rl-hero-el rl-hero-el-3">{profile.title}</p>
+            <p className="rl-bio rl-hero-el rl-hero-el-4">{profile.summary}</p>
+            <div className="rl-hero-cta rl-hero-el rl-hero-el-5">
               <a href={`mailto:${profile.contact.email}`} className="rl-btn-primary">
                 Hire Me
               </a>
@@ -309,17 +332,25 @@ export default function RecruiterLayout({ onBack }) {
               </button>
             </div>
           </div>
-          <div className="rl-hero-right">
-            <div className="rl-photo-frame">
-              <img
-                src="/images/recruiter-hero.jpg"
-                alt={profile.name}
-                className="rl-photo"
-                onError={e => { e.currentTarget.style.display = 'none' }}
-              />
-              <div className="rl-photo-fallback" aria-hidden="true">
-                {profile.name.split(' ').map(w => w[0]).join('')}
-              </div>
+          <div className="rl-hero-right rl-hero-el rl-hero-el-6">
+            <div
+              ref={photoFrameRef}
+              className="rl-photo-frame"
+              onMouseMove={handlePhotoTilt}
+              onMouseLeave={resetPhotoTilt}
+            >
+              {photoFailed ? (
+                <div className="rl-photo-fallback" aria-hidden="true">
+                  {profile.name.split(' ').map(w => w[0]).join('')}
+                </div>
+              ) : (
+                <img
+                  src="/images/recruiter-hero.jpg"
+                  alt={profile.name}
+                  className="rl-photo"
+                  onError={() => setPhotoFailed(true)}
+                />
+              )}
             </div>
           </div>
         </section>
@@ -336,41 +367,12 @@ export default function RecruiterLayout({ onBack }) {
 
           <section id="rl-experience" className="rl-card rl-reveal">
             <h2 className="rl-section-heading">Experience</h2>
-            <div className="rl-timeline">
-              {profile.experience.map((e, i) => {
-                const haystack = `${e.role} ${e.company} ${e.bullets.join(' ')}`
-                const dimmed = selectedSkill && !itemMatchesSkill(haystack, selectedSkill)
-                return (
-                  <div
-                    key={i}
-                    className={`rl-tl-item${dimmed ? ' rl-tl-item--dim' : ''}`}
-                    style={{ '--reveal-index': i }}
-                  >
-                    <div className="rl-tl-marker">
-                      <div className="rl-tl-dot" />
-                      <div className="rl-tl-line" />
-                    </div>
-                    <div className="rl-tl-body">
-                      <h3 className="rl-tl-role">{e.role}</h3>
-                      <p className="rl-tl-company">
-                        {e.company}{e.location ? <span className="rl-tl-location"> · {e.location}</span> : null}
-                      </p>
-                      <span className="rl-tl-dates">{e.from} – {e.to}</span>
-                      <ul className="rl-tl-bullets">
-                        {e.bullets.map((b, j) => (
-                          <li
-                            key={j}
-                            className={selectedSkill && itemMatchesSkill(b, selectedSkill) ? 'rl-bullet--match' : ''}
-                          >
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <ExperienceTimeline
+              items={profile.experience}
+              selectedSkill={selectedSkill}
+              itemMatchesSkill={itemMatchesSkill}
+              endLabel="Currently exploring new opportunities"
+            />
           </section>
 
           <section id="rl-projects" className="rl-card rl-reveal">
