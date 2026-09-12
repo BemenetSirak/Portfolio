@@ -1,61 +1,99 @@
 /* ─────────────────────────────────────────────────────
-   Page-level wooden scroll rods — cap the whole unrolled
-   manuscript at the very top and bottom of the page.
+   Rolled parchment bands — the sheet curls back on
+   itself at the top and bottom of the visitor page.
 ───────────────────────────────────────────────────── */
-.page-scroll-rod {
+.scroll-roll {
   position: relative;
-  padding: 0 26px;
-  z-index: 5;
+  z-index: 4;
+  height: 68px;
+  margin: 0 -16px;
+  pointer-events: none;
 }
+.scroll-roll--top    { margin-bottom: -4px; }
+.scroll-roll--bottom { margin-top: 18px; height: 54px; }
 
-.page-scroll-rod-bar {
-  position: relative;
-  height: 26px;
-  border-radius: 999px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 2px,
-      transparent 2px, transparent 26px
-    ),
+.scroll-roll-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 60px 0 76px;
+  border-radius: 34px;
+  background-image:
     linear-gradient(
       180deg,
-      #c99a67 0%,
-      #a9764a 18%,
-      #8a5a34 45%,
-      #6b4423 72%,
-      #4a2f18 100%
-    );
+      rgba(95, 68, 32, 0.42) 0%,
+      rgba(255, 250, 236, 0.42) 22%,
+      rgba(255, 255, 255, 0) 46%,
+      rgba(120, 88, 42, 0.22) 78%,
+      rgba(58, 38, 14, 0.62) 100%
+    ),
+    var(--bg-parchment);
+  background-size: auto, 150% auto;
+  background-position: center, 50% 46%;
   box-shadow:
-    inset 0 3px 3px rgba(255,222,180,0.40),
-    inset 0 -4px 6px rgba(0,0,0,0.45),
-    0 6px 14px rgba(20,12,4,0.40);
+    0 12px 22px rgba(0, 0, 0, 0.48),
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 -8px 10px rgba(70, 46, 16, 0.22),
+    inset 0 5px 8px rgba(255, 250, 236, 0.30);
+}
+.scroll-roll--bottom .scroll-roll-face {
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(58, 38, 14, 0.52) 0%,
+      rgba(120, 88, 42, 0.20) 24%,
+      rgba(255, 255, 255, 0) 52%,
+      rgba(255, 250, 236, 0.36) 76%,
+      rgba(95, 68, 32, 0.46) 100%
+    ),
+    var(--bg-parchment);
 }
 
-/* Finials — the rounded ends of the dowel, poking past the page edge */
-.page-scroll-rod-bar::before,
-.page-scroll-rod-bar::after {
+/* Rolled end caps — the spiral cross-section of the curled sheet */
+.scroll-roll-face::before,
+.scroll-roll-face::after {
   content: '';
   position: absolute;
   top: 50%;
-  width: 34px;
-  height: 34px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   transform: translateY(-50%);
-  background: radial-gradient(circle at 32% 28%, #d9ab73, #8a5a34 55%, #3f2711 100%);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.45), inset 0 1px 2px rgba(255,230,190,0.35);
+  background:
+    radial-gradient(circle at 50% 50%,
+      #9c8152 0 5px,
+      #e5d4a9 6px 10px,
+      #8f7449 11px 13px,
+      #efe1bd 14px 20px,
+      #a48c5c 21px 23px,
+      #f1e4c2 24px 30px,
+      #6b5230 31px 34px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 2px 3px rgba(255, 250, 236, 0.35);
 }
-.page-scroll-rod-bar::before { left: -17px; }
-.page-scroll-rod-bar::after  { right: -17px; }
+.scroll-roll-face::before { left: -14px; }
+.scroll-roll-face::after  { right: -14px; }
+.scroll-roll--bottom .scroll-roll-face::before,
+.scroll-roll--bottom .scroll-roll-face::after { width: 54px; height: 54px; }
 
-.page-scroll-rod--top    { margin-bottom: -13px; }
-.page-scroll-rod--bottom { margin-top: -13px; }
+/* Night: a huge-spread inset shadow floods the band with dark sepia
+   beneath its lettering, so the roll dims with the rest of the sheet */
+#root[data-theme='dark'] .scroll-roll-face {
+  box-shadow:
+    inset 0 0 0 999px rgba(22, 13, 6, 0.70),
+    0 12px 22px rgba(0, 0, 0, 0.7),
+    0 3px 6px rgba(0, 0, 0, 0.5);
+}
+#root[data-theme='dark'] .scroll-roll-face::before,
+#root[data-theme='dark'] .scroll-roll-face::after {
+  filter: brightness(0.42) sepia(0.4);
+}
 
-@media (max-width: 640px) {
-  .page-scroll-rod { padding: 0 18px; }
-  .page-scroll-rod-bar { height: 20px; }
-  .page-scroll-rod-bar::before,
-  .page-scroll-rod-bar::after { width: 26px; height: 26px; }
-  .page-scroll-rod-bar::before { left: -13px; }
-  .page-scroll-rod-bar::after  { right: -13px; }
+@media (max-width: 720px) {
+  .scroll-roll { height: 52px; margin: 0 -8px; }
+  .scroll-roll-face { padding: 0 118px 0 54px; }
+  .scroll-roll-face::before,
+  .scroll-roll-face::after { width: 52px; height: 52px; }
+  .scroll-roll-face::before { left: -8px; }
+  .scroll-roll-face::after  { right: -8px; }
 }

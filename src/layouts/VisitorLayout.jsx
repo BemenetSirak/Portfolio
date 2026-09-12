@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import profile from '../data/profileData'
 import './Layout.css'
 import ThemeToggle from '../components/ThemeToggle'
@@ -13,6 +13,8 @@ import ThingsILove from '../components/ThingsILove'
 import BrandLogo from '../components/BrandLogo'
 import InterestsDropdown from '../components/InterestsDropdown'
 import ScrollRod from '../components/ScrollRod'
+import quillInkwell from '../assets/scroll/quill-inkwell.png'
+import waxSeal from '../assets/scroll/wax-seal.png'
 import './VisitorLayout.css'
 import './VisitorScroll.css'
 
@@ -24,10 +26,13 @@ const INTEREST_ITEMS = [
   { id: 'hiking',   label: 'Hiking' },
 ]
 
+// Brass tacks pinning the sheet to the desk, named by their spot on the edge
+const TACKS = ['tl', 'tr', 'l1', 'l2', 'r1', 'r2', 'r3', 'bl', 'br']
+
 function getCurrentTheme() {
   try {
     return document.getElementById('root')?.getAttribute('data-theme') || 'light'
-  } catch (e) {
+  } catch {
     return 'light'
   }
 }
@@ -81,126 +86,154 @@ function VisitorLayout({ onBack }) {
 
   return (
     <div className="visitor-layout">
-      <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
-      <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
-      <div className="sticky-header">
-        <header className="layout-header">
-          <div className="header-start">
-            <BrandLogo onBack={onBack} />
-            <nav className="visitor-nav">
-              <button className="link" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
-              <button className="link" onClick={() => setShowAbout(true)}>About Me</button>
-              <InterestsDropdown />
-              <button className="link" onClick={() => setShowResume(true)}>Resume</button>
-              <button className="link" onClick={onBack}>Switch</button>
-            </nav>
-          </div>
-          <div className="header-end">
-            <ThemeToggle />
-            <button
-              className="mobile-menu-btn"
-              onClick={() => setMenuOpen(s => !s)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
-            >
-              {menuOpen ? (
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              )}
-            </button>
-          </div>
-        </header>
+      <div className="desk-backdrop" key={`desk-${themeKey}`} aria-hidden="true" />
 
-        {menuOpen && (
-          <nav className="mobile-drawer" aria-label="Mobile navigation">
-            <button
-              className="mobile-nav-item"
-              onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false) }}
-            >
-              Home
-            </button>
-            <button
-              className="mobile-nav-item"
-              onClick={() => { setShowAbout(true); setMenuOpen(false) }}
-            >
-              About Me
-            </button>
-            <div className="mobile-nav-group">
-              <button
-                className="mobile-nav-item"
-                onClick={() => setInterestsExp(s => !s)}
-                aria-expanded={interestsExp}
-              >
-                Interests
-                <svg
-                  width="14" height="14" viewBox="0 0 12 12" fill="none"
-                  style={{ transition: 'transform 0.2s', transform: interestsExp ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}
-                >
-                  <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              {interestsExp && (
-                <div className="mobile-nav-sub">
-                  {INTEREST_ITEMS.map(item => (
-                    <button
-                      key={item.id}
-                      className="mobile-nav-subitem"
-                      onClick={() => openInterest(item.id)}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <button
-              className="mobile-nav-item"
-              onClick={() => { setShowResume(true); setMenuOpen(false) }}
-            >
-              Resume
-            </button>
-            <button
-              className="mobile-nav-item"
-              onClick={() => { onBack(); setMenuOpen(false) }}
-            >
-              ← Switch
-            </button>
-          </nav>
-        )}
+      <div className="desk-candle">
+        <span className="candle-glow" aria-hidden="true" />
+        <span className="candle-shadow" aria-hidden="true" />
+        <span className="candle-body" aria-hidden="true" />
+        <span className="candle-wick" aria-hidden="true" />
+        <button
+          type="button"
+          className="candle-flame"
+          onClick={() => window.dispatchEvent(new CustomEvent('settheme', { detail: { theme: 'light' } }))}
+          aria-label="Blow out the candle and switch to light mode"
+          title="Blow out the candle"
+        />
       </div>
 
-      <ScrollRod position="top" />
+      <div className="scroll-sheet">
+        <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
+        <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
 
-      <main className="visitor-main">
-        <VisitorHero
-          name={profile.name}
-          title={profile.title}
-          onExplore={(tab) => { setInterestsTab(tab); setShowInterests(true) }}
-        />
+        <ScrollRod position="top">
+          <p className="scroll-masthead">[Bemenet Mesgune.net - Old Scrolls]</p>
+        </ScrollRod>
 
-        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
-        <div className="v-reveal">
-          <ThingsILove />
+        <div className="scroll-seal-brand">
+          <BrandLogo onBack={onBack} />
+        </div>
+        <img className="scroll-quill" src={quillInkwell} alt="" aria-hidden="true" />
+
+        <div className="sticky-header">
+          <header className="layout-header">
+            <div className="header-start">
+              <nav className="visitor-nav">
+                <button className="link" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
+                <button className="link" onClick={() => setShowAbout(true)}>About Me</button>
+                <InterestsDropdown />
+                <button className="link" onClick={() => setShowResume(true)}>Resume</button>
+                <button className="link" onClick={onBack}>Switch</button>
+              </nav>
+              <ThemeToggle />
+            </div>
+            <div className="header-end">
+              <button
+                className="mobile-menu-btn"
+                onClick={() => setMenuOpen(s => !s)}
+                aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={menuOpen}
+              >
+                {menuOpen ? (
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                )}
+              </button>
+            </div>
+          </header>
+
+          {menuOpen && (
+            <nav className="mobile-drawer" aria-label="Mobile navigation">
+              <button
+                className="mobile-nav-item"
+                onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false) }}
+              >
+                Home
+              </button>
+              <button
+                className="mobile-nav-item"
+                onClick={() => { setShowAbout(true); setMenuOpen(false) }}
+              >
+                About Me
+              </button>
+              <div className="mobile-nav-group">
+                <button
+                  className="mobile-nav-item"
+                  onClick={() => setInterestsExp(s => !s)}
+                  aria-expanded={interestsExp}
+                >
+                  Interests
+                  <svg
+                    width="14" height="14" viewBox="0 0 12 12" fill="none"
+                    style={{ transition: 'transform 0.2s', transform: interestsExp ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}
+                  >
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                {interestsExp && (
+                  <div className="mobile-nav-sub">
+                    {INTEREST_ITEMS.map(item => (
+                      <button
+                        key={item.id}
+                        className="mobile-nav-subitem"
+                        onClick={() => openInterest(item.id)}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                className="mobile-nav-item"
+                onClick={() => { setShowResume(true); setMenuOpen(false) }}
+              >
+                Resume
+              </button>
+              <button
+                className="mobile-nav-item"
+                onClick={() => { onBack(); setMenuOpen(false) }}
+              >
+                ← Switch
+              </button>
+            </nav>
+          )}
         </div>
 
-        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
-        <div className="facts-gallery-row v-reveal">
-          <FunZone />
-          <Gallery />
-        </div>
+        <main className="visitor-main">
+          <VisitorHero name={profile.name} />
 
-        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
-        <div className="v-reveal">
-          <ContactStrip contact={profile.contact} />
-        </div>
-      </main>
+          <div className="v-reveal">
+            <ThingsILove />
+          </div>
 
-      <ScrollRod position="bottom" />
+          <div className="scroll-divider scroll-divider--sealed" aria-hidden="true">
+            <img className="scroll-seal scroll-seal--divider" src={waxSeal} alt="" />
+          </div>
+          <div className="facts-gallery-row v-reveal">
+            <FunZone />
+            <Gallery />
+          </div>
+
+          <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
+          <div className="v-reveal">
+            <ContactStrip contact={profile.contact} />
+          </div>
+        </main>
+
+        <ScrollRod position="bottom" />
+
+        <img className="scroll-seal scroll-seal--bottom" src={waxSeal} alt="" aria-hidden="true" />
+        <img className="scroll-seal scroll-seal--corner" src={waxSeal} alt="" aria-hidden="true" />
+        {TACKS.map(t => (
+          <span key={t} className={`scroll-tack scroll-tack--${t}`} aria-hidden="true" />
+        ))}
+      </div>
     </div>
   )
 }

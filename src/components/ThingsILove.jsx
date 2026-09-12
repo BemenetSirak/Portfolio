@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './ThingsILove.css'
 import MoviesPanel from './MoviesPanel'
 import profile from '../data/profileData'
+import { INK_ICONS } from './InkIcons'
 
 const TABS = [
-  { id: 'history',  label: 'History',  icon: '/icons/icon-history.svg',  delay: 0 },
-  { id: 'religion', label: 'Religion', icon: '/icons/icon-religion.svg', delay: 60 },
-  { id: 'movies',   label: 'Movies',   icon: '/icons/icon-movies.svg',   delay: 120 },
-  { id: 'football', label: 'Football', icon: '/icons/icon-football.svg', delay: 180 },
-  { id: 'hiking',   label: 'Hiking',   icon: '/icons/icon-hiking.svg',   delay: 240 },
-  { id: 'coffee',   label: 'Coffee',   icon: '/icons/icon-coffee.svg',   delay: 300 },
+  { id: 'history',  label: 'History',  delay: 0 },
+  { id: 'religion', label: 'Religion', delay: 60 },
+  { id: 'movies',   label: 'Movies',   delay: 120 },
+  { id: 'football', label: 'Football', delay: 180 },
+  { id: 'hiking',   label: 'Hiking',   delay: 240 },
+  { id: 'coffee',   label: 'Coffee',   delay: 300 },
 ]
 
 function getTabFromURL() {
   try {
     return new URLSearchParams(window.location.search).get('tab') || null
-  } catch (e) {
+  } catch {
     return null
   }
 }
@@ -26,7 +27,9 @@ function setTabInURL(tab) {
     if (tab) url.searchParams.set('tab', tab)
     else url.searchParams.delete('tab')
     window.history.replaceState({ tab }, '', url)
-  } catch (e) {}
+  } catch {
+    // URL sync is best-effort; the tab still opens without it
+  }
 }
 
 function InterestPanel({ data }) {
@@ -83,24 +86,24 @@ export default function ThingsILove() {
 
   return (
     <div id="things-i-love" className="things-i-love">
-      <h3>Things I Love</h3>
+      <div className="love-row">
+        <h3>Things I Love</h3>
 
-      <div className="love-buttons" role="tablist" aria-label="Things I love">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-pressed={active === t.id}
-            onClick={() => handleTabChange(t.id)}
-            className={`icon-card${active === t.id ? ' active' : ''}`}
-            style={{ animationDelay: `${t.delay}ms` }}
-          >
-            <span className="icon">
-              <img src={t.icon} alt={t.label} />
-            </span>
-            <span className="label">{t.label}</span>
-          </button>
-        ))}
+        <div className="love-buttons" role="tablist" aria-label="Things I love">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              aria-pressed={active === t.id}
+              onClick={() => handleTabChange(t.id)}
+              className={`icon-card${active === t.id ? ' active' : ''}`}
+              style={{ animationDelay: `${t.delay}ms` }}
+            >
+              <span className="icon">{INK_ICONS[t.id]}</span>
+              <span className="label">{t.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="love-panels">
