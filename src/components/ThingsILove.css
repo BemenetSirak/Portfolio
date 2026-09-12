@@ -31,56 +31,107 @@
   flex-wrap: wrap;
 }
 
-/* ── Icon cards ─── */
+/* ── Icon badges — medallions stamped directly on the parchment ─── */
 .icon-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: var(--panel);
-  box-shadow: 0 4px 12px rgba(11,22,42,0.07), 0 1px 3px rgba(11,22,42,0.05);
-  border: 1.5px solid rgba(0,0,0,0.05);
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  min-width: 88px;
+  min-width: 86px;
   animation: popIn 0.42s cubic-bezier(0.2, 0.9, 0.3, 1) both;
-  transition: transform 0.2s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.2,0.9,0.3,1);
 }
 
 .icon-card .icon {
+  position: relative;
   width: 42px;
   height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 50%;
+  box-sizing: content-box;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,244,214,0.55) 0%, transparent 55%),
+    var(--panel);
+  border: 2.5px solid rgba(147,96,31,0.45);
+  box-shadow:
+    0 0 0 3px rgba(147,96,31,0.14),
+    inset 0 2px 3px rgba(255,255,255,0.35),
+    inset 0 -3px 5px rgba(58,38,14,0.18),
+    0 4px 10px rgba(58,38,14,0.22);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Reeded coin edge, like a stamped gold medallion */
+.icon-card .icon::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background: repeating-conic-gradient(rgba(90,58,20,0.85) 0deg 4deg, rgba(217,171,115,0.55) 4deg 10deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 76%, #000 79%, #000 96%, transparent 99%);
+          mask: radial-gradient(circle closest-side, transparent 76%, #000 79%, #000 96%, transparent 99%);
+}
+
+.icon-card .icon img {
+  width: 100%;
+  height: 100%;
   display: block;
+  /* Tames the pastel, modern-flat squares baked into the interest icon
+     art so they read as warm gold/sepia medallion art instead. */
+  filter: sepia(0.75) saturate(1.8) hue-rotate(-6deg) contrast(1.05) brightness(0.96);
 }
 
 .icon-card .label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
+  font-family: var(--ff-hand);
+  font-size: 17px;
+  font-weight: 600;
   letter-spacing: 0.2px;
+  color: var(--muted);
 }
 
 .icon-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 16px 32px rgba(11,22,42,0.11), 0 4px 8px rgba(11,22,42,0.06);
+  transform: translateY(-4px) scale(1.04);
+}
+.icon-card:hover .icon {
+  border-color: rgba(147,96,31,0.55);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,0.35),
+    inset 0 -3px 5px rgba(58,38,14,0.16),
+    0 8px 18px rgba(58,38,14,0.28);
 }
 
 .icon-card:focus {
-  outline: 3px solid rgba(37,99,235,0.14);
-  outline-offset: 4px;
+  outline: none;
+}
+.icon-card:focus .icon {
+  outline: 3px solid rgba(147,96,31,0.25);
+  outline-offset: 3px;
 }
 
-.icon-card.active {
-  background: linear-gradient(135deg, var(--cursor-start), var(--cursor-end));
-  border-color: transparent;
-  box-shadow: 0 8px 20px rgba(11,22,42,0.14);
+.icon-card.active .icon {
+  background-image: url('../assets/scroll/wax-seal.png');
+  background-size: 230% auto;
+  background-position: 50% 12%;
+  background-repeat: no-repeat;
+  background-color: #8a231b;
+  border-color: rgba(80,20,15,0.55);
+  box-shadow:
+    inset 0 -3px 5px rgba(0,0,0,0.45),
+    inset 0 2px 3px rgba(255,190,165,0.30),
+    0 4px 12px rgba(58,38,14,0.30);
 }
 
 .icon-card.active .label {
-  color: #081226;
-  font-weight: 600;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 /* ── Panel wrapper shared ─── */

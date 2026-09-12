@@ -1,0 +1,61 @@
+/* ─────────────────────────────────────────────────────
+   Page-level wooden scroll rods — cap the whole unrolled
+   manuscript at the very top and bottom of the page.
+───────────────────────────────────────────────────── */
+.page-scroll-rod {
+  position: relative;
+  padding: 0 26px;
+  z-index: 5;
+}
+
+.page-scroll-rod-bar {
+  position: relative;
+  height: 26px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 2px,
+      transparent 2px, transparent 26px
+    ),
+    linear-gradient(
+      180deg,
+      #c99a67 0%,
+      #a9764a 18%,
+      #8a5a34 45%,
+      #6b4423 72%,
+      #4a2f18 100%
+    );
+  box-shadow:
+    inset 0 3px 3px rgba(255,222,180,0.40),
+    inset 0 -4px 6px rgba(0,0,0,0.45),
+    0 6px 14px rgba(20,12,4,0.40);
+}
+
+/* Finials — the rounded ends of the dowel, poking past the page edge */
+.page-scroll-rod-bar::before,
+.page-scroll-rod-bar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 32% 28%, #d9ab73, #8a5a34 55%, #3f2711 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.45), inset 0 1px 2px rgba(255,230,190,0.35);
+}
+.page-scroll-rod-bar::before { left: -17px; }
+.page-scroll-rod-bar::after  { right: -17px; }
+
+.page-scroll-rod--top    { margin-bottom: -13px; }
+.page-scroll-rod--bottom { margin-top: -13px; }
+
+@media (max-width: 640px) {
+  .page-scroll-rod { padding: 0 18px; }
+  .page-scroll-rod-bar { height: 20px; }
+  .page-scroll-rod-bar::before,
+  .page-scroll-rod-bar::after { width: 26px; height: 26px; }
+  .page-scroll-rod-bar::before { left: -13px; }
+  .page-scroll-rod-bar::after  { right: -13px; }
+}

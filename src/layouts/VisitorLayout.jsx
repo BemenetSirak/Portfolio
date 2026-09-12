@@ -6,14 +6,15 @@ import About from '../pages/About'
 import Resume from '../pages/Resume'
 import Interests from '../pages/Interests'
 import VisitorHero from '../components/VisitorHero'
-import FunCursor from '../components/FunCursor'
 import Gallery from '../components/Gallery'
 import FunZone from '../components/FunZone'
 import ContactStrip from '../components/ContactStrip'
 import ThingsILove from '../components/ThingsILove'
 import BrandLogo from '../components/BrandLogo'
 import InterestsDropdown from '../components/InterestsDropdown'
+import ScrollRod from '../components/ScrollRod'
 import './VisitorLayout.css'
+import './VisitorScroll.css'
 
 const INTEREST_ITEMS = [
   { id: 'history',  label: 'History' },
@@ -23,6 +24,14 @@ const INTEREST_ITEMS = [
   { id: 'hiking',   label: 'Hiking' },
 ]
 
+function getCurrentTheme() {
+  try {
+    return document.getElementById('root')?.getAttribute('data-theme') || 'light'
+  } catch (e) {
+    return 'light'
+  }
+}
+
 function VisitorLayout({ onBack }) {
   const [showAbout, setShowAbout]         = useState(false)
   const [showResume, setShowResume]       = useState(false)
@@ -30,6 +39,16 @@ function VisitorLayout({ onBack }) {
   const [interestsTab, setInterestsTab]   = useState(null)
   const [menuOpen, setMenuOpen]           = useState(false)
   const [interestsExp, setInterestsExp]   = useState(false)
+  const [themeKey, setThemeKey]           = useState(getCurrentTheme)
+
+  // The background/vignette layers are keyed by theme and force-remounted
+  // on change — see the comment in ThemeToggle for why a plain attribute
+  // cascade isn't reliable enough for these large full-page layers.
+  useEffect(() => {
+    function onThemeChange(e) { setThemeKey(e.detail.theme) }
+    window.addEventListener('themechange', onThemeChange)
+    return () => window.removeEventListener('themechange', onThemeChange)
+  }, [])
 
   // Reveal-on-scroll for anything tagged .v-reveal.
   useEffect(() => {
@@ -62,6 +81,8 @@ function VisitorLayout({ onBack }) {
 
   return (
     <div className="visitor-layout">
+      <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
+      <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
       <div className="sticky-header">
         <header className="layout-header">
           <div className="header-start">
@@ -153,6 +174,8 @@ function VisitorLayout({ onBack }) {
         )}
       </div>
 
+      <ScrollRod position="top" />
+
       <main className="visitor-main">
         <VisitorHero
           name={profile.name}
@@ -160,21 +183,24 @@ function VisitorLayout({ onBack }) {
           onExplore={(tab) => { setInterestsTab(tab); setShowInterests(true) }}
         />
 
+        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
         <div className="v-reveal">
           <ThingsILove />
         </div>
 
+        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
         <div className="facts-gallery-row v-reveal">
           <FunZone />
           <Gallery />
         </div>
 
+        <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
         <div className="v-reveal">
           <ContactStrip contact={profile.contact} />
         </div>
       </main>
 
-      <FunCursor />
+      <ScrollRod position="bottom" />
     </div>
   )
 }

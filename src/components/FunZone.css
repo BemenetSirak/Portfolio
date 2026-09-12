@@ -1,7 +1,7 @@
 .fun-facts {
   padding: 22px 24px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #fffbf0, #fff8f3);
+  border-radius: 10px;
+  background: var(--panel);
   height: 100%;
   box-sizing: border-box;
 }
@@ -39,6 +39,3 @@
   margin-top: 1px;
 }
 
-#root[data-theme='dark'] .fun-facts {
-  background: linear-gradient(135deg, #0d1b2a, #0b1726);
-}

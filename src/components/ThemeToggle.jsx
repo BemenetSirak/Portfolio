@@ -22,6 +22,13 @@ export default function ThemeToggle() {
     } catch (e) {}
     const root = document.getElementById('root')
     if (root) root.setAttribute('data-theme', theme)
+    // Let listeners (e.g. the visitor page's background layers) know the
+    // theme changed. Chrome can leave large absolutely-positioned
+    // background layers stale after an attribute-only theme switch — the
+    // DOM/CSSOM update correctly but the compositor doesn't always
+    // repaint every tile — so those listeners force-remount rather than
+    // relying on the attribute cascade to repaint them.
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }))
   }, [theme])
 
   function cycle() {

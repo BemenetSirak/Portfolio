@@ -1,0 +1,282 @@
+/* ─────────────────────────────────────────────────────
+   Ancient-scroll theme for the visitor page.
+   Scoped entirely under .visitor-layout so the recruiter
+   flow (which shares theme.css tokens) is untouched.
+───────────────────────────────────────────────────── */
+
+.visitor-layout {
+  --bg:      #e9dcb8;
+  --panel:   #f2e8ca;
+  --text:    #2b1d0c;
+  --muted:   #7a6142;
+  --accent:  #93601f;
+  --card-shadow:
+    0 10px 22px rgba(58,38,14,0.16),
+    0 2px 6px rgba(58,38,14,0.10);
+  --card-shadow-hover:
+    0 16px 32px rgba(58,38,14,0.22),
+    0 4px 10px rgba(58,38,14,0.14);
+
+  --ff-sans:    'EB Garamond', Georgia, 'Times New Roman', serif;
+  --ff-display: 'Cinzel', 'EB Garamond', Georgia, serif;
+  --ff-hand:    'Caveat', 'Segoe Script', cursive;
+
+  /* Theme tokens for the parchment background system */
+  --bg-parchment: url('../assets/scroll/parchment-texture.jpeg');
+  --text-main: var(--text);
+  --nav-text:  var(--text);
+  --card-bg:   rgba(255, 248, 231, 0.78);
+  --border-gold: linear-gradient(135deg, #f3e5ab, #8b6b23);
+
+  position: relative;
+  background-color: var(--bg);
+}
+
+#root[data-theme='dark'] .visitor-layout {
+  --bg:      #16100a;
+  --panel:   #26190f;
+  --text:    #f3e5ab;
+  --muted:   #c2a875;
+  --accent:  #dba53e;
+  --card-shadow:
+    0 10px 24px rgba(0,0,0,0.45),
+    0 2px 6px rgba(0,0,0,0.30);
+  --card-shadow-hover:
+    0 18px 36px rgba(0,0,0,0.55),
+    0 4px 10px rgba(0,0,0,0.35);
+  --cursor-start: #dba53e;
+  --cursor-end:   #93601f;
+  --card-bg: rgba(20, 12, 6, 0.82);
+  --border-gold: linear-gradient(135deg, #d4af37, #4a3b10);
+}
+
+/* Luminous ink — a soft warm glow behind dark-mode headings so cream
+   text reads like it catches candlelight against the manuscript */
+#root[data-theme='dark'] .visitor-layout h1,
+#root[data-theme='dark'] .visitor-layout h2,
+#root[data-theme='dark'] .visitor-layout h3,
+#root[data-theme='dark'] .visitor-layout h4 {
+  text-shadow: 0 0 14px rgba(243,229,171,0.30), 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Full-bleed parchment backdrop, kept on its own layer (behind everything,
+   z-index:-1). Real DOM nodes, keyed by theme in VisitorLayout so React
+   force-remounts them on a theme switch — Chrome does not reliably
+   repaint a large absolutely-positioned pseudo-element (whether driven by
+   `filter`+var() or a plain background swap) when only an ancestor's
+   data-theme ATTRIBUTE changes; the compositor can leave stale tiles
+   until an unrelated reflow (e.g. a window resize) happens to touch it.
+   A fresh DOM node has no stale tile to reuse. */
+.scroll-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--bg-parchment);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+#root[data-theme='dark'] .scroll-backdrop {
+  background-image:
+    radial-gradient(circle at 9% 12%, rgba(255,175,60,0.38) 0%, rgba(255,140,40,0.10) 28%, rgba(10,7,4,0.80) 55%, rgba(10,7,4,0.90) 100%),
+    var(--bg-parchment);
+  background-size: cover, cover;
+  background-position: center top, center top;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* Heavy sepia vignette over the page, so the four corners always read
+   dark and aged like an old manuscript photograph. */
+.scroll-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 60% at 50% 30%, transparent 48%, rgba(35,20,8,0.55) 100%);
+}
+#root[data-theme='dark'] .scroll-vignette {
+  background: radial-gradient(ellipse 85% 60% at 50% 30%, transparent 40%, rgba(0,0,0,0.72) 100%);
+}
+
+/* ── Base type ─────────────────────────────────────── */
+.visitor-layout,
+.visitor-layout button,
+.visitor-layout input {
+  font-family: var(--ff-sans);
+}
+
+.visitor-layout h1,
+.visitor-layout h2,
+.visitor-layout h3,
+.visitor-layout h4 {
+  font-family: var(--ff-display);
+  letter-spacing: 0.4px;
+  color: var(--text-main);
+}
+
+.visitor-layout .panel h3,
+.visitor-layout .things-i-love h3,
+.visitor-layout .fun-facts h3,
+.visitor-layout .gallery h3,
+.visitor-layout .contact-strip h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  letter-spacing: 1.4px;
+  color: var(--text-main);
+}
+.visitor-layout .panel h3::before {
+  content: '❧';
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-family: serif;
+}
+
+/* Cards — a translucent vellum panel over the parchment, edged in a
+   thin gilded border and a faint grain, with hand-cut asymmetric
+   corners rather than a flat, uniformly-rounded modern UI box. */
+.visitor-layout .panel {
+  background-image:
+    linear-gradient(var(--card-bg), var(--card-bg)),
+    url('../assets/scroll/parchment-texture.jpeg'),
+    var(--border-gold);
+  background-blend-mode: normal, overlay, normal;
+  background-size: auto, 240% auto, auto;
+  background-position: center, 20% 15%, center;
+  background-origin: padding-box, padding-box, border-box;
+  background-clip: padding-box, padding-box, border-box;
+  border: 1.5px solid transparent;
+  border-radius: 4px 16px 5px 18px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(2px);
+}
+
+/* ── Header — ink lettering sitting right on the parchment,
+   no separate bar, matching how the nav reads on an unrolled sheet ── */
+.visitor-layout .sticky-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(90,58,24,0.22);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.visitor-layout .layout-header {
+  position: relative;
+}
+.visitor-layout .layout-header::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(147,96,31,0.35), transparent);
+}
+
+.visitor-layout .visitor-nav .link,
+.visitor-layout .interests-trigger {
+  font-family: var(--ff-hand);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--nav-text);
+}
+.visitor-layout .visitor-nav .link:hover,
+.visitor-layout .interests-trigger:hover {
+  background: rgba(147,96,31,0.10);
+  color: var(--accent);
+}
+
+.visitor-layout .theme-toggle {
+  background: var(--panel);
+  border-color: rgba(147,96,31,0.30);
+  color: var(--nav-text);
+}
+.visitor-layout .theme-toggle:hover {
+  background: rgba(147,96,31,0.10);
+}
+/* A soft candle-like glow around the toggle once night has fallen */
+#root[data-theme='dark'] .visitor-layout .theme-toggle {
+  box-shadow: 0 0 10px rgba(219,165,62,0.45), 0 0 2px rgba(219,165,62,0.6);
+}
+
+.visitor-layout .mobile-menu-btn {
+  color: var(--nav-text);
+  border-color: rgba(147,96,31,0.30);
+}
+.visitor-layout .mobile-drawer {
+  background: var(--bg);
+  border-top-color: rgba(147,96,31,0.22);
+}
+.visitor-layout .mobile-nav-item,
+.visitor-layout .mobile-nav-subitem {
+  color: var(--nav-text);
+  border-bottom-color: rgba(147,96,31,0.16);
+  font-family: var(--ff-hand);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.visitor-layout .mobile-nav-item:hover,
+.visitor-layout .mobile-nav-subitem:hover {
+  color: var(--accent);
+  background: rgba(147,96,31,0.08);
+}
+
+/* theme.css / Layout.css carry #root[data-theme='dark'] rules whose ID
+   selector outranks the plain .visitor-layout class above — restate the
+   same parchment values here so dark mode doesn't fall back to the
+   generic navy chrome. */
+#root[data-theme='dark'] .visitor-layout .sticky-header {
+  background: transparent;
+  border-bottom-color: rgba(219,165,62,0.16);
+}
+#root[data-theme='dark'] .visitor-layout .mobile-menu-btn {
+  border-color: rgba(219,165,62,0.30);
+}
+#root[data-theme='dark'] .visitor-layout .mobile-drawer {
+  border-top-color: rgba(219,165,62,0.18);
+}
+#root[data-theme='dark'] .visitor-layout .mobile-nav-item {
+  border-bottom-color: rgba(219,165,62,0.14);
+}
+#root[data-theme='dark'] .visitor-layout .mobile-nav-subitem:hover {
+  color: var(--accent);
+  background: rgba(219,165,62,0.10);
+}
+
+/* ── Layout rhythm ─────────────────────────────────── */
+.visitor-layout .visitor-main {
+  padding: 30px 30px 20px;
+  gap: 22px;
+}
+
+/* Ornamental hairline between sections of the unrolled manuscript */
+.scroll-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--accent);
+  opacity: 0.7;
+}
+.scroll-divider::before,
+.scroll-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(147,96,31,0.45), transparent);
+}
+#root[data-theme='dark'] .scroll-divider::before,
+#root[data-theme='dark'] .scroll-divider::after {
+  background: linear-gradient(90deg, transparent, rgba(219,165,62,0.35), transparent);
+}
+.scroll-divider span {
+  font-family: serif;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 720px) {
+  .visitor-layout .visitor-main { padding: 20px 16px 12px; gap: 18px; }
+}

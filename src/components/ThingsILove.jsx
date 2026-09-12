@@ -82,7 +82,7 @@ export default function ThingsILove() {
   const activeInterest = profile.interests.find(i => i.id === active)
 
   return (
-    <div id="things-i-love" className="things-i-love panel">
+    <div id="things-i-love" className="things-i-love">
       <h3>Things I Love</h3>
 
       <div className="love-buttons" role="tablist" aria-label="Things I love">
@@ -95,7 +95,9 @@ export default function ThingsILove() {
             className={`icon-card${active === t.id ? ' active' : ''}`}
             style={{ animationDelay: `${t.delay}ms` }}
           >
-            <img src={t.icon} alt={t.label} className="icon" />
+            <span className="icon">
+              <img src={t.icon} alt={t.label} />
+            </span>
             <span className="label">{t.label}</span>
           </button>
         ))}
