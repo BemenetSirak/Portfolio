@@ -11,132 +11,112 @@
 
 /* ── Container ─── */
 .things-i-love {
-  padding: 20px;
-  border-radius: 16px;
+  padding: 6px 10px 0;
 }
 
-.things-i-love h3 {
-  font-family: var(--ff-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0 0 14px;
-  color: var(--text);
+/* Heading and the row of sketches sit on one line, like a caption
+   written beside a strip of ink drawings */
+.love-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.visitor-layout .things-i-love h3 {
+  font-family: var(--ff-scroll);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.85rem;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  margin: 28px 0 0;
+  color: var(--ink);
+  flex-shrink: 0;
 }
 
 /* ── Tab row ─── */
 .love-buttons {
   display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 18px;
   flex-wrap: wrap;
+  flex: 1;
+  justify-content: space-around;
 }
 
-/* ── Icon badges — medallions stamped directly on the parchment ─── */
+/* ── Sketches — inked straight onto the parchment ─── */
 .icon-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 6px 8px;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 4px 6px;
   background: transparent;
   border: none;
   cursor: pointer;
-  min-width: 86px;
+  min-width: 108px;
   animation: popIn 0.42s cubic-bezier(0.2, 0.9, 0.3, 1) both;
   transition: transform 0.2s cubic-bezier(0.2,0.9,0.3,1);
 }
 
 .icon-card .icon {
-  position: relative;
-  width: 42px;
-  height: 42px;
+  width: 92px;
+  height: 84px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  border-radius: 50%;
-  box-sizing: content-box;
-  background:
-    radial-gradient(circle at 32% 26%, rgba(255,244,214,0.55) 0%, transparent 55%),
-    var(--panel);
-  border: 2.5px solid rgba(147,96,31,0.45);
-  box-shadow:
-    0 0 0 3px rgba(147,96,31,0.14),
-    inset 0 2px 3px rgba(255,255,255,0.35),
-    inset 0 -3px 5px rgba(58,38,14,0.18),
-    0 4px 10px rgba(58,38,14,0.22);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: filter 0.2s ease;
 }
-
-/* Reeded coin edge, like a stamped gold medallion */
-.icon-card .icon::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  pointer-events: none;
-  background: repeating-conic-gradient(rgba(90,58,20,0.85) 0deg 4deg, rgba(217,171,115,0.55) 4deg 10deg);
-  -webkit-mask: radial-gradient(circle closest-side, transparent 76%, #000 79%, #000 96%, transparent 99%);
-          mask: radial-gradient(circle closest-side, transparent 76%, #000 79%, #000 96%, transparent 99%);
-}
-
-.icon-card .icon img {
+.icon-card .icon svg {
   width: 100%;
   height: 100%;
   display: block;
-  /* Tames the pastel, modern-flat squares baked into the interest icon
-     art so they read as warm gold/sepia medallion art instead. */
-  filter: sepia(0.75) saturate(1.8) hue-rotate(-6deg) contrast(1.05) brightness(0.96);
+  filter: drop-shadow(0 2px 2px rgba(58, 38, 14, 0.25));
 }
 
 .icon-card .label {
-  font-family: var(--ff-hand);
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--ff-scroll);
+  font-style: italic;
+  font-size: 1.45rem;
+  line-height: 1.1;
   letter-spacing: 0.2px;
-  color: var(--muted);
+  color: var(--ink);
 }
 
 .icon-card:hover {
   transform: translateY(-4px) scale(1.04);
 }
-.icon-card:hover .icon {
-  border-color: rgba(147,96,31,0.55);
-  box-shadow:
-    inset 0 2px 3px rgba(255,255,255,0.35),
-    inset 0 -3px 5px rgba(58,38,14,0.16),
-    0 8px 18px rgba(58,38,14,0.28);
-}
 
 .icon-card:focus {
   outline: none;
 }
-.icon-card:focus .icon {
-  outline: 3px solid rgba(147,96,31,0.25);
-  outline-offset: 3px;
+.icon-card:focus-visible .icon {
+  outline: 3px solid rgba(147,96,31,0.30);
+  outline-offset: 4px;
+  border-radius: 12px;
 }
 
 .icon-card.active .icon {
-  background-image: url('../assets/scroll/wax-seal.png');
-  background-size: 230% auto;
-  background-position: 50% 12%;
-  background-repeat: no-repeat;
-  background-color: #8a231b;
-  border-color: rgba(80,20,15,0.55);
-  box-shadow:
-    inset 0 -3px 5px rgba(0,0,0,0.45),
-    inset 0 2px 3px rgba(255,190,165,0.30),
-    0 4px 12px rgba(58,38,14,0.30);
+  filter: drop-shadow(0 0 12px rgba(219,165,62,0.75));
 }
-
 .icon-card.active .label {
   color: var(--accent);
-  font-weight: 700;
+}
+
+/* Night: dim the sketches so they sit under the candlelight */
+#root[data-theme='dark'] .icon-card .icon svg {
+  filter: brightness(0.82) sepia(0.25) drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+}
+#root[data-theme='dark'] .icon-card .label {
+  text-shadow: 0 0 10px rgba(243,229,171,0.22), 0 2px 3px rgba(0,0,0,0.6);
 }
 
 /* ── Panel wrapper shared ─── */
 .love-panels .love-panel {
-  margin-top: 4px;
+  margin-top: 18px;
   border-radius: 16px;
   animation: panelSlide 0.32s cubic-bezier(0.2, 0.9, 0.3, 1);
   overflow: hidden;
@@ -258,9 +238,12 @@
 
 /* ── Responsive ─── */
 @media (max-width: 720px) {
-  .love-buttons { flex-wrap: wrap; }
-  .icon-card { min-width: 76px; padding: 10px; }
-  .icon-card .icon { width: 34px; height: 34px; }
+  .love-row { gap: 12px; }
+  .visitor-layout .things-i-love h3 { margin-top: 0; width: 100%; font-size: 1.5rem; }
+  .love-buttons { gap: 8px; justify-content: center; }
+  .icon-card { min-width: 84px; padding: 6px; }
+  .icon-card .icon { width: 66px; height: 60px; }
+  .icon-card .label { font-size: 1.15rem; }
   .love-panel.panel-bg { min-height: 320px; }
   .panel-bg-content { padding: 24px 18px 20px; }
   .panel-bg-content h4 { font-size: 1.25rem; }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const THEMES = ['light', 'dark']
 
@@ -7,8 +7,8 @@ function getInitialTheme() {
     const stored = localStorage.getItem('theme')
     if (stored && THEMES.includes(stored)) return stored
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
-  } catch (e) {
-    // ignore
+  } catch {
+    // storage or matchMedia unavailable — fall through to light
   }
   return 'light'
 }
@@ -19,7 +19,9 @@ export default function ThemeToggle() {
   useEffect(() => {
     try {
       localStorage.setItem('theme', theme)
-    } catch (e) {}
+    } catch {
+      // persistence is best-effort
+    }
     const root = document.getElementById('root')
     if (root) root.setAttribute('data-theme', theme)
     // Let listeners (e.g. the visitor page's background layers) know the
@@ -30,6 +32,15 @@ export default function ThemeToggle() {
     // relying on the attribute cascade to repaint them.
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }))
   }, [theme])
+
+  // Other controls (the visitor page's candle) can set the theme directly
+  useEffect(() => {
+    function onSetTheme(e) {
+      if (THEMES.includes(e.detail?.theme)) setTheme(e.detail.theme)
+    }
+    window.addEventListener('settheme', onSetTheme)
+    return () => window.removeEventListener('settheme', onSetTheme)
+  }, [])
 
   function cycle() {
     const next = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]
