@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, useMotionValue, useTransform, useMotionTemplate, animate } from 'framer-motion'
+import { motion, useMotionValue, useTransform, useMotionTemplate, useReducedMotion, animate } from 'framer-motion'
 import './ScriptoriumGate.css'
 
 const DRAG_RANGE = 230
@@ -36,6 +36,7 @@ function alreadyOpened() {
 export default function ScriptoriumGate({ children }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
+  const reduceMotion = useReducedMotion()
 
   const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
   const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)
@@ -53,15 +54,24 @@ export default function ScriptoriumGate({ children }) {
 
   function handleDragEnd() {
     const current = y.get()
+    // The drag itself is real, user-driven motion either way, but a
+    // visitor who's asked for less motion still doesn't want the
+    // springy overshoot/bounce on release — settle directly instead.
     if (current > DRAG_RANGE * OPEN_THRESHOLD) {
-      animate(y, DRAG_RANGE, { type: 'spring', stiffness: 210, damping: 26, onComplete: finish })
+      animate(y, DRAG_RANGE, reduceMotion
+        ? { duration: 0.15, onComplete: finish }
+        : { type: 'spring', stiffness: 210, damping: 26, onComplete: finish })
     } else {
-      animate(y, 0, { type: 'spring', stiffness: 320, damping: 30 })
+      animate(y, 0, reduceMotion
+        ? { duration: 0.15 }
+        : { type: 'spring', stiffness: 320, damping: 30 })
     }
   }
 
   function skip() {
-    animate(y, DRAG_RANGE, { duration: 0.5, ease: [0.25, 1, 0.5, 1], onComplete: finish })
+    animate(y, DRAG_RANGE, reduceMotion
+      ? { duration: 0.01, onComplete: finish }
+      : { duration: 0.5, ease: [0.25, 1, 0.5, 1], onComplete: finish })
   }
 
   return (
@@ -79,6 +89,7 @@ export default function ScriptoriumGate({ children }) {
       {!open && (
         <>
           <div className="scriptorium-track">
+            {!reduceMotion && <span className="scriptorium-drag-cue" aria-hidden="true" />}
             <motion.button
               type="button"
               className="scriptorium-handle"
@@ -89,7 +100,8 @@ export default function ScriptoriumGate({ children }) {
               style={{ y }}
               onDragEnd={handleDragEnd}
               onClick={skip}
-              aria-label="Drag down, or press, to unroll the page"
+              aria-label="Drag down to unroll the page"
+              aria-describedby="scriptorium-instructions"
             >
               <span className="scriptorium-handle-bar" />
             </motion.button>
@@ -99,6 +111,9 @@ export default function ScriptoriumGate({ children }) {
           <button type="button" className="scriptorium-skip" onClick={skip}>
             Skip ▸
           </button>
+          <span id="scriptorium-instructions" className="visually-hidden">
+            Drag the handle down, or activate it with Enter or Space, to unroll the page. A Skip button is also available if dragging isn't convenient.
+          </span>
         </>
       )}
     </>

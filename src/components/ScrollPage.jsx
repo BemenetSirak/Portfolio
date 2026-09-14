@@ -16,9 +16,9 @@ export default function ScrollPage({ title, children }) {
           VisitorLayout), so the shared torn-edge filter it normally
           provides isn't in the DOM here — redeclare it locally. */}
       <svg className="scroll-svg-defs" aria-hidden="true" focusable="false">
-        <filter id="scroll-torn-edge" x="-6%" y="-8%" width="112%" height="116%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="3" seed="4" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+        <filter id="scroll-torn-edge" x="-8%" y="-10%" width="116%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.025 0.045" numOctaves="4" seed="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
 

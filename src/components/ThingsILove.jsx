@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import './ThingsILove.css'
 import MoviesPanel from './MoviesPanel'
 import profile from '../data/profileData'
@@ -12,6 +12,16 @@ const ROLL_VARIANTS = {
   initial: { scaleY: 0.06, opacity: 0 },
   animate: { scaleY: 1, opacity: 1, transition: { duration: 0.42, ease: [0.25, 1, 0.5, 1] } },
   exit: { scaleY: 0.06, opacity: 0, transition: { duration: 0.28, ease: [0.5, 0, 0.75, 0] } },
+}
+
+// Framer Motion doesn't consult prefers-reduced-motion on its own — a
+// visitor who's asked their OS for less motion still gets the full
+// scaleY roll otherwise, which is exactly the kind of large, fast
+// transform that setting is meant to suppress.
+const REDUCED_VARIANTS = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.15 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
 }
 
 const TABS = [
@@ -70,6 +80,8 @@ function InterestPanel({ data }) {
 
 export default function ThingsILove() {
   const [active, setActive] = useState(() => getTabFromURL())
+  const reduceMotion = useReducedMotion()
+  const rollVariants = reduceMotion ? REDUCED_VARIANTS : ROLL_VARIANTS
 
   useEffect(() => {
     function onPop() { setActive(getTabFromURL()) }
@@ -123,7 +135,7 @@ export default function ThingsILove() {
               key="movies"
               className="love-panel movies-panel-wrap panel"
               style={{ transformOrigin: 'top center' }}
-              variants={ROLL_VARIANTS}
+              variants={rollVariants}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -135,7 +147,7 @@ export default function ThingsILove() {
             <motion.div
               key={active}
               style={{ transformOrigin: 'top center' }}
-              variants={ROLL_VARIANTS}
+              variants={rollVariants}
               initial="initial"
               animate="animate"
               exit="exit"

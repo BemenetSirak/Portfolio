@@ -30,7 +30,20 @@ const INTEREST_ITEMS = [
 ]
 
 // Brass tacks pinning the sheet to the desk, named by their spot on the edge
-const TACKS = ['tl', 'tr', 'l1', 'l2', 'r1', 'r2', 'r3', 'bl', 'br']
+const TACKS = ['tl', 'tr', 'l1', 'l2', 'l3', 'l4', 'r1', 'r2', 'r3', 'r4', 'r5', 'bl', 'br']
+
+// Shared by the desktop nav and the mobile drawer so the two link lists
+// can't drift apart. 'interests' is rendered specially in each place
+// (a hover dropdown on desktop, an expandable sub-list on mobile) since
+// the two use genuinely different UI patterns, not just different markup.
+function buildNavLinks({ setShowAbout, setShowResume }) {
+  return [
+    { id: 'home',      label: 'Home',     onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { id: 'about',     label: 'About Me', onClick: () => setShowAbout(true) },
+    { id: 'interests', label: 'Interests' },
+    { id: 'resume',    label: 'Resume',   onClick: () => setShowResume(true) },
+  ]
+}
 
 function VisitorLayout({ onBack }) {
   const [showAbout, setShowAbout]         = useState(false)
@@ -97,15 +110,17 @@ function VisitorLayout({ onBack }) {
     setMenuOpen(false)
   }
 
+  const navLinks = buildNavLinks({ setShowAbout, setShowResume })
+
   return (
     <div className="visitor-layout">
       {/* Shared displacement filter that roughens every torn/burnt
           parchment edge on the page (hero scrap, panel cards) into an
           irregular tear instead of a clean geometric cut. */}
       <svg className="scroll-svg-defs" aria-hidden="true" focusable="false">
-        <filter id="scroll-torn-edge" x="-6%" y="-8%" width="112%" height="116%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="3" seed="4" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+        <filter id="scroll-torn-edge" x="-8%" y="-10%" width="116%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.025 0.045" numOctaves="4" seed="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
 
@@ -134,23 +149,24 @@ function VisitorLayout({ onBack }) {
         <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
         <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
 
-        <ScrollRod position="top">
-          <p className="scroll-masthead">[Bemenet Mesgune.net - Old Scrolls]</p>
-        </ScrollRod>
+        <ScrollRod position="top" />
 
         <div className="scroll-seal-brand">
           <BrandLogo onBack={onBack} />
         </div>
         <img className="scroll-quill" src={quillInkwell} alt="" aria-hidden="true" />
+        {/* The name written on the parchment itself, not on the wooden
+            roller above it — ink doesn't sit on a turned dowel. */}
+        <p className="scroll-title">Bemenet Mesgune</p>
 
         <div className="sticky-header">
           <header className="layout-header">
             <div className="header-start">
               <nav className="visitor-nav">
-                <button className="link" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
-                <button className="link" onClick={() => setShowAbout(true)}>About Me</button>
-                <InterestsDropdown />
-                <button className="link" onClick={() => setShowResume(true)}>Resume</button>
+                {navLinks.map(item => item.id === 'interests'
+                  ? <InterestsDropdown key={item.id} />
+                  : <button key={item.id} className="link" onClick={item.onClick}>{item.label}</button>
+                )}
                 <button className="link" onClick={onBack}>Switch</button>
               </nav>
               <ThemeToggle />
@@ -177,52 +193,44 @@ function VisitorLayout({ onBack }) {
 
           {menuOpen && (
             <nav className="mobile-drawer" aria-label="Mobile navigation">
-              <button
-                className="mobile-nav-item"
-                onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false) }}
-              >
-                Home
-              </button>
-              <button
-                className="mobile-nav-item"
-                onClick={() => { setShowAbout(true); setMenuOpen(false) }}
-              >
-                About Me
-              </button>
-              <div className="mobile-nav-group">
-                <button
-                  className="mobile-nav-item"
-                  onClick={() => setInterestsExp(s => !s)}
-                  aria-expanded={interestsExp}
-                >
-                  Interests
-                  <svg
-                    width="14" height="14" viewBox="0 0 12 12" fill="none"
-                    style={{ transition: 'transform 0.2s', transform: interestsExp ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}
+              {navLinks.map(item => item.id === 'interests' ? (
+                <div className="mobile-nav-group" key={item.id}>
+                  <button
+                    className="mobile-nav-item"
+                    onClick={() => setInterestsExp(s => !s)}
+                    aria-expanded={interestsExp}
                   >
-                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                    Interests
+                    <svg
+                      width="14" height="14" viewBox="0 0 12 12" fill="none"
+                      style={{ transition: 'transform 0.2s', transform: interestsExp ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}
+                    >
+                      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  {interestsExp && (
+                    <div className="mobile-nav-sub">
+                      {INTEREST_ITEMS.map(sub => (
+                        <button
+                          key={sub.id}
+                          className="mobile-nav-subitem"
+                          onClick={() => openInterest(sub.id)}
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  key={item.id}
+                  className="mobile-nav-item"
+                  onClick={() => { item.onClick(); setMenuOpen(false) }}
+                >
+                  {item.label}
                 </button>
-                {interestsExp && (
-                  <div className="mobile-nav-sub">
-                    {INTEREST_ITEMS.map(item => (
-                      <button
-                        key={item.id}
-                        className="mobile-nav-subitem"
-                        onClick={() => openInterest(item.id)}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <button
-                className="mobile-nav-item"
-                onClick={() => { setShowResume(true); setMenuOpen(false) }}
-              >
-                Resume
-              </button>
+              ))}
               <button
                 className="mobile-nav-item"
                 onClick={() => { onBack(); setMenuOpen(false) }}
@@ -241,8 +249,11 @@ function VisitorLayout({ onBack }) {
               <ThingsILove />
             </div>
 
-            <div className="scroll-divider scroll-divider--sealed" aria-hidden="true">
-              <img className="scroll-seal scroll-seal--divider" src={waxSeal} alt="" />
+            <div className="scroll-divider" aria-hidden="true">
+              <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
+                <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
+                <circle cx="23" cy="10" r="1.6" />
+              </svg>
             </div>
             <div className="facts-gallery-row v-reveal">
               <FunZone />
@@ -263,8 +274,13 @@ function VisitorLayout({ onBack }) {
 
         <ScrollRod position="bottom" />
 
-        <img className="scroll-seal scroll-seal--bottom" src={waxSeal} alt="" aria-hidden="true" />
-        <img className="scroll-seal scroll-seal--corner" src={waxSeal} alt="" aria-hidden="true" />
+        {/* The scroll has already been opened, so the bottom seal is
+            shown cracked apart rather than intact — two halves of the
+            same wax stamp, split and turned away from each other. */}
+        <div className="scroll-seal-broken" aria-hidden="true">
+          <img className="scroll-seal-broken-half scroll-seal-broken-half--left" src={waxSeal} alt="" />
+          <img className="scroll-seal-broken-half scroll-seal-broken-half--right" src={waxSeal} alt="" />
+        </div>
         {TACKS.map(t => (
           <span key={t} className={`scroll-tack scroll-tack--${t}`} aria-hidden="true" />
         ))}

@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import './Interests.css'
 import profile from '../data/profileData'
 import InteractiveMovies from '../components/InteractiveMovies'
-import useUnroll from '../hooks/useUnroll'
+import ScrollPage from '../components/ScrollPage'
 
 export default function Interests({ onClose, initialTab }) {
   const [tab, setTab] = useState(initialTab || 'things')
-  const unrolled = useUnroll()
 
   return (
-    <div className={`interests-root scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
+    <ScrollPage title="Interests">
+      <div className="interests-root">
       <header className="interests-header">
         <h1>Welcome — explore my world</h1>
         <div>
@@ -70,6 +70,7 @@ export default function Interests({ onClose, initialTab }) {
           </section>
         </main>
       </div>
-    </div>
+      </div>
+    </ScrollPage>
   )
 }

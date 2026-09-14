@@ -10,7 +10,14 @@
   flex-direction: column;
   gap: 16px;
   padding: 16px 24px 40px;
-  flex: 1;
+  /* grow to push the bottom roller down when content is shorter than
+     the viewport, but never shrink below the content's own height —
+     flex:1's default flex-basis:0%/flex-shrink:1 could otherwise clamp
+     this to whatever space was left over in the flex chain above it,
+     cutting off everything past that point (seen at narrow widths,
+     where the stacked facts-gallery-row pushes total content past a
+     single viewport's worth of height). */
+  flex: 1 0 auto;
   text-align: left;
 }
 

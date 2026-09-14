@@ -10,6 +10,14 @@
   overflow: hidden;
   border-radius: 3px;
   margin-bottom: 14px;
+  /* This sits as a flex item inside .visitor-main (a flex column). Once
+     open, its real content is several times taller than one viewport —
+     without flex-shrink:0, Chrome's flexbox algorithm shrinks it down
+     to whatever space was left in the flex chain above it (its default
+     auto min-height doesn't reliably protect deep block content from
+     this), silently cutting off everything past that point even though
+     overflow is visible and nothing was ever coded to clip it. */
+  flex-shrink: 0;
   box-shadow:
     0 30px 60px rgba(0,0,0,0.35),
     inset 0 0 40px 8px rgba(60,38,14,0.18);
@@ -65,6 +73,44 @@
   justify-content: center;
 }
 
+/* A small pulsing chevron under the handle, so first-time visitors
+   read the handle as something to drag rather than a static divider.
+   Skipped entirely under prefers-reduced-motion (see the component). */
+.scriptorium-drag-cue {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: 4px;
+  pointer-events: none;
+  border-right: 2px solid rgba(147, 96, 31, 0.55);
+  border-bottom: 2px solid rgba(147, 96, 31, 0.55);
+  transform: translateX(-50%) rotate(45deg);
+  animation: scriptoriumCuePulse 1.6s ease-in-out infinite;
+}
+#root[data-theme='dark'] .scriptorium-drag-cue {
+  border-color: rgba(219, 165, 62, 0.55);
+}
+/* Only opacity + a plain offset animate here — never transform, so it
+   never has to compose with the chevron's own translateX/rotate above. */
+@keyframes scriptoriumCuePulse {
+  0%, 100% { opacity: 0.35; margin-top: 4px; }
+  50%      { opacity: 0.95; margin-top: 9px; }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .scriptorium-handle {
   position: absolute;
   top: 0;
@@ -112,7 +158,6 @@
 .scriptorium-hint {
   margin: 0;
   font-family: var(--ff-scroll);
-  font-style: italic;
   font-size: 1.1rem;
   color: var(--muted);
   text-align: center;
@@ -134,5 +179,13 @@
 
 @media (max-width: 720px) {
   .scriptorium-window { height: 52vh; }
+  /* Same specificity as the rule above and it matches every open
+     window too (it still carries the base .scriptorium-window class),
+     so without restating height:auto here, this breakpoint's 52vh
+     silently wins by source order and re-clamps the *opened* page back
+     down to about one screen's height on every phone-width viewport —
+     hiding almost all of the real content below the hero, even though
+     nothing was ever meant to clip it there. */
+  .scriptorium-window--open { height: auto; }
   .scriptorium-handle { width: 130px; margin-left: -65px; }
 }

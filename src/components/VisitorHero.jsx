@@ -58,28 +58,14 @@ export default function VisitorHero({ name }) {
   return (
     <>
       <section className="visitor-hero">
-        {/* Displacement filter that roughens the scorched sheet's cut edge */}
-        <svg className="vh-defs" aria-hidden="true" focusable="false">
-          <filter id="vh-burnt-edge" x="-6%" y="-8%" width="112%" height="116%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.026 0.038" numOctaves="3" seed="7" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="24" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </svg>
-
         <div className="vh-body">
-          <div className="vh-scorch" aria-hidden="true">
-            <div className="vh-scorch-rim">
-              <div className="vh-scorch-ember" />
-              <div className="vh-scorch-core" />
-            </div>
-          </div>
-
           <p className="vh-greeting">Hey there</p>
           <h1 className="vh-name">I'm {firstName}</h1>
           <p className="vh-role"><span className="vh-role-dash">—</span> {ROLE}</p>
           <p className="vh-desc">
             Arsenal fan, history nerd, Ethiopian Orthodox Christian, movie lover. Welcome to my corner of the internet. Stay a While!!!
           </p>
+          <span className="vh-rule" aria-hidden="true" />
           <button className="vh-explore" onClick={() => setShowOverview(true)}>
             <span className="vh-explore-label">Explore More</span>
             <span className="vh-explore-coin">

@@ -8,7 +8,7 @@
 .things-card .muted{margin-bottom:12px;color:var(--muted)}
 .things-tabs{display:flex;gap:8px;margin-bottom:12px}
 .things-tabs button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;cursor:pointer}
-.things-tabs button.active{background:linear-gradient(90deg,var(--cursor-start),var(--cursor-end));color:#0b1220;border:none}
+.things-tabs button.active{background:var(--accent);color:#fff;border:none}
 .things-visual{margin-top:12px;border-radius:8px;overflow:hidden}
 .things-visual img{width:100%;height:auto;display:block}
 
@@ -24,5 +24,5 @@
   .things-visual img{height:180px;object-fit:cover}
 }
 
-.interests-tabs button:focus{outline:2px solid rgba(37,99,235,0.24);outline-offset:4px}
+.interests-tabs button:focus{outline:2px solid rgba(147,96,31,0.35);outline-offset:4px}
 
