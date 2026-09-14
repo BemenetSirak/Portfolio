@@ -5,10 +5,21 @@
    flow (which shares theme.css tokens) is untouched.
 ───────────────────────────────────────────────────── */
 
+/* Every size below is in rem, which is always relative to the root
+   <html> element rather than the nearest ancestor — so the site-wide
+   "bigger text" request is done here, once, rather than by hand-tuning
+   every rem value in every component file. Scoped to :has() so it only
+   applies while the visitor experience (including its Resume/About
+   tabs) is mounted; the recruiter flow is untouched. */
+html:has(.visitor-layout) {
+  font-size: 18px;
+}
+
 .visitor-layout {
   --bg:      #e9dcb8;
   --panel:   #f2e8ca;
-  --text:    #2b1d0c;
+  /* Deep iron-gall espresso, not a lighter sepia brown */
+  --text:    #1e140a;
   --muted:   #6e5330;
   --accent:  #93601f;
   --card-shadow:
@@ -18,16 +29,17 @@
     0 16px 32px rgba(58,38,14,0.22),
     0 4px 10px rgba(58,38,14,0.14);
 
-  --ff-sans:    'EB Garamond', Georgia, 'Times New Roman', serif;
-  --ff-display: 'Cinzel', 'EB Garamond', Georgia, serif;
+  /* Historic type stack enforced site-wide: an old-press book serif
+     first, an engraved-caps serif as its fallback, then any serif */
+  --ff-sans:    'IM Fell English', 'Cinzel', serif;
+  --ff-display: 'IM Fell English', 'Cinzel', serif;
   --ff-hand:    'Caveat', 'Segoe Script', cursive;
-  /* Old-press italic used for every piece of ink lettering on the sheet */
-  --ff-scroll:  'IM Fell English', 'EB Garamond', Georgia, serif;
+  --ff-scroll:  'IM Fell English', 'Cinzel', serif;
 
   --bg-parchment: url('../assets/scroll/parchment-texture.jpeg');
   --text-main: var(--text);
-  --nav-text:  #2a1a08;
-  --ink:       #2a1a08;
+  --nav-text:  #1e140a;
+  --ink:       #1e140a;
   --card-bg:   rgba(255, 248, 231, 0.78);
   --border-gold: linear-gradient(135deg, #f3e5ab, #8b6b23);
 
@@ -68,6 +80,30 @@
 #root[data-theme='dark'] .visitor-layout h3,
 #root[data-theme='dark'] .visitor-layout h4 {
   text-shadow: 0 0 14px rgba(243,229,171,0.30), 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Iron-gall ink bleed — day only: a hair of soft-edged blur under the
+   glyphs, as real ink feathering into paper fibre rather than a crisp
+   digital edge. (Dark mode keeps its own candlelit glow above instead.) */
+.visitor-layout h1,
+.visitor-layout h2,
+.visitor-layout h3,
+.visitor-layout h4,
+.visitor-layout p,
+.visitor-layout li,
+.visitor-layout .link,
+.visitor-layout .label {
+  filter: drop-shadow(0 0.5px 0.5px rgba(30, 20, 10, 0.6));
+}
+#root[data-theme='dark'] .visitor-layout h1,
+#root[data-theme='dark'] .visitor-layout h2,
+#root[data-theme='dark'] .visitor-layout h3,
+#root[data-theme='dark'] .visitor-layout h4,
+#root[data-theme='dark'] .visitor-layout p,
+#root[data-theme='dark'] .visitor-layout li,
+#root[data-theme='dark'] .visitor-layout .link,
+#root[data-theme='dark'] .visitor-layout .label {
+  filter: none;
 }
 
 /* ── Wooden desk ───────────────────────────────────────
@@ -784,28 +820,48 @@
   gap: 22px;
 }
 
-/* Ornamental hairline between sections of the unrolled manuscript */
+/* Ornamental rule between sections of the unrolled manuscript — a
+   carved line (a dark groove with a thin light catch just beneath it,
+   as if pressed into the paper) rather than a flat modern hairline,
+   centered on a hand-drawn pen flourish. */
 .scroll-divider {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   color: var(--accent);
-  opacity: 0.7;
+  opacity: 0.8;
 }
 .scroll-divider::before,
 .scroll-divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(147,96,31,0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(90,58,20,0.55), transparent);
+  box-shadow: 0 1px 0 rgba(255, 250, 236, 0.4);
 }
 #root[data-theme='dark'] .scroll-divider::before,
 #root[data-theme='dark'] .scroll-divider::after {
-  background: linear-gradient(90deg, transparent, rgba(219,165,62,0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(219,165,62,0.4), transparent);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 .scroll-divider span {
   font-family: serif;
   font-size: 1.2rem;
+}
+.scroll-divider-flourish {
+  width: 46px;
+  height: 20px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.scroll-divider-flourish path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.scroll-divider-flourish circle {
+  fill: currentColor;
 }
 
 /* ── Responsive ────────────────────────────────────── */

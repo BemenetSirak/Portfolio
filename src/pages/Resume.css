@@ -96,10 +96,14 @@
   font-size: 0.75rem;
   padding: 3px 10px;
   border-radius: 20px;
-  background: rgba(37,99,235,0.08);
-  border: 1px solid rgba(37,99,235,0.16);
+  background: rgba(147,96,31,0.10);
+  border: 1px solid rgba(147,96,31,0.22);
   color: var(--accent);
   font-weight: 600;
+}
+#root[data-theme='dark'] .rv-tag {
+  background: rgba(219,165,62,0.12);
+  border-color: rgba(219,165,62,0.28);
 }
 
 .rv-exp-item { margin-bottom: 18px; }
@@ -125,9 +129,13 @@
 .rv-projects { display: flex; flex-direction: column; gap: 14px; }
 .rv-project-item {
   padding: 14px 16px;
-  background: rgba(37,99,235,0.04);
+  background: rgba(147,96,31,0.05);
   border-radius: 10px;
-  border: 1px solid rgba(37,99,235,0.10);
+  border: 1px solid rgba(147,96,31,0.14);
+}
+#root[data-theme='dark'] .rv-project-item {
+  background: rgba(219,165,62,0.06);
+  border-color: rgba(219,165,62,0.16);
 }
 
 @media print {

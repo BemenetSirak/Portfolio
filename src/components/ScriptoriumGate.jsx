@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { motion, useMotionValue, useTransform, useMotionTemplate, animate } from 'framer-motion'
 import './ScriptoriumGate.css'
 
@@ -17,20 +17,25 @@ function alreadyOpened() {
 // The visitor page's initial reveal: the sheet starts rolled shut and
 // the visitor drags the handle rod down to unroll it open, with real
 // drag physics (constraints + a rubber-band overshoot + a spring
-// settle). Once fully unrolled, this unmounts entirely and the page
-// behaves like any normal long page — regular wheel/trackpad/touch
-// scrolling takes over for everything below the fold. A full literal
-// "drag replaces scrolling for the whole page" model was ruled out
-// deliberately: with thousands of px of content below, gating routine
-// scrolling behind a drag gesture (with no wheel support) would be a
-// real usability and accessibility regression, not a flourish.
+// settle). Once fully unrolled, normal wheel/trackpad/touch scrolling
+// takes over for everything below the fold — this only gates the
+// opening reveal, never routine scrolling.
+//
+// `children` stays inside the exact same wrapper element the whole
+// time; only classNames/inline styles change between "closed" and
+// "open". An earlier version swapped between `<div>…children…</div>`
+// and bare `children` depending on state — a different element shape
+// at the same tree position, which forces React to unmount and
+// remount the entire subtree on open. That silently destroyed and
+// recreated every section (Things I Love, Gallery, Contact…), so the
+// IntersectionObserver driving `.v-reveal` — set up once, higher up,
+// against the *original* DOM nodes — ended up watching detached
+// elements. The new nodes never got marked visible until a full page
+// reload reran everything from scratch. Keeping one stable wrapper
+// avoids the remount entirely.
 export default function ScriptoriumGate({ children }) {
   const [open, setOpen] = useState(alreadyOpened)
-  const [dismissing, setDismissing] = useState(false)
   const y = useMotionValue(0)
-  const settleTimer = useRef(null)
-
-  useEffect(() => () => clearTimeout(settleTimer.current), [])
 
   const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
   const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)
@@ -43,8 +48,7 @@ export default function ScriptoriumGate({ children }) {
     } catch {
       // best-effort only
     }
-    setDismissing(true)
-    settleTimer.current = setTimeout(() => setOpen(true), 320)
+    setOpen(true)
   }
 
   function handleDragEnd() {
@@ -60,38 +64,43 @@ export default function ScriptoriumGate({ children }) {
     animate(y, DRAG_RANGE, { duration: 0.5, ease: [0.25, 1, 0.5, 1], onComplete: finish })
   }
 
-  if (open) return children
-
   return (
-    <div className={`scriptorium-gate${dismissing ? ' scriptorium-gate--dismissing' : ''}`} aria-hidden={dismissing}>
-      <div className="scriptorium-window">
-        <motion.div className="scriptorium-reveal" style={{ clipPath }}>
+    <>
+      <div className={`scriptorium-window${open ? ' scriptorium-window--open' : ''}`}>
+        <motion.div
+          className={`scriptorium-reveal${open ? ' scriptorium-reveal--open' : ''}`}
+          style={open ? undefined : { clipPath }}
+        >
           {children}
         </motion.div>
-        <div className="scriptorium-rolled-hint" aria-hidden="true" />
+        {!open && <div className="scriptorium-rolled-hint" aria-hidden="true" />}
       </div>
 
-      <div className="scriptorium-track">
-        <motion.button
-          type="button"
-          className="scriptorium-handle"
-          drag="y"
-          dragConstraints={{ top: 0, bottom: DRAG_RANGE }}
-          dragElastic={0.18}
-          dragMomentum={false}
-          style={{ y }}
-          onDragEnd={handleDragEnd}
-          onClick={skip}
-          aria-label="Drag down, or press, to unroll the page"
-        >
-          <span className="scriptorium-handle-bar" />
-        </motion.button>
-      </div>
+      {!open && (
+        <>
+          <div className="scriptorium-track">
+            <motion.button
+              type="button"
+              className="scriptorium-handle"
+              drag="y"
+              dragConstraints={{ top: 0, bottom: DRAG_RANGE }}
+              dragElastic={0.18}
+              dragMomentum={false}
+              style={{ y }}
+              onDragEnd={handleDragEnd}
+              onClick={skip}
+              aria-label="Drag down, or press, to unroll the page"
+            >
+              <span className="scriptorium-handle-bar" />
+            </motion.button>
+          </div>
 
-      <motion.p className="scriptorium-hint">{handleLabel}</motion.p>
-      <button type="button" className="scriptorium-skip" onClick={skip}>
-        Skip ▸
-      </button>
-    </div>
+          <motion.p className="scriptorium-hint">{handleLabel}</motion.p>
+          <button type="button" className="scriptorium-skip" onClick={skip}>
+            Skip ▸
+          </button>
+        </>
+      )}
+    </>
   )
 }

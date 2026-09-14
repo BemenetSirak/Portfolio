@@ -1,0 +1,15 @@
+/* Resume/About open as their own standalone page rather than a tall
+   scrolling manuscript, so the sheet only needs to be as tall as its
+   content — not pinned to a fixed viewport-height band like the
+   homepage's. */
+.scroll-page-sheet {
+  min-height: auto;
+}
+
+.scroll-page-main {
+  padding-top: 26px;
+}
+
+@media (max-width: 720px) {
+  .scroll-page-main { padding-top: 18px; }
+}

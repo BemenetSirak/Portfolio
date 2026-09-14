@@ -3,28 +3,13 @@
    sheet sits rolled shut; dragging (or pressing) the handle
    below unrolls it open, then hands off to the real page.
 ───────────────────────────────────────────────────── */
-.scriptorium-gate {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 4px 0 20px;
-  transition: opacity 0.32s ease, transform 0.32s ease;
-}
-.scriptorium-gate--dismissing {
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-}
-
 .scriptorium-window {
   position: relative;
   width: 100%;
   height: min(60vh, 620px);
   overflow: hidden;
   border-radius: 3px;
+  margin-bottom: 14px;
   box-shadow:
     0 30px 60px rgba(0,0,0,0.35),
     inset 0 0 40px 8px rgba(60,38,14,0.18);
@@ -34,12 +19,29 @@
     0 30px 60px rgba(0,0,0,0.6),
     inset 0 0 40px 8px rgba(0,0,0,0.4);
 }
+/* Once open, this is no longer a windowed preview — it's just the
+   normal flow of the page, full height, nothing clipped or shadowed */
+.scriptorium-window--open {
+  height: auto;
+  overflow: visible;
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
 
 .scriptorium-reveal {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+}
+/* Same element, same position in the tree — only these properties
+   change, so React never has to tear the section down and rebuild it */
+.scriptorium-reveal--open {
+  position: static;
+  inset: auto;
+  overflow: visible;
+  pointer-events: auto;
 }
 
 /* A soft dark seam right at the reveal's leading edge, as if the roll

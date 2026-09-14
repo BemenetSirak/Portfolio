@@ -249,7 +249,12 @@ function VisitorLayout({ onBack }) {
               <Gallery />
             </div>
 
-            <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
+            <div className="scroll-divider" aria-hidden="true">
+              <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
+                <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
+                <circle cx="23" cy="10" r="1.6" />
+              </svg>
+            </div>
             <div id="visitor-contact" className="v-reveal">
               <ContactStrip contact={profile.contact} />
             </div>

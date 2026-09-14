@@ -72,15 +72,20 @@
   gap: 5px;
   padding: 5px 12px;
   border-radius: 20px;
-  background: rgba(37, 99, 235, 0.08);
-  border: 1px solid rgba(37, 99, 235, 0.18);
+  background: rgba(147, 96, 31, 0.10);
+  border: 1px solid rgba(147, 96, 31, 0.22);
   color: var(--accent);
   font-size: 0.82rem;
   font-weight: 500;
   text-decoration: none;
   transition: background 0.15s;
 }
-.about-contact-chip:hover { background: rgba(37,99,235,0.14); }
+.about-contact-chip:hover { background: rgba(147,96,31,0.18); }
+#root[data-theme='dark'] .about-contact-chip {
+  background: rgba(219,165,62,0.12);
+  border-color: rgba(219,165,62,0.28);
+}
+#root[data-theme='dark'] .about-contact-chip:hover { background: rgba(219,165,62,0.20); }
 
 /* ── Facts grid ── */
 .about-section-title {

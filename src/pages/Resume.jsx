@@ -1,13 +1,13 @@
 import React from 'react'
 import profile from '../data/profileData'
 import ExperienceTimeline from '../components/ExperienceTimeline'
-import useUnroll from '../hooks/useUnroll'
+import ScrollPage from '../components/ScrollPage'
 import './Resume.css'
 
 export default function Resume({ onClose }) {
-  const unrolled = useUnroll()
   return (
-    <div className={`rv-root scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
+    <ScrollPage title="Resume">
+      <div className="rv-root">
       <header className="rv-header">
         <div>
           <h1 className="rv-name">{profile.name}</h1>
@@ -100,6 +100,7 @@ export default function Resume({ onClose }) {
         </section>
 
       </div>
-    </div>
+      </div>
+    </ScrollPage>
   )
 }

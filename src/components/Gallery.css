@@ -29,10 +29,20 @@
   position: relative;
   padding: 0;
   border: none;
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
   background: var(--panel);
+  /* a tipped-in woodcut plate, not a modern rounded photo card: a
+     soft sepia vignette closing in around the frame's inner edge */
+  box-shadow:
+    inset 0 0 0 1px rgba(58, 38, 14, 0.35),
+    inset 0 0 18px 6px rgba(30, 20, 10, 0.45);
+}
+#root[data-theme='dark'] .gl-thumb {
+  box-shadow:
+    inset 0 0 0 1px rgba(219, 165, 62, 0.2),
+    inset 0 0 20px 7px rgba(0, 0, 0, 0.6);
 }
 
 .gl-thumb img {

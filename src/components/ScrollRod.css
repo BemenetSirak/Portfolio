@@ -45,6 +45,29 @@
   border-image-source: url('../assets/scroll/roller-bottom.png');
 }
 
+/* Cylindrical light physics laid over the real wood photo: a dark-
+   light-dark sweep left-to-right (the barrel's roundness) plus a thin
+   specular catch-line across the top equator — blended with the
+   underlying grain rather than flattened over it. */
+.scroll-roll-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 22%),
+    linear-gradient(90deg,
+      #110803 0%, #4a2e12 25%, #7a4e24 50%, #4a2e12 75%, #110803 100%);
+}
+/* Hard occlusion — the barrel is a heavy solid object, not a flat
+   painted strip, so it casts its own tight contact shadow at all times */
+.scroll-roll-face {
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.92);
+}
+
 /* The wound roll casts real shade onto the parchment just beneath it —
    a hard, near-black contact line right at the seam that falls off
    fast, so the top cylinder reads as a heavy object sitting proud of
