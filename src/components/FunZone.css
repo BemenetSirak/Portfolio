@@ -1,7 +1,5 @@
 .fun-facts {
   padding: 22px 24px;
-  border-radius: 10px;
-  background: var(--panel);
   height: 100%;
   box-sizing: border-box;
 }

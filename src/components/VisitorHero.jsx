@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './VisitorHero.css'
 import ExploreOverview from './ExploreOverview'
-import ornateFrame from '../assets/scroll/ornate-frame.png'
 import waxSeal from '../assets/scroll/wax-seal.png'
 
 const ROLE = 'History Enthusiast'
@@ -93,9 +92,7 @@ export default function VisitorHero({ name }) {
           <div className="vh-medallion">
             <div className="vh-photo-well">
               <img className="vh-photo" src="/images/visitor-hero-photo.jpg" alt={`${firstName} smiling`} />
-            </div>
-            <div className="vh-frame-ring" aria-hidden="true">
-              <img src={ornateFrame} alt="" />
+              <span className="vh-photo-vignette" aria-hidden="true" />
             </div>
 
             {BADGES.map(b => (

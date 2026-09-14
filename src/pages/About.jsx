@@ -1,5 +1,6 @@
 import React from 'react'
 import profile from '../data/profileData'
+import useUnroll from '../hooks/useUnroll'
 import './About.css'
 
 const FACTS = [
@@ -46,8 +47,9 @@ const FACTS = [
 ]
 
 export default function About({ onClose }) {
+  const unrolled = useUnroll()
   return (
-    <div className="about-root">
+    <div className={`about-root scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
       <header className="about-header">
         <div className="about-header-left">
           <h1 className="about-name">{profile.name}</h1>

@@ -4,7 +4,7 @@ import profile from '../data/profileData'
 
 export default function FunZone() {
   return (
-    <div className="fun-facts panel">
+    <div className="fun-facts">
       <h3>Things About Me</h3>
       <ul className="facts-list">
         {profile.funFacts.map((f, i) => (

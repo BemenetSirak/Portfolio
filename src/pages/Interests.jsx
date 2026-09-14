@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import './Interests.css'
 import profile from '../data/profileData'
 import InteractiveMovies from '../components/InteractiveMovies'
+import useUnroll from '../hooks/useUnroll'
 
 export default function Interests({ onClose, initialTab }) {
   const [tab, setTab] = useState(initialTab || 'things')
+  const unrolled = useUnroll()
 
   return (
-    <div className="interests-root">
+    <div className={`interests-root scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
       <header className="interests-header">
         <h1>Welcome — explore my world</h1>
         <div>

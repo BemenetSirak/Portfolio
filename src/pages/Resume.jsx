@@ -1,11 +1,13 @@
 import React from 'react'
 import profile from '../data/profileData'
 import ExperienceTimeline from '../components/ExperienceTimeline'
+import useUnroll from '../hooks/useUnroll'
 import './Resume.css'
 
 export default function Resume({ onClose }) {
+  const unrolled = useUnroll()
   return (
-    <div className="rv-root">
+    <div className={`rv-root scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
       <header className="rv-header">
         <div>
           <h1 className="rv-name">{profile.name}</h1>

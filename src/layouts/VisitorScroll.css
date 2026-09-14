@@ -31,7 +31,7 @@
   --card-bg:   rgba(255, 248, 231, 0.78);
   --border-gold: linear-gradient(135deg, #f3e5ab, #8b6b23);
 
-  --desk-base: #2b1a0e;
+  --desk-base: #2a1a0f;
   --sheet-inset-left: 52px;
   --sheet-inset-right: 44px;
 
@@ -107,12 +107,13 @@
   background-size: auto, auto, auto, 900px 900px;
 }
 
-/* ── Candle (night only) — stands upright on the desk beside the sheet,
-   seen from slightly above: elliptical wax pool on top, cylindrical
-   body, and a shadow thrown across the desk. Blowing out the flame
-   switches the page to daylight. ── */
+/* ── Candle — stands upright on the desk beside the sheet in both
+   themes, seen from slightly above: elliptical wax pool on top,
+   cylindrical body, and a shadow thrown across the desk. Lit at night;
+   snuffed out (wick smoking briefly, then just a bare wick) by day.
+   Clicking the flame/wick toggles the theme either way. ── */
 .desk-candle {
-  display: none;
+  display: block;
   position: fixed;
   left: 0;
   top: 96px;
@@ -121,17 +122,87 @@
   z-index: 40;
   pointer-events: none;
 }
-#root[data-theme='dark'] .desk-candle { display: block; }
+
+/* Snuffed: no flame, no glow — just the standing candle and its wick */
+.desk-candle.is-out .candle-glow,
+.desk-candle.is-out .candle-flame {
+  opacity: 0;
+  pointer-events: none;
+}
+.desk-candle.is-out .candle-wick {
+  height: 8px;
+  background: linear-gradient(180deg, #1a0f05, #3a2410);
+}
+.desk-candle.is-lit .candle-flame { pointer-events: auto; }
+.desk-candle.is-out .candle-flame { pointer-events: auto; }
+.desk-candle.is-lit .candle-glow,
+.desk-candle.is-lit .candle-flame {
+  opacity: 1;
+  transition: opacity 0.4s ease 0.15s;
+}
+.desk-candle.is-out .candle-glow,
+.desk-candle.is-out .candle-flame {
+  transition: opacity 0.3s ease;
+}
+
+/* ── Smoke — three soft wisps that rise and dissipate from the wick
+   for the few seconds right after the candle is blown out ── */
+.candle-smoke {
+  position: absolute;
+  left: 30px;
+  top: 96px;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+.candle-smoke i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(210,210,210,0.55) 0%, rgba(210,210,210,0.22) 55%, rgba(210,210,210,0) 78%);
+  filter: blur(1.5px);
+  animation: candleSmokeRise 2.6s ease-out infinite;
+}
+.candle-smoke i:nth-child(2) { animation-delay: 0.7s; left: 3px; }
+.candle-smoke i:nth-child(3) { animation-delay: 1.5s; left: -2px; }
+@keyframes candleSmokeRise {
+  0%   { transform: translate(0, 0)      scale(0.5); opacity: 0; }
+  12%  { opacity: 0.65; }
+  100% { transform: translate(14px, -150px) scale(2.6); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .candle-smoke i { animation: none; opacity: 0; }
+}
+
+@keyframes candleFlickerGlow {
+  0%, 100% { opacity: 1;    transform: scale(1)     translate(0, 0); }
+  8%       { opacity: 0.90; transform: scale(0.97)  translate(-3px, 1px); }
+  19%      { opacity: 1;    transform: scale(1.04)  translate(2px, -2px); }
+  33%      { opacity: 0.85; transform: scale(0.95)  translate(-1px, 2px); }
+  47%      { opacity: 1;    transform: scale(1.02)  translate(1px, -1px); }
+  61%      { opacity: 0.92; transform: scale(0.98)  translate(3px, 1px); }
+  74%      { opacity: 1;    transform: scale(1.05)  translate(-2px, -1px); }
+  88%      { opacity: 0.88; transform: scale(0.96)  translate(1px, 2px); }
+}
 
 .candle-glow {
   position: absolute;
-  left: -300px;
-  top: -230px;
-  width: 720px;
-  height: 640px;
+  left: -320px;
+  top: -260px;
+  width: 780px;
+  height: 720px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,175,70,0.55) 0%, rgba(255,140,40,0.22) 32%, rgba(255,120,30,0) 66%);
+  background:
+    radial-gradient(circle, rgba(255,225,160,0.65) 0%, rgba(255,175,70,0.55) 18%, rgba(255,140,40,0.30) 38%, rgba(255,110,20,0.10) 60%, rgba(255,110,20,0) 74%);
   mix-blend-mode: screen;
+  animation: candleFlickerGlow 3.2s ease-in-out infinite;
+  transform-origin: 40% 32%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .candle-glow { animation: none; }
 }
 
 .candle-shadow {
@@ -196,6 +267,18 @@
   border-radius: 2px;
   background: linear-gradient(180deg, #2a1a08, #6b4a24);
 }
+@keyframes candleFlicker {
+  0%, 100% { transform: scaleY(1)     scaleX(1)    skewX(0deg)    rotate(0deg); }
+  9%       { transform: scaleY(0.94)  scaleX(1.05) skewX(-2deg)   rotate(-1.5deg); }
+  18%      { transform: scaleY(1.06)  scaleX(0.96) skewX(1.5deg)  rotate(1deg); }
+  30%      { transform: scaleY(0.90)  scaleX(1.08) skewX(-3deg)   rotate(-2deg); }
+  41%      { transform: scaleY(1.03)  scaleX(0.98) skewX(2deg)    rotate(1.5deg); }
+  53%      { transform: scaleY(0.96)  scaleX(1.04) skewX(-1deg)   rotate(-0.5deg); }
+  66%      { transform: scaleY(1.08)  scaleX(0.94) skewX(2.5deg)  rotate(2deg); }
+  78%      { transform: scaleY(0.92)  scaleX(1.02) skewX(-2.5deg) rotate(-1deg); }
+  90%      { transform: scaleY(1.02)  scaleX(1)    skewX(1deg)    rotate(0.5deg); }
+}
+
 .candle-flame {
   position: absolute;
   left: 23px;
@@ -209,20 +292,51 @@
   border-radius: 50% 50% 50% 50% / 64% 64% 36% 36%;
   background: radial-gradient(ellipse at 50% 74%, #fffbe6 0%, #ffe07a 30%, #ff9a26 64%, rgba(255,120,20,0) 100%);
   filter: blur(0.7px);
-  box-shadow: 0 0 24px 10px rgba(255,165,55,0.55);
+  box-shadow: 0 0 26px 11px rgba(255,165,55,0.6), 0 0 50px 20px rgba(255,120,30,0.28);
   transform-origin: 50% 100%;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: box-shadow 0.25s ease;
+  animation: candleFlicker 2.6s ease-in-out infinite;
+}
+/* White-hot kernel at the flame's base, for a high-contrast core
+   instead of one flat gradient blob */
+.candle-flame::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 9px;
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 80%, #ffffff 0%, #fff6d2 45%, rgba(255,220,140,0) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .candle-flame { animation: none; }
 }
 .candle-flame:hover,
 .candle-flame:focus-visible {
   outline: none;
   transform: scale(1.12);
-  box-shadow: 0 0 32px 14px rgba(255,175,65,0.65);
+  box-shadow: 0 0 34px 15px rgba(255,175,65,0.7), 0 0 60px 24px rgba(255,120,30,0.32);
 }
 
 /* ── Parchment sheet ─────────────────────────────────── */
 .scroll-sheet {
+  /* The torn silhouette shared by the backdrop and the vignette above
+     it, so both layers rip in exactly the same place: ragged, fiber-
+     frayed top and bottom where the paper meets the rollers, and
+     softly organic (not ruler-straight) side edges, like a hand-cut
+     sheet rather than a printed rectangle. */
+  --rip-edge: polygon(
+    0% 2.4%, 3% 0%, 7% 1.6%, 12% 0%, 18% 1.8%, 25% 0%, 32% 1.6%, 40% 0%, 48% 1.8%, 56% 0%,
+    64% 1.6%, 72% 0%, 80% 1.8%, 88% 0%, 94% 1.6%, 100% 2.4%,
+    99.3% 12%, 100.4% 22%, 99.2% 32%, 100.4% 42%, 99.3% 52%, 100.4% 62%, 99.2% 72%, 100.4% 82%, 99.3% 90%,
+    100% 97.6%, 94% 100%, 88% 98.2%, 80% 100%, 72% 98.4%, 64% 100%, 56% 98.2%, 48% 100%, 40% 98.4%, 32% 100%,
+    25% 98.2%, 18% 100%, 12% 98.4%, 7% 100%, 3% 98.2%, 0% 97.6%,
+    0.7% 90%, -0.4% 82%, 0.8% 72%, -0.4% 62%, 0.7% 52%, -0.4% 42%, 0.8% 32%, -0.4% 22%, 0.7% 12%
+  );
   position: relative;
+  overflow: visible;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -233,13 +347,17 @@
    content (z-index:-1 inside the isolated .visitor-layout). Real DOM
    node keyed by theme in VisitorLayout so React force-remounts it on a
    theme switch — Chrome does not reliably repaint a large absolutely-
-   positioned layer when only an ancestor's data-theme changes. */
+   positioned layer when only an ancestor's data-theme changes.
+   The top/bottom edges — where the paper meets the rollers — are torn
+   and fiber-frayed rather than a clean rounded rectangle; the sides
+   stay straight since they're tucked under the desk's edge margins. */
 .scroll-backdrop {
   position: absolute;
   inset: 34px 0 27px;
   z-index: -1;
   overflow: hidden;
-  border-radius: 5px;
+  clip-path: var(--rip-edge);
+  filter: url(#scroll-torn-edge);
   pointer-events: none;
   box-shadow:
     0 28px 54px rgba(0,0,0,0.62),
@@ -262,23 +380,40 @@
   position: absolute;
   inset: 0;
   background:
+    /* scattered foxing/age spots, worst right where the sheet has spent
+       years pressed against the rollers */
+    radial-gradient(ellipse 3% 1.6% at 14% 4%,  rgba(90,58,20,0.38) 0%, rgba(90,58,20,0) 100%),
+    radial-gradient(ellipse 2% 1.2% at 63% 2.5%, rgba(90,58,20,0.32) 0%, rgba(90,58,20,0) 100%),
+    radial-gradient(ellipse 2.4% 1.4% at 84% 5%, rgba(90,58,20,0.30) 0%, rgba(90,58,20,0) 100%),
+    radial-gradient(ellipse 3% 1.6% at 30% 96%, rgba(90,58,20,0.36) 0%, rgba(90,58,20,0) 100%),
+    radial-gradient(ellipse 2.2% 1.3% at 72% 97%, rgba(90,58,20,0.30) 0%, rgba(90,58,20,0) 100%),
     radial-gradient(ellipse 60% 50% at 100% 100%, rgba(80,50,15,0.28) 0%, rgba(80,50,15,0) 70%),
-    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(80,50,15,0.18) 0%, rgba(80,50,15,0) 70%);
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(80,50,15,0.18) 0%, rgba(80,50,15,0) 70%),
+    /* the wound roll's own shadow, thrown a little way down onto the
+       sheet where the paper first unrolls out from under it */
+    linear-gradient(180deg, rgba(15,9,4,0.55) 0%, rgba(15,9,4,0.22) 5%, rgba(15,9,4,0) 11%),
+    linear-gradient(0deg, rgba(15,9,4,0.5) 0%, rgba(15,9,4,0.18) 5%, rgba(15,9,4,0) 11%);
 }
 #root[data-theme='dark'] .scroll-backdrop::after {
   background:
     radial-gradient(ellipse 58% 46% at 0% 10%, rgba(255,170,70,0.34) 0%, rgba(255,140,40,0.10) 42%, rgba(0,0,0,0) 72%),
-    linear-gradient(rgba(24,14,6,0.80), rgba(24,14,6,0.80));
+    linear-gradient(rgba(24,14,6,0.80), rgba(24,14,6,0.80)),
+    linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 5%, rgba(0,0,0,0) 11%),
+    linear-gradient(0deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.26) 5%, rgba(0,0,0,0) 11%);
 }
 
 /* Sepia vignette above the content, so the corners of the sheet always
-   read stained and aged like an old manuscript photograph. */
+   read stained and aged like an old manuscript photograph — clipped to
+   the same torn silhouette as the backdrop underneath it. */
 .scroll-vignette {
   position: absolute;
   inset: 34px 0 27px;
-  z-index: 30;
+  /* Below the rollers (25) so the sheet's ragged torn edge never cuts
+     spikes across the wooden cylinder bodies, but above the content
+     (10) so it still ages the page's corners. */
+  z-index: 15;
   pointer-events: none;
-  border-radius: 5px;
+  clip-path: var(--rip-edge, none);
   background: radial-gradient(ellipse 80% 62% at 50% 34%, transparent 52%, rgba(35,20,8,0.40) 100%);
 }
 #root[data-theme='dark'] .scroll-vignette {
@@ -306,14 +441,15 @@
 /* ── Desk props on the sheet ───────────────────────── */
 .scroll-seal-brand {
   position: absolute;
-  top: -12px;
-  left: -34px;
-  z-index: 10;
+  top: -20px;
+  left: -30px;
+  z-index: 50;
+  overflow: visible;
 }
 .scroll-seal-brand .brand-logo-seal {
-  width: 92px;
+  width: 104px;
   transform: rotate(-9deg);
-  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.55));
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,0.6)) drop-shadow(0 2px 4px rgba(0,0,0,0.45));
 }
 .scroll-seal-brand .brand-logo:hover .brand-logo-seal {
   transform: rotate(-9deg) scale(1.05);
@@ -325,18 +461,24 @@
   right: 26px;
   width: 410px;
   height: auto;
-  z-index: 9;
+  z-index: 32;
   pointer-events: none;
   transform: scaleX(-1) rotate(5deg);
-  filter: drop-shadow(0 10px 14px rgba(0,0,0,0.5));
+  /* A single hard, directional contact shadow — cast down-and-right,
+     away from the candle at the far top-left — rather than a soft
+     hovering glow, so the glass/wood reads as resting on the surface.
+     X is negated because the element itself is mirrored (scaleX(-1)),
+     which also flips the shadow; this keeps it falling the right way
+     in the final, mirrored render. */
+  filter: drop-shadow(-8px 14px 16px rgba(0,0,0,0.9));
 }
 #root[data-theme='dark'] .scroll-quill {
-  filter: drop-shadow(0 10px 14px rgba(0,0,0,0.7)) brightness(0.72) sepia(0.35);
+  filter: drop-shadow(-8px 14px 16px rgba(0,0,0,0.95)) brightness(0.72) sepia(0.35);
 }
 
 .scroll-seal {
   position: absolute;
-  z-index: 10;
+  z-index: 32;
   height: auto;
   pointer-events: none;
   filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
@@ -422,17 +564,98 @@
   letter-spacing: 1.4px;
   color: var(--text-main);
 }
-.visitor-layout .panel h3::before {
+.visitor-layout .panel h3::before,
+.visitor-layout .fun-facts h3::before,
+.visitor-layout .gallery h3::before,
+.visitor-layout .contact-strip h3::before {
   content: '❧';
   font-size: 1.1rem;
   color: var(--accent);
   font-family: serif;
 }
 
-/* Cards — a translucent vellum panel over the parchment, edged in a
-   thin gilded border and a faint grain, with hand-cut asymmetric
-   corners rather than a flat, uniformly-rounded modern UI box. */
+/* "Things About Me", Gallery and Contact carry no container box at
+   all now — their text is written straight onto the master parchment,
+   so it needs the same faint letter-press/ink-bleed shadow the rest
+   of the manuscript's ink has, instead of relying on a card surface
+   to separate it from the page. */
+.visitor-layout .fun-facts h3,
+.visitor-layout .fun-facts .facts-list li,
+.visitor-layout .gallery h3,
+.visitor-layout .contact-strip h3,
+.visitor-layout .contact-strip .contact-sub {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+#root[data-theme='dark'] .visitor-layout .fun-facts h3,
+#root[data-theme='dark'] .visitor-layout .fun-facts .facts-list li,
+#root[data-theme='dark'] .visitor-layout .gallery h3,
+#root[data-theme='dark'] .visitor-layout .contact-strip h3,
+#root[data-theme='dark'] .visitor-layout .contact-strip .contact-sub {
+  text-shadow: 0 0 10px rgba(243, 229, 171, 0.22), 0 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.scroll-svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ── Unrolling entrance ────────────────────────────────
+   Used on the main page and on every popup (Resume, About,
+   Interests, the Explore overview): the sheet starts collapsed to a
+   thin band, as if still rolled shut, then unfurls open top-to-bottom
+   like a manuscript being unrolled from its cylinder. */
+.scroll-unroll {
+  clip-path: inset(48% 0% 48% 0%);
+  opacity: 0.55;
+  transition:
+    clip-path 0.85s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.5s ease-out;
+  will-change: clip-path;
+}
+.scroll-unroll.scroll-unroll--in {
+  clip-path: inset(0% 0% 0% 0%);
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-unroll,
+  .scroll-unroll.scroll-unroll--in {
+    clip-path: inset(0% 0% 0% 0%);
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Cards — a torn scrap of parchment, not a flat rounded-rectangle UI
+   box: the background/border/shadow live on ::before, clipped to a
+   jagged silhouette and roughened by the shared turbulence filter, so
+   the real text sitting in .panel itself stays crisp and undistorted. */
 .visitor-layout .panel {
+  --torn-shape: polygon(
+    0% 4%, 3% 1%, 8% 3%, 14% 0%, 21% 2%, 29% 0%, 37% 2%, 46% 0%, 55% 2%, 64% 0%,
+    73% 2%, 82% 0%, 90% 2%, 96% 0%, 100% 4%,
+    98% 14%, 100% 26%, 97% 38%, 100% 50%, 98% 62%, 100% 74%, 97% 86%, 100% 96%, 96% 100%,
+    88% 97%, 79% 100%, 70% 97%, 61% 100%, 52% 98%, 43% 100%, 34% 97%, 25% 100%, 16% 98%, 7% 100%, 3% 97%, 0% 100%,
+    2% 90%, 0% 78%, 3% 66%, 0% 54%, 2% 42%, 0% 30%, 3% 18%
+  );
+  position: relative;
+  isolation: isolate;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.visitor-layout .panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: var(--torn-shape);
+  /* A close, soft contact shadow only — enough to read the torn paper
+     as a real sheet, not a modern elevated card floating above the
+     scroll. The whole page is one continuous manuscript. */
+  filter: url(#scroll-torn-edge) drop-shadow(0 4px 7px rgba(40,26,10,0.22));
   background-image:
     linear-gradient(var(--card-bg), var(--card-bg)),
     url('../assets/scroll/parchment-texture.jpeg'),
@@ -443,9 +666,9 @@
   background-origin: padding-box, padding-box, border-box;
   background-clip: padding-box, padding-box, border-box;
   border: 1.5px solid transparent;
-  border-radius: 4px 16px 5px 18px;
-  box-shadow: var(--card-shadow);
-  backdrop-filter: blur(2px);
+}
+#root[data-theme='dark'] .visitor-layout .panel::before {
+  filter: url(#scroll-torn-edge) drop-shadow(0 4px 8px rgba(0,0,0,0.4));
 }
 
 /* ── Header — ink lettering written straight onto the sheet ── */
@@ -480,7 +703,9 @@
   letter-spacing: 0.3px;
   padding: 6px 4px;
   color: var(--nav-text);
-  text-shadow: 0 1px 0 rgba(255,250,236,0.35);
+  /* letter-press ink, not a pale emboss — the old light highlight
+     shadow was washing the lettering out against the parchment band */
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 .visitor-layout .visitor-nav .link:hover,
 .visitor-layout .interests-trigger:hover {
@@ -553,6 +778,8 @@
 
 /* ── Layout rhythm ─────────────────────────────────── */
 .visitor-layout .visitor-main {
+  position: relative;
+  z-index: 10;
   padding: 22px 34px 26px 30px;
   gap: 22px;
 }

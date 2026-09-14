@@ -1,50 +1,24 @@
 import { useEffect, useState } from 'react'
-
-const THEMES = ['light', 'dark']
-
-function getInitialTheme() {
-  try {
-    const stored = localStorage.getItem('theme')
-    if (stored && THEMES.includes(stored)) return stored
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
-  } catch {
-    // storage or matchMedia unavailable — fall through to light
-  }
-  return 'light'
-}
+import { getTheme, setTheme } from '../utils/theme'
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState(getInitialTheme)
+  const [theme, setLocalTheme] = useState(getTheme)
+
+  // Make sure the DOM attribute/localStorage reflect this initial value
+  // (harmless if another mount already applied it) and pick up any
+  // change broadcast by this toggle, the candle, or anything else.
+  useEffect(() => {
+    setTheme(theme)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    try {
-      localStorage.setItem('theme', theme)
-    } catch {
-      // persistence is best-effort
-    }
-    const root = document.getElementById('root')
-    if (root) root.setAttribute('data-theme', theme)
-    // Let listeners (e.g. the visitor page's background layers) know the
-    // theme changed. Chrome can leave large absolutely-positioned
-    // background layers stale after an attribute-only theme switch — the
-    // DOM/CSSOM update correctly but the compositor doesn't always
-    // repaint every tile — so those listeners force-remount rather than
-    // relying on the attribute cascade to repaint them.
-    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }))
-  }, [theme])
-
-  // Other controls (the visitor page's candle) can set the theme directly
-  useEffect(() => {
-    function onSetTheme(e) {
-      if (THEMES.includes(e.detail?.theme)) setTheme(e.detail.theme)
-    }
-    window.addEventListener('settheme', onSetTheme)
-    return () => window.removeEventListener('settheme', onSetTheme)
+    function onThemeChange(e) { setLocalTheme(e.detail.theme) }
+    window.addEventListener('themechange', onThemeChange)
+    return () => window.removeEventListener('themechange', onThemeChange)
   }, [])
 
   function cycle() {
-    const next = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]
-    setTheme(next)
+    setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   return (

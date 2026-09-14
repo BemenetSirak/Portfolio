@@ -26,7 +26,7 @@ export default function Gallery() {
   }, [open])
 
   return (
-    <div className="gallery panel">
+    <div className="gallery">
       <h3>Gallery</h3>
       <div className="gl-grid">
         {IMAGES.map((img, i) => (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import profile from '../data/profileData'
 import './Layout.css'
 import ThemeToggle from '../components/ThemeToggle'
@@ -13,6 +13,9 @@ import ThingsILove from '../components/ThingsILove'
 import BrandLogo from '../components/BrandLogo'
 import InterestsDropdown from '../components/InterestsDropdown'
 import ScrollRod from '../components/ScrollRod'
+import ScriptoriumGate from '../components/ScriptoriumGate'
+import useUnroll from '../hooks/useUnroll'
+import { getTheme, setTheme } from '../utils/theme'
 import quillInkwell from '../assets/scroll/quill-inkwell.png'
 import waxSeal from '../assets/scroll/wax-seal.png'
 import './VisitorLayout.css'
@@ -29,14 +32,6 @@ const INTEREST_ITEMS = [
 // Brass tacks pinning the sheet to the desk, named by their spot on the edge
 const TACKS = ['tl', 'tr', 'l1', 'l2', 'r1', 'r2', 'r3', 'bl', 'br']
 
-function getCurrentTheme() {
-  try {
-    return document.getElementById('root')?.getAttribute('data-theme') || 'light'
-  } catch {
-    return 'light'
-  }
-}
-
 function VisitorLayout({ onBack }) {
   const [showAbout, setShowAbout]         = useState(false)
   const [showResume, setShowResume]       = useState(false)
@@ -44,15 +39,33 @@ function VisitorLayout({ onBack }) {
   const [interestsTab, setInterestsTab]   = useState(null)
   const [menuOpen, setMenuOpen]           = useState(false)
   const [interestsExp, setInterestsExp]   = useState(false)
-  const [themeKey, setThemeKey]           = useState(getCurrentTheme)
+  const [themeKey, setThemeKey]           = useState(getTheme)
+  const [smoking, setSmoking]             = useState(false)
+  const smokeTimer = useRef(null)
+  const unrolled = useUnroll()
 
   // The background/vignette layers are keyed by theme and force-remounted
   // on change — see the comment in ThemeToggle for why a plain attribute
   // cascade isn't reliable enough for these large full-page layers.
   useEffect(() => {
-    function onThemeChange(e) { setThemeKey(e.detail.theme) }
+    function onThemeChange(e) {
+      const next = e.detail.theme
+      setThemeKey(prev => {
+        // Puff of smoke only when the candle is actually blown out just
+        // now — not on a cold page load that simply starts in light mode.
+        if (prev === 'dark' && next === 'light') {
+          setSmoking(true)
+          clearTimeout(smokeTimer.current)
+          smokeTimer.current = setTimeout(() => setSmoking(false), 5000)
+        }
+        return next
+      })
+    }
     window.addEventListener('themechange', onThemeChange)
-    return () => window.removeEventListener('themechange', onThemeChange)
+    return () => {
+      window.removeEventListener('themechange', onThemeChange)
+      clearTimeout(smokeTimer.current)
+    }
   }, [])
 
   // Reveal-on-scroll for anything tagged .v-reveal.
@@ -86,23 +99,38 @@ function VisitorLayout({ onBack }) {
 
   return (
     <div className="visitor-layout">
+      {/* Shared displacement filter that roughens every torn/burnt
+          parchment edge on the page (hero scrap, panel cards) into an
+          irregular tear instead of a clean geometric cut. */}
+      <svg className="scroll-svg-defs" aria-hidden="true" focusable="false">
+        <filter id="scroll-torn-edge" x="-6%" y="-8%" width="112%" height="116%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="3" seed="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+
       <div className="desk-backdrop" key={`desk-${themeKey}`} aria-hidden="true" />
 
-      <div className="desk-candle">
+      <div className={`desk-candle${themeKey === 'dark' ? ' is-lit' : ' is-out'}${smoking ? ' is-smoking' : ''}`}>
         <span className="candle-glow" aria-hidden="true" />
         <span className="candle-shadow" aria-hidden="true" />
         <span className="candle-body" aria-hidden="true" />
         <span className="candle-wick" aria-hidden="true" />
+        {smoking && (
+          <span className="candle-smoke" aria-hidden="true">
+            <i /><i /><i />
+          </span>
+        )}
         <button
           type="button"
           className="candle-flame"
-          onClick={() => window.dispatchEvent(new CustomEvent('settheme', { detail: { theme: 'light' } }))}
-          aria-label="Blow out the candle and switch to light mode"
-          title="Blow out the candle"
+          onClick={() => setTheme(themeKey === 'dark' ? 'light' : 'dark')}
+          aria-label={themeKey === 'dark' ? 'Blow out the candle and switch to light mode' : 'Light the candle and switch to dark mode'}
+          title={themeKey === 'dark' ? 'Blow out the candle' : 'Light the candle'}
         />
       </div>
 
-      <div className="scroll-sheet">
+      <div className={`scroll-sheet scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
         <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
         <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
 
@@ -206,24 +234,26 @@ function VisitorLayout({ onBack }) {
         </div>
 
         <main className="visitor-main">
-          <VisitorHero name={profile.name} />
+          <ScriptoriumGate>
+            <VisitorHero name={profile.name} />
 
-          <div className="v-reveal">
-            <ThingsILove />
-          </div>
+            <div className="v-reveal">
+              <ThingsILove />
+            </div>
 
-          <div className="scroll-divider scroll-divider--sealed" aria-hidden="true">
-            <img className="scroll-seal scroll-seal--divider" src={waxSeal} alt="" />
-          </div>
-          <div className="facts-gallery-row v-reveal">
-            <FunZone />
-            <Gallery />
-          </div>
+            <div className="scroll-divider scroll-divider--sealed" aria-hidden="true">
+              <img className="scroll-seal scroll-seal--divider" src={waxSeal} alt="" />
+            </div>
+            <div className="facts-gallery-row v-reveal">
+              <FunZone />
+              <Gallery />
+            </div>
 
-          <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
-          <div className="v-reveal">
-            <ContactStrip contact={profile.contact} />
-          </div>
+            <div className="scroll-divider" aria-hidden="true"><span>❧</span></div>
+            <div id="visitor-contact" className="v-reveal">
+              <ContactStrip contact={profile.contact} />
+            </div>
+          </ScriptoriumGate>
         </main>
 
         <ScrollRod position="bottom" />

@@ -1,99 +1,89 @@
 /* ─────────────────────────────────────────────────────
-   Rolled parchment bands — the sheet curls back on
-   itself at the top and bottom of the visitor page.
+   Wooden rollers — the real dowel artwork sliced out of
+   scroll-master.webp rather than painted in CSS gradients.
+   border-image 3-slices it: the turned end-caps (44px each
+   side) render at natural size and only the dowel's middle
+   stretches across the sheet's width, so the caps stay
+   crisp at any viewport size.
 ───────────────────────────────────────────────────── */
 .scroll-roll {
   position: relative;
-  z-index: 4;
-  height: 68px;
-  margin: 0 -16px;
+  /* above the sheet's torn edge + vignette (15) so the cylinders read
+     as solid objects the paper winds into, never sliced by its spikes */
+  z-index: 25;
+  flex-shrink: 0;
+  min-height: 64px;
+  height: 64px;
+  /* pulled wider than the sheet so the caps protrude past the paper */
+  margin: 0 -34px;
   pointer-events: none;
 }
-.scroll-roll--top    { margin-bottom: -4px; }
-.scroll-roll--bottom { margin-top: 18px; height: 54px; }
+.scroll-roll--top    { margin-bottom: -6px; }
+.scroll-roll--bottom { margin-top: 16px; min-height: 56px; height: 56px; }
 
 .scroll-roll-face {
   position: absolute;
   inset: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
-  padding: 0 60px 0 76px;
-  border-radius: 34px;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(95, 68, 32, 0.42) 0%,
-      rgba(255, 250, 236, 0.42) 22%,
-      rgba(255, 255, 255, 0) 46%,
-      rgba(120, 88, 42, 0.22) 78%,
-      rgba(58, 38, 14, 0.62) 100%
-    ),
-    var(--bg-parchment);
-  background-size: auto, 150% auto;
-  background-position: center, 50% 46%;
-  box-shadow:
-    0 12px 22px rgba(0, 0, 0, 0.48),
-    0 3px 6px rgba(0, 0, 0, 0.35),
-    inset 0 -8px 10px rgba(70, 46, 16, 0.22),
-    inset 0 5px 8px rgba(255, 250, 236, 0.30);
+  padding: 0 14px 0 40px;
+  background: none;
+  border-style: solid;
+  /* the 44px source cap slice is rendered at 66px, so the turned caps
+     read at a believable scale against a full-width dowel */
+  border-width: 0 66px;
+  border-image-source: url('../assets/scroll/roller-top.png');
+  border-image-slice: 0 44 0 44 fill;
+  border-image-repeat: stretch;
+  border-image-width: 0 66px;
+  /* the artwork's dowel is a pale tan; deepen it to turned walnut */
+  filter: brightness(0.74) saturate(1.3) contrast(1.06)
+          drop-shadow(0 10px 16px rgba(0, 0, 0, 0.55));
 }
 .scroll-roll--bottom .scroll-roll-face {
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(58, 38, 14, 0.52) 0%,
-      rgba(120, 88, 42, 0.20) 24%,
-      rgba(255, 255, 255, 0) 52%,
-      rgba(255, 250, 236, 0.36) 76%,
-      rgba(95, 68, 32, 0.46) 100%
-    ),
-    var(--bg-parchment);
+  border-image-source: url('../assets/scroll/roller-bottom.png');
 }
 
-/* Rolled end caps — the spiral cross-section of the curled sheet */
-.scroll-roll-face::before,
-.scroll-roll-face::after {
+/* The wound roll casts real shade onto the parchment just beneath it —
+   a hard, near-black contact line right at the seam that falls off
+   fast, so the top cylinder reads as a heavy object sitting proud of
+   the sheet, not flush-pasted onto it. */
+.scroll-roll--top::after {
   content: '';
   position: absolute;
-  top: 50%;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  transform: translateY(-50%);
-  background:
-    radial-gradient(circle at 50% 50%,
-      #9c8152 0 5px,
-      #e5d4a9 6px 10px,
-      #8f7449 11px 13px,
-      #efe1bd 14px 20px,
-      #a48c5c 21px 23px,
-      #f1e4c2 24px 30px,
-      #6b5230 31px 34px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 2px 3px rgba(255, 250, 236, 0.35);
+  left: 48px;
+  right: 48px;
+  bottom: -30px;
+  height: 38px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(10, 6, 3, 0.7) 12%,
+    rgba(10, 6, 3, 0.3) 40%,
+    rgba(10, 6, 3, 0) 100%);
 }
-.scroll-roll-face::before { left: -14px; }
-.scroll-roll-face::after  { right: -14px; }
-.scroll-roll--bottom .scroll-roll-face::before,
-.scroll-roll--bottom .scroll-roll-face::after { width: 54px; height: 54px; }
+#root[data-theme='dark'] .scroll-roll--top::after {
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.82) 12%,
+    rgba(0, 0, 0, 0.4) 40%,
+    rgba(0, 0, 0, 0) 100%);
+}
 
-/* Night: a huge-spread inset shadow floods the band with dark sepia
-   beneath its lettering, so the roll dims with the rest of the sheet */
+/* Night: the wood dims and takes the candle's warmth from the left */
 #root[data-theme='dark'] .scroll-roll-face {
-  box-shadow:
-    inset 0 0 0 999px rgba(22, 13, 6, 0.70),
-    0 12px 22px rgba(0, 0, 0, 0.7),
-    0 3px 6px rgba(0, 0, 0, 0.5);
-}
-#root[data-theme='dark'] .scroll-roll-face::before,
-#root[data-theme='dark'] .scroll-roll-face::after {
-  filter: brightness(0.42) sepia(0.4);
+  filter: brightness(0.42) saturate(1.15) contrast(1.05)
+          drop-shadow(0 10px 16px rgba(0, 0, 0, 0.8));
 }
 
 @media (max-width: 720px) {
-  .scroll-roll { height: 52px; margin: 0 -8px; }
-  .scroll-roll-face { padding: 0 118px 0 54px; }
-  .scroll-roll-face::before,
-  .scroll-roll-face::after { width: 52px; height: 52px; }
-  .scroll-roll-face::before { left: -8px; }
-  .scroll-roll-face::after  { right: -8px; }
+  .scroll-roll { height: 46px; min-height: 46px; margin: 0 -18px; }
+  .scroll-roll--bottom { height: 42px; min-height: 42px; }
+  .scroll-roll-face {
+    padding: 0 8px 0 14px;
+    border-width: 0 38px;
+    border-image-width: 0 38px;
+  }
 }

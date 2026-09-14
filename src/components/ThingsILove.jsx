@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import './ThingsILove.css'
 import MoviesPanel from './MoviesPanel'
 import profile from '../data/profileData'
 import { INK_ICONS } from './InkIcons'
+
+// A quick rewind-roll between interest "datasets": the outgoing panel
+// rolls up and away like a scroll snapping shut, the incoming one
+// unrolls back down to open — rather than a flat crossfade.
+const ROLL_VARIANTS = {
+  initial: { scaleY: 0.06, opacity: 0 },
+  animate: { scaleY: 1, opacity: 1, transition: { duration: 0.42, ease: [0.25, 1, 0.5, 1] } },
+  exit: { scaleY: 0.06, opacity: 0, transition: { duration: 0.28, ease: [0.5, 0, 0.75, 0] } },
+}
 
 const TABS = [
   { id: 'history',  label: 'History',  delay: 0 },
@@ -107,14 +117,33 @@ export default function ThingsILove() {
       </div>
 
       <div className="love-panels">
-        {active === 'movies' && (
-          <div key="movies" className="love-panel movies-panel-wrap panel">
-            <MoviesPanel />
-          </div>
-        )}
-        {active && active !== 'movies' && activeInterest && (
-          <InterestPanel key={active} data={activeInterest} />
-        )}
+        <AnimatePresence mode="wait">
+          {active === 'movies' && (
+            <motion.div
+              key="movies"
+              className="love-panel movies-panel-wrap panel"
+              style={{ transformOrigin: 'top center' }}
+              variants={ROLL_VARIANTS}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <MoviesPanel />
+            </motion.div>
+          )}
+          {active && active !== 'movies' && activeInterest && (
+            <motion.div
+              key={active}
+              style={{ transformOrigin: 'top center' }}
+              variants={ROLL_VARIANTS}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <InterestPanel data={activeInterest} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

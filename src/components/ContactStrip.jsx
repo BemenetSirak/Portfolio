@@ -52,7 +52,7 @@ export default function ContactStrip({ contact }) {
   ]
 
   return (
-    <div className="contact-strip panel">
+    <div className="contact-strip">
       <h3>Let's Connect!</h3>
       <p className="contact-sub">Feel free to say hi or just start a conversation!</p>
       <div className="social-icons">
