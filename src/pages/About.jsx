@@ -50,40 +50,44 @@ export default function About({ onClose }) {
   return (
     <ScrollPage title="About Me">
       <div className="about-root">
-      <header className="about-header">
-        <div className="about-header-left">
-          <h1 className="about-name">{profile.name}</h1>
-          <p className="about-title-line">{profile.title}</p>
-        </div>
-        <button onClick={onClose} className="about-close-btn" aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-          </svg>
-          Close
-        </button>
-      </header>
-
-      <section className="about-bio panel">
-        <p className="about-bio-text">{profile.summary}</p>
-        <div className="about-contact-row">
-          <a href={`mailto:${profile.contact.email}`} className="about-contact-chip">✉ {profile.contact.email}</a>
-          <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="about-contact-chip">in LinkedIn</a>
-          <a href={profile.contact.github} target="_blank" rel="noreferrer" className="about-contact-chip">⌥ GitHub</a>
-        </div>
-      </section>
-
-      <section className="about-facts-section">
-        <h2 className="about-section-title">A Bit About Me</h2>
-        <div className="about-facts-grid">
-          {FACTS.map((f, i) => (
-            <div key={i} className="about-fact-card panel">
-              <span className="about-fact-emoji">{f.emoji}</span>
-              <h3 className="about-fact-title">{f.title}</h3>
-              <p className="about-fact-body">{f.body}</p>
+        <header className="about-header">
+          <div>
+            <h1 className="about-name">{profile.name}</h1>
+            <p className="about-title">{profile.title}</p>
+            <div className="about-contact-row">
+              <a href={`mailto:${profile.contact.email}`} className="about-contact-link">✉ {profile.contact.email}</a>
+              <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="about-contact-link">in LinkedIn</a>
+              <a href={profile.contact.github} target="_blank" rel="noreferrer" className="about-contact-link">⌥ GitHub</a>
             </div>
-          ))}
+          </div>
+          <div className="about-header-actions">
+            <button onClick={onClose} className="about-btn-ghost">Close</button>
+          </div>
+        </header>
+
+        <div className="about-body">
+
+          {/* Summary */}
+          <section className="about-section">
+            <h2 className="about-section-title">Summary</h2>
+            <p className="about-body-text">{profile.summary}</p>
+          </section>
+
+          {/* A Bit About Me */}
+          <section className="about-section">
+            <h2 className="about-section-title">A Bit About Me</h2>
+            <div className="about-facts-grid">
+              {FACTS.map((f, i) => (
+                <div key={i} className="about-fact-item">
+                  <span className="about-fact-emoji">{f.emoji}</span>
+                  <h3 className="about-fact-title">{f.title}</h3>
+                  <p className="about-fact-body">{f.body}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
         </div>
-      </section>
       </div>
     </ScrollPage>
   )

@@ -1,10 +1,12 @@
+/* ── About overlay — mirrors Resume.css's structure/spacing so the
+   two popups read as the same document rather than two different
+   designs (plain flowing sections + thin dividers, not boxed cards). ── */
 .about-root {
-  padding: 28px 24px 48px;
+  padding: 28px 24px 56px;
+  max-width: 860px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 1100px;
-  margin: 0 auto;
 }
 
 /* ── Header ── */
@@ -14,26 +16,34 @@
   align-items: flex-start;
   gap: 16px;
   flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  margin-bottom: 4px;
 }
+#root[data-theme='dark'] .about-header { border-bottom-color: rgba(255,255,255,0.09); }
 
 .about-name {
   font-family: var(--ff-display);
-  font-size: 1.75rem !important;
+  font-size: 1.6rem !important;
   font-weight: 900;
   color: var(--text) !important;
-  margin: 0 0 4px !important;
+  margin: 0 0 3px !important;
 }
 
-.about-title-line {
-  font-size: 0.95rem;
-  color: var(--muted);
-  margin: 0;
+.about-title {
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 8px;
 }
 
-.about-close-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.about-contact-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.about-contact-link { font-size: 0.78rem; color: var(--muted); text-decoration: none; }
+.about-contact-link:hover { color: var(--accent); }
+
+.about-header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+.about-btn-ghost {
   background: none;
   border: 1px solid rgba(0,0,0,0.10);
   color: var(--muted);
@@ -41,88 +51,63 @@
   padding: 7px 14px;
   border-radius: 8px;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-  flex-shrink: 0;
 }
-.about-close-btn:hover { color: var(--text); border-color: var(--accent); }
+.about-btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+#root[data-theme='dark'] .about-btn-ghost { border-color: rgba(255,255,255,0.12); }
 
-#root[data-theme='dark'] .about-close-btn { border-color: rgba(255,255,255,0.10); }
+/* ── Body ── */
+.about-body { display: flex; flex-direction: column; }
 
-/* ── Bio ── */
-.about-bio {
-  padding: 20px 22px;
+.about-section {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
 }
+#root[data-theme='dark'] .about-section { border-bottom-color: rgba(255,255,255,0.07); }
+.about-section:last-child { border-bottom: none; }
 
-.about-bio-text {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--text);
-  margin: 0 0 16px;
-}
-
-.about-contact-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.about-contact-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  background: rgba(147, 96, 31, 0.10);
-  border: 1px solid rgba(147, 96, 31, 0.22);
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.15s;
-}
-.about-contact-chip:hover { background: rgba(147,96,31,0.18); }
-#root[data-theme='dark'] .about-contact-chip {
-  background: rgba(219,165,62,0.12);
-  border-color: rgba(219,165,62,0.28);
-}
-#root[data-theme='dark'] .about-contact-chip:hover { background: rgba(219,165,62,0.20); }
-
-/* ── Facts grid ── */
 .about-section-title {
   font-family: var(--ff-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0 0 16px;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--accent) !important;
+  margin: 0 0 14px !important;
 }
 
+.about-body-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin: 0; }
+
+/* ── Facts grid ── */
 .about-facts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 14px;
 }
 
-.about-fact-card {
-  padding: 20px 18px;
-  border-radius: 14px;
+.about-fact-item {
+  padding: 14px 16px;
+  background: rgba(147,96,31,0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(147,96,31,0.14);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: transform 0.15s ease;
 }
-.about-fact-card:hover { transform: translateY(-2px); }
+#root[data-theme='dark'] .about-fact-item {
+  background: rgba(219,165,62,0.06);
+  border-color: rgba(219,165,62,0.16);
+}
 
 .about-fact-emoji {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1;
 }
 
 .about-fact-title {
-  font-family: var(--ff-display);
-  font-size: 0.95rem;
+  font-size: 0.92rem !important;
   font-weight: 700;
-  color: var(--text);
-  margin: 0;
+  color: var(--text) !important;
+  margin: 0 0 2px !important;
 }
 
 .about-fact-body {
@@ -130,4 +115,9 @@
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
+}
+
+@media print {
+  .about-header-actions { display: none; }
+  .about-root { padding: 16px; }
 }

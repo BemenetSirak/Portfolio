@@ -67,6 +67,12 @@
 .scroll-roll-face {
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.92);
 }
+/* The top roller is the one actually gripping/feeding the sheet, so
+   its own shadow sits tighter and closer than the shared one above —
+   more like real pressure at the point of contact than a soft drop. */
+.scroll-roll--top .scroll-roll-face {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.92);
+}
 
 /* The wound roll casts real shade onto the parchment just beneath it —
    a hard, near-black contact line right at the seam that falls off

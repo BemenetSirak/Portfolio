@@ -198,7 +198,12 @@
   align-items: center;
   justify-content: center;
   color: #3a2408;
+  /* rotate/translate/rotate places the badge on the medallion's rim —
+     that positioning transform has to survive into the hover state
+     below, so the extra scale there is appended, never a replacement. */
   transform: rotate(var(--angle)) translate(var(--badge-radius)) rotate(calc(-1 * var(--angle)));
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.75));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   background:
     radial-gradient(circle at 32% 26%, rgba(255,252,225,0.9) 0%, rgba(255,252,225,0) 16%),
     repeating-conic-gradient(from 0deg,
@@ -229,6 +234,9 @@
 .vh-badge:hover,
 .vh-badge:focus-visible {
   outline: none;
+  /* Append, don't replace, the rim-placement transform (see above) */
+  transform: rotate(var(--angle)) translate(var(--badge-radius)) rotate(calc(-1 * var(--angle))) scale(1.08) translateZ(0);
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.9));
   box-shadow:
     0 9px 18px rgba(0, 0, 0, 0.6),
     0 0 20px rgba(251, 191, 36, 0.5),

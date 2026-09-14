@@ -446,6 +446,18 @@ html:has(.visitor-layout) {
   flex-direction: column;
   margin: 16px var(--sheet-inset-right) 46px var(--sheet-inset-left);
 }
+/* A faint static wash of the candle's own warm tone across the whole
+   sheet, left to right — sitting above the corner vignette (15) but
+   below the rollers (25) so it never dulls their own wood shading. */
+.scroll-sheet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, rgba(255,175,75,0.08) 0%, transparent 55%);
+  mix-blend-mode: soft-light;
+}
 
 /* Full-height parchment, kept on its own layer behind the sheet's
    content (z-index:-1 inside the isolated .visitor-layout). Real DOM
