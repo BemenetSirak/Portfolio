@@ -32,7 +32,9 @@
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  background: var(--panel);
+  /* A sepia shimmer placeholder, not the bare panel color, so a slow
+     photo never reads as an empty hole while it loads. */
+  background: radial-gradient(circle, #3d2612 0%, #1a1005 100%);
   /* a tipped-in woodcut plate, not a modern rounded photo card: a
      soft sepia vignette closing in around the frame's inner edge */
   box-shadow:

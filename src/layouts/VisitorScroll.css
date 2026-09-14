@@ -65,6 +65,18 @@ html:has(.visitor-layout) {
   font-family: var(--ff-sans);
 }
 
+/* Wax-red keyboard focus, everywhere on the manuscript — the default
+   blue browser ring (or the parchment's own ink tones, too close to
+   the background to read reliably) doesn't fit the theme and doesn't
+   stand out against it either. :where() keeps this at the same
+   specificity as a bare .visitor-layout selector, so any element with
+   its own bespoke focus style (the medallion badges, icon cards) still
+   wins over this fallback instead of this rule clobbering it. */
+.visitor-layout :where(button, a, [role="button"], input):focus-visible {
+  outline: 2px dashed #a83218;
+  outline-offset: 4px;
+}
+
 #root[data-theme='dark'] .visitor-layout {
   --bg:      #16100a;
   --panel:   #26190f;
@@ -127,7 +139,11 @@ html:has(.visitor-layout) {
   z-index: -1;
   pointer-events: none;
   background-color: var(--desk-base);
+  /* Daylight's own soft ambient highlight from the upper-left — the
+     room-light counterpart to the candle's directional glow at night,
+     so the desk doesn't read as flatly, uniformly lit either way. */
   background-image:
+    radial-gradient(circle at 15% 15%, rgba(255,252,240,0.5) 0%, rgba(255,252,240,0) 65%),
     linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.42) 100%),
     repeating-linear-gradient(
       180deg,
@@ -137,7 +153,7 @@ html:has(.visitor-layout) {
       rgba(0,0,0,0) 181px, rgba(0,0,0,0) 184px
     ),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0022 0.085' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='table' tableValues='0.08 0.34 0.16 0.42'/%3E%3CfeFuncG type='table' tableValues='0.04 0.20 0.09 0.25'/%3E%3CfeFuncB type='table' tableValues='0.02 0.09 0.04 0.11'/%3E%3CfeFuncA type='table' tableValues='1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: auto, auto, 900px 900px;
+  background-size: auto, auto, auto, 900px 900px;
 }
 #root[data-theme='dark'] .desk-backdrop {
   /* A full-canvas directional falloff from the candle's position at
@@ -175,26 +191,47 @@ html:has(.visitor-layout) {
   pointer-events: none;
 }
 
-/* Snuffed: no flame, no glow — just the standing candle and its wick */
+/* Snuffed: no flame, no glow — just the standing candle and its wick,
+   shrinking away rather than just vanishing so the flame reads as
+   collapsing in on itself, not clipping off. */
 .desk-candle.is-out .candle-glow,
 .desk-candle.is-out .candle-flame {
   opacity: 0;
+  transform: scale(0.2);
   pointer-events: none;
+}
+/* The base .candle-flame rule runs the flicker keyframes
+   unconditionally, which would keep overwriting transform every frame
+   and mask the scale(0.2) above — stop it outright while snuffed. */
+.desk-candle.is-out .candle-flame {
+  animation: none;
 }
 .desk-candle.is-out .candle-wick {
   height: 8px;
   background: linear-gradient(180deg, #1a0f05, #3a2410);
+}
+/* Cold paraffin in daylight — the same wax gradient, just desaturated
+   and matted, without the warm glossy sheen the flame's own light
+   normally puts on it. */
+.desk-candle.is-out .candle-body {
+  filter: saturate(0.55) brightness(0.96);
+}
+.desk-candle.is-out .candle-body::before {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 52%, #cfc6b4 0%, #ded6c2 55%, rgba(0,0,0,0) 56%),
+    radial-gradient(ellipse at 50% 45%, #ece4d2 0%, #d8cfba 60%, #b3a98f 100%);
 }
 .desk-candle.is-lit .candle-flame { pointer-events: auto; }
 .desk-candle.is-out .candle-flame { pointer-events: auto; }
 .desk-candle.is-lit .candle-glow,
 .desk-candle.is-lit .candle-flame {
   opacity: 1;
-  transition: opacity 0.4s ease 0.15s;
+  transform: scale(1);
+  transition: opacity 0.4s ease 0.15s, transform 0.4s ease 0.15s;
 }
 .desk-candle.is-out .candle-glow,
 .desk-candle.is-out .candle-flame {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* ── Smoke — three soft wisps that rise and dissipate from the wick
@@ -554,13 +591,11 @@ html:has(.visitor-layout) {
 .scroll-seal-brand .brand-logo-seal {
   width: 104px;
   transform: rotate(-9deg);
-  /* Multiply composites the wax directly into the parchment underneath
-     it (and, as a side effect, cancels out any pale fringe left along
-     the cutout's edge) instead of sitting flatly on top of it; the
-     double-tier shadow gives it a tight press-mark plus a wider one
-     for real material weight. */
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.9)) drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  /* mix-blend-mode: multiply crushed the wax's red hue against darker
+     parchment/desk areas (especially in dark mode) — layered drop
+     shadows alone still give it pressed-in weight without dulling the
+     crimson down toward black. */
+  filter: drop-shadow(0 3px 2px rgba(0,0,0,0.85)) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
 }
 .scroll-seal-brand .brand-logo:hover .brand-logo-seal {
   transform: rotate(-9deg) scale(1.05);
@@ -601,11 +636,8 @@ html:has(.visitor-layout) {
   z-index: 32;
   height: auto;
   pointer-events: none;
-  /* Same reasoning as the brand seal: multiply presses the wax into
-     the page instead of pasting it on top, and the tight/wide shadow
-     pair gives it real pressed-in weight. */
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.9)) drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  /* Same reasoning as the brand seal — see the comment there. */
+  filter: drop-shadow(0 3px 2px rgba(0,0,0,0.85)) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
 }
 
 /* A cracked-open wax seal at the foot of the sheet — two fragments of
@@ -628,8 +660,7 @@ html:has(.visitor-layout) {
   left: 0;
   width: 92px;
   height: auto;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.9)) drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 3px 2px rgba(0,0,0,0.85)) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
 }
 .scroll-seal-broken-half--left {
   clip-path: polygon(0 0, 42% 4%, 47% 46%, 30% 100%, 0 100%);
