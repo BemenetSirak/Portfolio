@@ -99,15 +99,27 @@ function VisitorLayout({ onBack }) {
     }
   }
 
+  // Drag tracking lives on window, not on the candle element itself.
+  // The original version used setPointerCapture plus onPointerMove/Up
+  // props bound directly to the draggable spans — capture is supposed
+  // to keep routing events to that element even once the cursor leaves
+  // it, but after a real double-click's rapid pointerdown/up/click x2
+  // sequence, capture could end up left in a state where a *third*,
+  // separate drag gesture right after stopped receiving move events
+  // entirely (the candle would snap home fine, then never move again).
+  // Listening on window while dragging sidesteps capture altogether —
+  // it always sees every pointermove/up regardless of what element is
+  // under the cursor — which is the more standard way to implement
+  // drag-to-move and isn't exposed to that failure mode at all.
   function handleCandlePointerDown(e) {
-    e.currentTarget.setPointerCapture(e.pointerId)
-    dragRef.current = {
-      pointerId: e.pointerId,
+    const pointerId = e.pointerId
+    const drag = {
       startX: e.clientX,
       startY: e.clientY,
       origDx: candleOffset.dx,
       origDy: candleOffset.dy,
     }
+    dragRef.current = drag
     candleRef.current?.classList.add('is-dragging')
     // Engage the dramatic spotlight the instant it's picked up, not
     // only once it's actually away from home — grabbing it already
@@ -115,32 +127,37 @@ function VisitorLayout({ onBack }) {
     // (not a direct classList toggle) so an unrelated re-render mid-
     // drag can never silently clobber it back off before pointerup.
     setCandleActive(true)
-  }
 
-  function handleCandlePointerMove(e) {
-    const drag = dragRef.current
-    if (!drag || e.pointerId !== drag.pointerId) return
-    const { dx, dy } = clampOffset(
-      drag.origDx + (e.clientX - drag.startX),
-      drag.origDy + (e.clientY - drag.startY)
-    )
-    applyCandlePosition(dx, dy)
-  }
+    function onMove(ev) {
+      if (ev.pointerId !== pointerId) return
+      const { dx, dy } = clampOffset(
+        drag.origDx + (ev.clientX - drag.startX),
+        drag.origDy + (ev.clientY - drag.startY)
+      )
+      applyCandlePosition(dx, dy)
+    }
 
-  function handleCandlePointerUp(e) {
-    const drag = dragRef.current
-    if (!drag || e.pointerId !== drag.pointerId) return
-    const { dx, dy } = clampOffset(
-      drag.origDx + (e.clientX - drag.startX),
-      drag.origDy + (e.clientY - drag.startY)
-    )
-    dragRef.current = null
-    candleRef.current?.classList.remove('is-dragging')
-    setCandleOffset({ dx, dy })
-    // Only keep the spotlight engaged if it was actually released away
-    // from its home dock — dropped back at exactly (0,0), it goes back
-    // to normal, fully-lit night mode.
-    setCandleActive(dx !== 0 || dy !== 0)
+    function onUp(ev) {
+      if (ev.pointerId !== pointerId) return
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+      const { dx, dy } = clampOffset(
+        drag.origDx + (ev.clientX - drag.startX),
+        drag.origDy + (ev.clientY - drag.startY)
+      )
+      dragRef.current = null
+      candleRef.current?.classList.remove('is-dragging')
+      setCandleOffset({ dx, dy })
+      // Only keep the spotlight engaged if it was actually released
+      // away from its home dock — dropped back at exactly (0,0), it
+      // goes back to normal, fully-lit night mode.
+      setCandleActive(dx !== 0 || dy !== 0)
+    }
+
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
   }
 
   // Double-click (the saucer or the wax itself) snaps the chamberstick
@@ -250,9 +267,6 @@ function VisitorLayout({ onBack }) {
           className="chamber-saucer"
           aria-hidden="true"
           onPointerDown={handleCandlePointerDown}
-          onPointerMove={handleCandlePointerMove}
-          onPointerUp={handleCandlePointerUp}
-          onPointerCancel={handleCandlePointerUp}
           onDoubleClick={handleCandleDoubleClick}
         />
         <span className="chamber-handle" aria-hidden="true" />
@@ -261,9 +275,6 @@ function VisitorLayout({ onBack }) {
           className="candle-body"
           aria-hidden="true"
           onPointerDown={handleCandlePointerDown}
-          onPointerMove={handleCandlePointerMove}
-          onPointerUp={handleCandlePointerUp}
-          onPointerCancel={handleCandlePointerUp}
           onDoubleClick={handleCandleDoubleClick}
         />
         <span className="candle-drip" aria-hidden="true" />
