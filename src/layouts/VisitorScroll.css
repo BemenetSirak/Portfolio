@@ -1028,6 +1028,22 @@ html:has(.visitor-layout) {
   .scroll-masthead { font-size: 1.6rem; }
 }
 
+/* Defensive fallback for phone-class browsers: the real parchment
+   texture lives on .scroll-backdrop::before, painted under a clip-path
+   torn-edge shape AND an SVG url() filter. If either ever silently
+   fails to paint on some in-the-wild mobile engine, .scroll-sheet's
+   own background is the last line of defense so text still sits on a
+   parchment-colored surface rather than the bare dark desk showing
+   through. Costs nothing when the texture is rendering fine, which is
+   the case in every mobile browser this was actually tested in. */
+@media (max-width: 768px) {
+  .scroll-sheet {
+    background-color: var(--bg);
+    position: relative;
+    z-index: 2;
+  }
+}
+
 @media (max-width: 720px) {
   .visitor-layout {
     --sheet-inset-left: 18px;
