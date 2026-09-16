@@ -163,6 +163,14 @@
 }
 
 /* ── Panel wrapper shared ─── */
+/* Switching tabs swaps in a differently-sized panel (History's long
+   text vs. a short one) — contain: layout style keeps that resize
+   from forcing a reflow/repaint of anything outside this box (the
+   torn-edge parchment layers included), so the page doesn't visibly
+   jump or flash while the new panel's height settles in. */
+.love-panels {
+  contain: layout style;
+}
 .love-panels .love-panel {
   margin-top: 18px;
   border-radius: 4px;

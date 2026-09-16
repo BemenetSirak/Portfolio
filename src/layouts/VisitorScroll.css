@@ -448,6 +448,11 @@ html:has(.visitor-layout) {
   display: flex;
   flex-direction: column;
   margin: 16px var(--sheet-inset-right) 46px var(--sheet-inset-left);
+  /* Promotes the whole sheet (parchment texture included) to its own
+     GPU layer, so state changes elsewhere on the page (tab switches,
+     theme toggles) can't force it to repaint from scratch and flash. */
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 /* A faint static wash of the candle's own warm tone across the whole
    sheet, left to right — sitting above the corner vignette (15) but
@@ -1048,6 +1053,25 @@ html:has(.visitor-layout) {
   .visitor-layout {
     --sheet-inset-left: 18px;
     --sheet-inset-right: 16px;
+  }
+  /* The top/bottom teeth's height amplitude is a % of the sheet's
+     total height, which stays roughly constant regardless of screen
+     width — while each tooth's own width shrinks with the viewport.
+     On a narrow phone that turns a subtle desktop tear into tall,
+     thin spikes (worse still once the SVG turbulence filter distorts
+     .scroll-backdrop's copy on top), dark enough at .scroll-vignette's
+     up-to-50%-opacity fill to cut hard shapes across the masthead
+     text sitting just below it. Shrinking the y-amplitude here keeps
+     the tooth's aspect ratio close to what it looks like on desktop. */
+  .scroll-sheet {
+    --rip-edge: polygon(
+      0% 0.8%, 3% 0%, 7% 0.55%, 12% 0%, 18% 0.6%, 25% 0%, 32% 0.55%, 40% 0%, 48% 0.6%, 56% 0%,
+      64% 0.55%, 72% 0%, 80% 0.6%, 88% 0%, 94% 0.55%, 100% 0.8%,
+      99.3% 12%, 100.4% 22%, 99.2% 32%, 100.4% 42%, 99.3% 52%, 100.4% 62%, 99.2% 72%, 100.4% 82%, 99.3% 90%,
+      100% 99.2%, 94% 100%, 88% 99.45%, 80% 100%, 72% 99.4%, 64% 100%, 56% 99.45%, 48% 100%, 40% 99.4%, 32% 100%,
+      25% 99.45%, 18% 100%, 12% 99.4%, 7% 100%, 3% 99.45%, 0% 99.2%,
+      0.7% 90%, -0.4% 82%, 0.8% 72%, -0.4% 62%, 0.7% 52%, -0.4% 42%, 0.8% 32%, -0.4% 22%, 0.7% 12%
+    );
   }
   .scroll-sheet { margin-top: 10px; margin-bottom: 30px; }
   .visitor-layout .visitor-main { padding: 16px 16px 12px; gap: 18px; }
