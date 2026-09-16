@@ -191,6 +191,14 @@ html:has(.visitor-layout) {
   height: 380px;
   z-index: 40;
   pointer-events: none;
+  /* Only matters for the double-click "snap home" reset — a live drag
+     sets this same transform property dozens of times a second via
+     direct ref mutation, and .is-dragging below turns this off then
+     so it can't fight that or add lag to the pointer tracking. */
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.desk-candle.is-dragging {
+  transition: none;
 }
 /* Picked up: lift slightly off the desk and deepen its own shadow, the
    same "grabbed object" language as the wax seals' hover lift. */
@@ -215,31 +223,46 @@ html:has(.visitor-layout) {
   background: radial-gradient(circle 320px at var(--candle-x, 35px) var(--candle-y, 180px),
     rgba(255,190,100,0.10) 0%, rgba(255,140,50,0.04) 45%, rgba(0,0,0,0) 75%);
 }
+/* Docked (the default, resting state): the heavy regional darkness
+   mask stays off entirely in the dark-mode background below — night
+   mode looks exactly like it did before this feature existed, fully
+   legible everywhere. It only switches on once the chamberstick is
+   actually picked up or standing away from its resting spot. */
 #root[data-theme='dark'] .candle-light-overlay {
   background: radial-gradient(circle 320px at var(--candle-x, 35px) var(--candle-y, 180px),
     rgba(255,195,110,0.18) 0%, rgba(120,70,25,0.20) 45%, rgba(15,8,2,0.65) 78%, rgba(5,2,0,0.86) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#root[data-theme='dark'] .candle-light-overlay.is-active {
+  opacity: 1;
   /* Living firelight: the same flicker rhythm as the flame itself
-     (candleFlickerGlow, 3.2s), just nudging the overlay's own opacity
-     rather than the gradient's radius directly (animating a length
-     baked into a background-image isn't something CSS transitions
-     reach without registering the custom property via @property,
-     which not all target browsers support yet) — the effect reads the
-     same: the light very subtly breathes rather than sitting static. */
+     (candleFlickerGlow, 3.2s), nudging brightness rather than opacity
+     — opacity is already doing the docked/active fade via the
+     transition above, and a CSS animation on the same property would
+     immediately win out over that transition the moment .is-active is
+     added, skipping the fade-in instead of easing into it. Brightness
+     stays out of that fight entirely while reading the same: the
+     light very subtly breathes rather than sitting static. */
   animation: candleLightFlicker 3.2s ease-in-out infinite;
 }
 @keyframes candleLightFlicker {
-  0%, 100% { opacity: 1; }
-  8%       { opacity: 0.92; }
-  19%      { opacity: 1; }
-  33%      { opacity: 0.88; }
-  47%      { opacity: 1; }
-  61%      { opacity: 0.94; }
-  74%      { opacity: 1; }
-  88%      { opacity: 0.9; }
+  0%, 100% { filter: brightness(1); }
+  8%       { filter: brightness(0.94); }
+  19%      { filter: brightness(1); }
+  33%      { filter: brightness(0.9); }
+  47%      { filter: brightness(1); }
+  61%      { filter: brightness(0.96); }
+  74%      { filter: brightness(1); }
+  88%      { filter: brightness(0.93); }
 }
 @media (prefers-reduced-motion: reduce) {
   .desk-candle.is-dragging .candle-body { transition: none; }
-  .candle-light-overlay { animation: none; }
+  .desk-candle { transition: none; }
+  /* Matches .is-active's own specificity — a plain .candle-light-overlay
+     selector here would lose to the more specific is-active rule that
+     sets the animation, and reduced-motion would silently do nothing. */
+  .candle-light-overlay.is-active { animation: none; }
 }
 
 /* Snuffed: no flame, no glow — just the standing candle and its wick,

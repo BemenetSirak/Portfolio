@@ -63,6 +63,7 @@ function VisitorLayout({ onBack }) {
   const [smoking, setSmoking]             = useState(false)
   const [gateOpen, setGateOpen]           = useState(false)
   const [candleOffset, setCandleOffset]   = useState({ dx: 0, dy: 0 })
+  const [candleActive, setCandleActive]   = useState(false)
   const smokeTimer = useRef(null)
   const unrolled = useUnroll()
   const candleRef = useRef(null)
@@ -108,6 +109,12 @@ function VisitorLayout({ onBack }) {
       origDy: candleOffset.dy,
     }
     candleRef.current?.classList.add('is-dragging')
+    // Engage the dramatic spotlight the instant it's picked up, not
+    // only once it's actually away from home — grabbing it already
+    // reads as "I'm exploring with the candle now". Driven by state
+    // (not a direct classList toggle) so an unrelated re-render mid-
+    // drag can never silently clobber it back off before pointerup.
+    setCandleActive(true)
   }
 
   function handleCandlePointerMove(e) {
@@ -130,6 +137,21 @@ function VisitorLayout({ onBack }) {
     dragRef.current = null
     candleRef.current?.classList.remove('is-dragging')
     setCandleOffset({ dx, dy })
+    // Only keep the spotlight engaged if it was actually released away
+    // from its home dock — dropped back at exactly (0,0), it goes back
+    // to normal, fully-lit night mode.
+    setCandleActive(dx !== 0 || dy !== 0)
+  }
+
+  // Double-click (the saucer or the wax itself) snaps the chamberstick
+  // back to its resting spot on the desk, animated rather than an
+  // instant jump — .desk-candle carries the transition, suppressed
+  // during an active drag (see .is-dragging in the CSS) so live
+  // dragging still tracks the pointer instantly with no lag.
+  function handleCandleDoubleClick() {
+    applyCandlePosition(0, 0)
+    setCandleOffset({ dx: 0, dy: 0 })
+    setCandleActive(false)
   }
 
   // The background/vignette layers are keyed by theme and force-remounted
@@ -208,7 +230,7 @@ function VisitorLayout({ onBack }) {
           it from blocking anything underneath. */}
       <div
         ref={lightRef}
-        className="candle-light-overlay"
+        className={`candle-light-overlay${candleActive ? ' is-active' : ''}`}
         style={{ '--candle-x': `${BASE_FLAME_X}px`, '--candle-y': `${BASE_FLAME_Y}px` }}
         aria-hidden="true"
       />
@@ -222,7 +244,8 @@ function VisitorLayout({ onBack }) {
         <span className="candle-shadow" aria-hidden="true" />
         {/* The chamberstick the candle actually stands in — a saucer
             base with a raised socket collar and a ring handle, same
-            drag handle as the wax body itself. */}
+            drag handle as the wax body itself. Double-clicking either
+            snaps it back to its resting spot on the desk. */}
         <span
           className="chamber-saucer"
           aria-hidden="true"
@@ -230,6 +253,7 @@ function VisitorLayout({ onBack }) {
           onPointerMove={handleCandlePointerMove}
           onPointerUp={handleCandlePointerUp}
           onPointerCancel={handleCandlePointerUp}
+          onDoubleClick={handleCandleDoubleClick}
         />
         <span className="chamber-handle" aria-hidden="true" />
         <span className="chamber-socket" aria-hidden="true" />
@@ -240,6 +264,7 @@ function VisitorLayout({ onBack }) {
           onPointerMove={handleCandlePointerMove}
           onPointerUp={handleCandlePointerUp}
           onPointerCancel={handleCandlePointerUp}
+          onDoubleClick={handleCandleDoubleClick}
         />
         <span className="candle-drip" aria-hidden="true" />
         <span className="candle-wick" aria-hidden="true" />
