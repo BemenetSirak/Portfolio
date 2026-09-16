@@ -120,7 +120,10 @@ html:has(.visitor-layout) {
 .visitor-layout li,
 .visitor-layout .link,
 .visitor-layout .label {
-  text-shadow: 0 0 0.5px rgba(30,20,10,0.8), 0 1px 2px rgba(0,0,0,0.2);
+  /* A crisp dark dispersion shadow plus a faint warm halo, so glyphs
+     stay legible over mottled/foxed patches of the parchment texture
+     instead of washing out against them. */
+  text-shadow: 0 0.5px 1px rgba(20, 10, 5, 0.6), 0 0 2px rgba(243, 229, 171, 0.4);
 }
 #root[data-theme='dark'] .visitor-layout p,
 #root[data-theme='dark'] .visitor-layout li,
@@ -483,8 +486,8 @@ html:has(.visitor-layout) {
     0 28px 54px rgba(0,0,0,0.62),
     0 6px 14px rgba(0,0,0,0.42),
     0 12px 24px rgba(0,0,0,0.9),
-    inset 0 8px 12px rgba(0,0,0,0.95),
-    inset 0 -8px 12px rgba(0,0,0,0.95),
+    inset 0 12px 16px rgba(0,0,0,0.95),
+    inset 0 -12px 16px rgba(0,0,0,0.95),
     inset 0 0 44px 10px rgba(96,64,22,0.22);
 }
 /* Overscan the texture so its pale outer border is cropped away */
@@ -650,6 +653,15 @@ html:has(.visitor-layout) {
   pointer-events: none;
   /* Same reasoning as the brand seal — see the comment there. */
   filter: drop-shadow(0 3px 2px rgba(0,0,0,0.85)) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+}
+
+/* The intact seal shown only while the scroll is still wrapped shut —
+   same spot the broken one takes over once it's been unrolled. */
+.scroll-seal--bottom {
+  bottom: -36px;
+  left: 50%;
+  width: 84px;
+  transform: translateX(-50%) rotate(3deg);
 }
 
 /* A cracked-open wax seal at the foot of the sheet — two fragments of
@@ -1028,6 +1040,7 @@ html:has(.visitor-layout) {
   .scroll-seal-brand { top: -8px; left: -16px; }
   .scroll-seal-brand .brand-logo-seal { width: 62px; }
   .scroll-quill { width: 150px; top: -6px; right: 2px; }
+  .scroll-seal--bottom { width: 60px; bottom: -24px; }
   .scroll-seal-broken { width: 66px; height: 72px; bottom: -24px; }
   .scroll-seal-broken-half { width: 66px; }
   .scroll-tack { width: 16px; height: 16px; }

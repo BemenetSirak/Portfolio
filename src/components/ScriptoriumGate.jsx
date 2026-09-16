@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, useMotionValue, useTransform, useMotionTemplate, useReducedMotion, animate } from 'framer-motion'
 import './ScriptoriumGate.css'
 
@@ -33,10 +33,19 @@ function alreadyOpened() {
 // elements. The new nodes never got marked visible until a full page
 // reload reran everything from scratch. Keeping one stable wrapper
 // avoids the remount entirely.
-export default function ScriptoriumGate({ children }) {
+export default function ScriptoriumGate({ children, onOpenChange }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
   const reduceMotion = useReducedMotion()
+
+  // Tells the parent when the gate's actually open — including the
+  // very first render if this is a repeat visit within the same
+  // session (state initializes straight to `true` then, so `finish()`
+  // never runs to report it otherwise). Elements outside the gate
+  // (the bottom seal) key their own look off this.
+  useEffect(() => {
+    onOpenChange?.(open)
+  }, [open, onOpenChange])
 
   const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
   const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)

@@ -54,6 +54,7 @@ function VisitorLayout({ onBack }) {
   const [interestsExp, setInterestsExp]   = useState(false)
   const [themeKey, setThemeKey]           = useState(getTheme)
   const [smoking, setSmoking]             = useState(false)
+  const [gateOpen, setGateOpen]           = useState(false)
   const smokeTimer = useRef(null)
   const unrolled = useUnroll()
 
@@ -242,7 +243,7 @@ function VisitorLayout({ onBack }) {
         </div>
 
         <main className="visitor-main">
-          <ScriptoriumGate>
+          <ScriptoriumGate onOpenChange={setGateOpen}>
             <VisitorHero name={profile.name} />
 
             <div className="v-reveal">
@@ -274,13 +275,17 @@ function VisitorLayout({ onBack }) {
 
         <ScrollRod position="bottom" />
 
-        {/* The scroll has already been opened, so the bottom seal is
-            shown cracked apart rather than intact — two halves of the
-            same wax stamp, split and turned away from each other. */}
-        <div className="scroll-seal-broken" aria-hidden="true">
-          <img className="scroll-seal-broken-half scroll-seal-broken-half--left" src={waxSeal} alt="" />
-          <img className="scroll-seal-broken-half scroll-seal-broken-half--right" src={waxSeal} alt="" />
-        </div>
+        {/* Wrapped shut, the binding seal is still intact — it only
+            shows cracked apart, as two halves turned away from each
+            other, once the visitor has actually unrolled the scroll. */}
+        {gateOpen ? (
+          <div className="scroll-seal-broken" aria-hidden="true">
+            <img className="scroll-seal-broken-half scroll-seal-broken-half--left" src={waxSeal} alt="" />
+            <img className="scroll-seal-broken-half scroll-seal-broken-half--right" src={waxSeal} alt="" />
+          </div>
+        ) : (
+          <img className="scroll-seal scroll-seal--bottom" src={waxSeal} alt="" aria-hidden="true" />
+        )}
         {TACKS.map(t => (
           <span key={t} className={`scroll-tack scroll-tack--${t}`} aria-hidden="true" />
         ))}
