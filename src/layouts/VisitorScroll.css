@@ -506,6 +506,13 @@ html:has(.visitor-layout) {
   clip-path: var(--rip-edge);
   filter: url(#scroll-torn-edge);
   pointer-events: none;
+  /* GPU-composite this layer on its own, so a reflow anywhere else on
+     the sheet (a "Things I Love" tab swapping panels, an About fact
+     card resizing) can't force the browser to repaint the clip-path +
+     SVG-filter combination from scratch. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
   /* Deep, tight inset shadows right at the top/bottom lips — where the
      sheet actually feeds under the roller's grip — on top of the
      softer ambient ones, so that seam reads as real friction contact
@@ -576,6 +583,9 @@ html:has(.visitor-layout) {
   z-index: 15;
   pointer-events: none;
   clip-path: var(--rip-edge, none);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
   /* The radial ellipse's reach scales with this box's own height, so
      switching a "Things I Love" tab (which changes the sheet's total
      height) shifts how far the darkening extends in absolute pixels —
