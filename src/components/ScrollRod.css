@@ -60,7 +60,7 @@
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 22%),
     linear-gradient(90deg,
-      #110803 0%, #4a2e12 25%, #7a4e24 50%, #4a2e12 75%, #110803 100%);
+      #120a04 0%, #3a2211 15%, #5c381c 50%, #221307 85%, #0b0502 100%);
 }
 /* Hard occlusion — the barrel is a heavy solid object, not a flat
    painted strip, so it casts its own tight contact shadow at all times */

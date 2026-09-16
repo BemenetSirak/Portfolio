@@ -131,6 +131,7 @@ function VisitorLayout({ onBack }) {
         <span className="candle-glow" aria-hidden="true" />
         <span className="candle-shadow" aria-hidden="true" />
         <span className="candle-body" aria-hidden="true" />
+        <span className="candle-drip" aria-hidden="true" />
         <span className="candle-wick" aria-hidden="true" />
         {smoking && (
           <span className="candle-smoke" aria-hidden="true">
