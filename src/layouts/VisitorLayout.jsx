@@ -220,6 +220,19 @@ function VisitorLayout({ onBack }) {
       >
         <span className="candle-glow" aria-hidden="true" />
         <span className="candle-shadow" aria-hidden="true" />
+        {/* The chamberstick the candle actually stands in — a saucer
+            base with a raised socket collar and a ring handle, same
+            drag handle as the wax body itself. */}
+        <span
+          className="chamber-saucer"
+          aria-hidden="true"
+          onPointerDown={handleCandlePointerDown}
+          onPointerMove={handleCandlePointerMove}
+          onPointerUp={handleCandlePointerUp}
+          onPointerCancel={handleCandlePointerUp}
+        />
+        <span className="chamber-handle" aria-hidden="true" />
+        <span className="chamber-socket" aria-hidden="true" />
         <span
           className="candle-body"
           aria-hidden="true"
