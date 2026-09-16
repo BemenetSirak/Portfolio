@@ -21,6 +21,13 @@ import waxSeal from '../assets/scroll/wax-seal.png'
 import './VisitorLayout.css'
 import './VisitorScroll.css'
 
+// The flame's resting position, in screen pixels, derived from the
+// candle's own CSS (desk-candle left:0/top:96, flame left:23/top:52,
+// flame itself 24x64) — this is what the dynamic light gradient
+// tracks, not the candle wrapper's own top-left corner.
+const BASE_FLAME_X = 35
+const BASE_FLAME_Y = 180
+
 const INTEREST_ITEMS = [
   { id: 'history',  label: 'History' },
   { id: 'religion', label: 'Religion' },
@@ -55,8 +62,75 @@ function VisitorLayout({ onBack }) {
   const [themeKey, setThemeKey]           = useState(getTheme)
   const [smoking, setSmoking]             = useState(false)
   const [gateOpen, setGateOpen]           = useState(false)
+  const [candleOffset, setCandleOffset]   = useState({ dx: 0, dy: 0 })
   const smokeTimer = useRef(null)
   const unrolled = useUnroll()
+  const candleRef = useRef(null)
+  const lightRef = useRef(null)
+  const dragRef = useRef(null)
+
+  // Picking up the candle body (not the flame — that still just toggles
+  // the theme on click) and dragging it moves the whole candle group,
+  // and the radial light overlay's centre follows along in real time.
+  // Position updates during the drag itself go straight through refs
+  // instead of setState, so the light can track every pointermove at
+  // full frame rate; the offset is only committed to React state once,
+  // on release, so it survives whatever re-renders VisitorLayout after.
+  function clampOffset(dx, dy) {
+    const margin = 24
+    const minDx = margin - BASE_FLAME_X
+    const maxDx = window.innerWidth - margin - BASE_FLAME_X
+    const minDy = 40 - BASE_FLAME_Y
+    const maxDy = window.innerHeight - margin - BASE_FLAME_Y
+    return {
+      dx: Math.min(Math.max(dx, minDx), maxDx),
+      dy: Math.min(Math.max(dy, minDy), maxDy),
+    }
+  }
+
+  function applyCandlePosition(dx, dy) {
+    if (candleRef.current) {
+      candleRef.current.style.transform = `translate(${dx}px, ${dy}px)`
+    }
+    if (lightRef.current) {
+      lightRef.current.style.setProperty('--candle-x', `${BASE_FLAME_X + dx}px`)
+      lightRef.current.style.setProperty('--candle-y', `${BASE_FLAME_Y + dy}px`)
+    }
+  }
+
+  function handleCandlePointerDown(e) {
+    e.currentTarget.setPointerCapture(e.pointerId)
+    dragRef.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      origDx: candleOffset.dx,
+      origDy: candleOffset.dy,
+    }
+    candleRef.current?.classList.add('is-dragging')
+  }
+
+  function handleCandlePointerMove(e) {
+    const drag = dragRef.current
+    if (!drag || e.pointerId !== drag.pointerId) return
+    const { dx, dy } = clampOffset(
+      drag.origDx + (e.clientX - drag.startX),
+      drag.origDy + (e.clientY - drag.startY)
+    )
+    applyCandlePosition(dx, dy)
+  }
+
+  function handleCandlePointerUp(e) {
+    const drag = dragRef.current
+    if (!drag || e.pointerId !== drag.pointerId) return
+    const { dx, dy } = clampOffset(
+      drag.origDx + (e.clientX - drag.startX),
+      drag.origDy + (e.clientY - drag.startY)
+    )
+    dragRef.current = null
+    candleRef.current?.classList.remove('is-dragging')
+    setCandleOffset({ dx, dy })
+  }
 
   // The background/vignette layers are keyed by theme and force-remounted
   // on change — see the comment in ThemeToggle for why a plain attribute
@@ -127,10 +201,33 @@ function VisitorLayout({ onBack }) {
 
       <div className="desk-backdrop" key={`desk-${themeKey}`} aria-hidden="true" />
 
-      <div className={`desk-candle${themeKey === 'dark' ? ' is-lit' : ' is-out'}${smoking ? ' is-smoking' : ''}`}>
+      {/* The candle's own light, as a literal moving source rather than
+          a fixed ambient glow — its centre tracks wherever the candle
+          has been dragged to. Sits above the rollers/seals (25/32) so
+          it washes over the whole desk, but pointer-events:none keeps
+          it from blocking anything underneath. */}
+      <div
+        ref={lightRef}
+        className="candle-light-overlay"
+        style={{ '--candle-x': `${BASE_FLAME_X}px`, '--candle-y': `${BASE_FLAME_Y}px` }}
+        aria-hidden="true"
+      />
+
+      <div
+        ref={candleRef}
+        className={`desk-candle${themeKey === 'dark' ? ' is-lit' : ' is-out'}${smoking ? ' is-smoking' : ''}`}
+        style={{ transform: `translate(${candleOffset.dx}px, ${candleOffset.dy}px)` }}
+      >
         <span className="candle-glow" aria-hidden="true" />
         <span className="candle-shadow" aria-hidden="true" />
-        <span className="candle-body" aria-hidden="true" />
+        <span
+          className="candle-body"
+          aria-hidden="true"
+          onPointerDown={handleCandlePointerDown}
+          onPointerMove={handleCandlePointerMove}
+          onPointerUp={handleCandlePointerUp}
+          onPointerCancel={handleCandlePointerUp}
+        />
         <span className="candle-drip" aria-hidden="true" />
         <span className="candle-wick" aria-hidden="true" />
         {smoking && (

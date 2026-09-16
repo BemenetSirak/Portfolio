@@ -192,6 +192,54 @@ html:has(.visitor-layout) {
   z-index: 40;
   pointer-events: none;
 }
+/* Picked up: lift slightly off the desk and deepen its own shadow, the
+   same "grabbed object" language as the wax seals' hover lift. */
+.desk-candle.is-dragging .candle-body {
+  cursor: grabbing;
+  transform: scale(1.05);
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.6));
+}
+
+/* The candle's light as a literal moving source: a warm halo right at
+   the flame's tracked position, falling off into the desk's own
+   shadow further out. Kept subtle in daylight (there's already a sun
+   for that) and much more pronounced at night, where this becomes the
+   scene's real light source rather than just an ambient glow fixed in
+   one spot. */
+.candle-light-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  pointer-events: none;
+  background: radial-gradient(circle 320px at var(--candle-x, 35px) var(--candle-y, 180px),
+    rgba(255,190,100,0.10) 0%, rgba(255,140,50,0.04) 45%, rgba(0,0,0,0) 75%);
+}
+#root[data-theme='dark'] .candle-light-overlay {
+  background: radial-gradient(circle 300px at var(--candle-x, 35px) var(--candle-y, 180px),
+    rgba(255,190,100,0.16) 0%, rgba(120,70,25,0.20) 45%, rgba(10,5,2,0.55) 78%, rgba(5,2,0,0.72) 100%);
+  /* Living firelight: the same flicker rhythm as the flame itself
+     (candleFlickerGlow, 3.2s), just nudging the overlay's own opacity
+     rather than the gradient's radius directly (animating a length
+     baked into a background-image isn't something CSS transitions
+     reach without registering the custom property via @property,
+     which not all target browsers support yet) — the effect reads the
+     same: the light very subtly breathes rather than sitting static. */
+  animation: candleLightFlicker 3.2s ease-in-out infinite;
+}
+@keyframes candleLightFlicker {
+  0%, 100% { opacity: 1; }
+  8%       { opacity: 0.92; }
+  19%      { opacity: 1; }
+  33%      { opacity: 0.88; }
+  47%      { opacity: 1; }
+  61%      { opacity: 0.94; }
+  74%      { opacity: 1; }
+  88%      { opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .desk-candle.is-dragging .candle-body { transition: none; }
+  .candle-light-overlay { animation: none; }
+}
 
 /* Snuffed: no flame, no glow — just the standing candle and its wick,
    shrinking away rather than just vanishing so the flame reads as
@@ -315,6 +363,13 @@ html:has(.visitor-layout) {
   top: 128px;
   width: 50px;
   height: 208px;
+  /* The wrapper (.desk-candle) is pointer-events:none so it never
+     blocks anything behind it; re-enable just for the body, which is
+     the actual drag handle (the flame stays its own separate button,
+     unaffected — clicking it still only toggles the theme). */
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
   /* bottom edge is the front of the base ellipse, so it reads as a cylinder */
   border-radius: 0 0 50% 50% / 0 0 10px 10px;
   /* A cylindrical light sweep (dark-light-dark across the barrel, same
@@ -1140,6 +1195,11 @@ html:has(.visitor-layout) {
   .scroll-seal-broken-half { width: 66px; }
   .scroll-tack { width: 16px; height: 16px; }
   .desk-candle { display: none !important; }
+  /* A separate sibling element, not a child of .desk-candle, so it
+     isn't covered by the rule above — without this it would keep
+     casting a static light/shadow with no visible candle to explain
+     it once the candle itself is hidden on narrow screens. */
+  .candle-light-overlay { display: none !important; }
 }
 
 /* Phone widths: even at its smaller 150px tablet size above, the
