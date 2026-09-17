@@ -1,7 +1,10 @@
 /* ─────────────────────────────────────────────────────
-   The Scriptorium gate — the page's opening reveal. The
-   sheet sits rolled shut; dragging (or pressing) the handle
-   below unrolls it open, then hands off to the real page.
+   The Scriptorium gate — the page's opening reveal, bounded
+   to the same width as the rest of the manuscript (the
+   header above it stays visible the whole time). The sheet
+   sits rolled shut; dragging the handle below unrolls it,
+   with a wooden roller riding the exact boundary between
+   revealed and still-rolled content.
 ───────────────────────────────────────────────────── */
 .scriptorium-window {
   position: relative;
@@ -64,41 +67,23 @@
   pointer-events: auto;
 }
 
-/* A soft dark seam right at the reveal's leading edge, as if the roll
-   is still shadowing the paper just below where it unspools */
-.scriptorium-rolled-hint {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  box-shadow: inset 0 -46px 40px -34px rgba(20,12,5,0.55);
-}
-#root[data-theme='dark'] .scriptorium-rolled-hint {
-  box-shadow: inset 0 -46px 40px -34px rgba(0,0,0,0.75);
-}
-
 /* ── The closed, rolled-up scroll ─────────────────────
-   At rest, a single horizontal cylinder centered in the window — the
-   same turned-wood end-caps as the real top/bottom rollers (the exact
-   photo asset + cylindrical light-sweep recipe from ScrollRod.css,
-   just scaled up), a wound-vellum body between them, and a wax seal
-   holding it shut. One self-contained cover, not a piece resized
-   frame-by-frame off the drag math. */
+   A single horizontal cylinder — the same turned-wood end-caps as the
+   real top/bottom rollers (the exact photo asset + cylindrical
+   light-sweep recipe from ScrollRod.css, just scaled up), a
+   wound-vellum body between them, a binding strap and a wax seal
+   holding it shut. Its `top` is set inline from the component to the
+   exact same percentage driving the content's own clip-path — never
+   an independent slide/rotate/scale of its own, so it always reads as
+   the object physically sitting on the advancing edge of the unrolled
+   sheet rather than a flat card sliding across the window. */
 .closed-scroll-view {
   position: absolute;
-  /* Sits in the lower portion of the window, close to the pull-handle
-     track directly beneath it, rather than dead-centre with a lot of
-     bare desk above and below it. */
-  top: 38%;
   left: 50%;
   width: min(760px, 88%);
   height: min(46vh, 320px);
-  margin-top: calc(-1 * min(46vh, 320px) / 2);
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   pointer-events: none;
-}
-.closed-scroll-view-inner {
-  position: absolute;
-  inset: 0;
 }
 
 .closed-scroll-cylinder {
@@ -135,16 +120,16 @@
 }
 #root[data-theme='dark'] .closed-scroll-cylinder { filter: brightness(0.5) saturate(1.1) contrast(1.05); }
 
-/* A single clean binding ribbon, level and horizontal — not a
+/* A single clean binding strap, level and horizontal — not a
    scattering of rotated strips — wrapped around the cylinder's
    mid-line, with the wax seal pressed on top of it. */
 .closed-scroll-tie {
   position: absolute;
-  left: 22%;
-  right: 22%;
+  left: 28%;
+  right: 28%;
   top: 50%;
-  height: 15%;
-  min-height: 22px;
+  height: 11%;
+  min-height: 16px;
   transform: translateY(-50%);
   background: linear-gradient(180deg,
     #4a2e14 0%, #7a4f26 22%, #9c6c38 50%, #6b431f 78%, #38220e 100%);
@@ -157,32 +142,17 @@
   top: 50%;
   left: 50%;
   width: 15%;
-  min-width: 64px;
-  max-width: 110px;
+  min-width: 56px;
+  max-width: 96px;
   transform: translate(-50%, -48%) rotate(-4deg);
   filter: drop-shadow(0 8px 10px rgba(0,0,0,0.55));
 }
 #root[data-theme='dark'] .closed-scroll-seal { filter: drop-shadow(0 8px 10px rgba(0,0,0,0.75)) brightness(0.85); }
 
-/* A grounded contact shadow beneath the cylinder, as if it's a heavy
-   physical object resting on the desk rather than floating over the
-   page. */
-.closed-scroll-groundshadow {
-  position: absolute;
-  left: 50%;
-  bottom: -8%;
-  width: 82%;
-  height: 12%;
-  min-height: 26px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 45%, transparent 75%);
-  filter: blur(4px);
-}
-
 @media (max-width: 720px) {
-  .closed-scroll-view { top: 34%; width: 92%; height: min(38vh, 220px); margin-top: calc(-1 * min(38vh, 220px) / 2); }
+  .closed-scroll-view { width: 92%; height: min(34vh, 220px); }
   .closed-scroll-cylinder { border-width: 0 26%; border-image-width: 0 26%; }
-  .closed-scroll-seal { min-width: 46px; }
+  .closed-scroll-seal { min-width: 44px; }
 }
 
 /* ── Handle track + draggable roller ─────────────────── */
@@ -297,6 +267,23 @@
   padding: 4px 8px;
 }
 .scriptorium-skip:hover { opacity: 1; color: var(--accent); }
+
+/* Once open, a quiet way to re-watch the reveal — sits right after the
+   window in normal flow, at the top of the manuscript's own content. */
+.scriptorium-reroll {
+  display: block;
+  margin: 6px auto 0;
+  background: none;
+  border: none;
+  font-family: var(--ff-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  opacity: 0.55;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.scriptorium-reroll:hover { opacity: 1; color: var(--accent); }
 
 @media (max-width: 720px) {
   .scriptorium-window { height: 52vh; }

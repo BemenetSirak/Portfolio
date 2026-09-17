@@ -15,25 +15,22 @@ function alreadyOpened() {
   }
 }
 
-// The visitor page's initial reveal: the sheet starts rolled shut and
-// the visitor drags the handle rod down to unroll it open, with real
-// drag physics (constraints + a rubber-band overshoot + a spring
-// settle). Once fully unrolled, normal wheel/trackpad/touch scrolling
-// takes over for everything below the fold — this only gates the
-// opening reveal, never routine scrolling.
+// The visitor page's initial reveal, bounded to the same width as the
+// rest of the manuscript (the header above it — masthead, nav, brand
+// medallion — is never itself part of this and stays visible the
+// whole time, exactly as it always has). At rest this window shows a
+// rolled-up cylinder resting on the dark desk; dragging the handle
+// unspools it, clipping the real content in from the top while a
+// wooden roller rides the exact boundary between revealed and still-
+// rolled — one `progress` value drives both, so they can never drift
+// out of sync or read as a flat card sliding independently over the
+// page.
 //
-// `children` stays inside the exact same wrapper element the whole
-// time; only classNames/inline styles change between "closed" and
-// "open". An earlier version swapped between `<div>…children…</div>`
-// and bare `children` depending on state — a different element shape
-// at the same tree position, which forces React to unmount and
-// remount the entire subtree on open. That silently destroyed and
-// recreated every section (Things I Love, Gallery, Contact…), so the
-// IntersectionObserver driving `.v-reveal` — set up once, higher up,
-// against the *original* DOM nodes — ended up watching detached
-// elements. The new nodes never got marked visible until a full page
-// reload reran everything from scratch. Keeping one stable wrapper
-// avoids the remount entirely.
+// `children` render in the exact same wrapper the whole time regardless
+// of open/closed — an earlier version swapped element shapes on open,
+// which forced React to unmount and remount the entire subtree
+// (destroying every section's IntersectionObserver-driven `.v-reveal`
+// state along with it). Keeping one stable wrapper avoids that.
 export default function ScriptoriumGate({ children, onOpenChange, onProgressChange }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
@@ -49,19 +46,23 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
   }, [open, onOpenChange])
 
   const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
+  // The real content reveals from the top down — its own top edge
+  // never moves, only how much of it is clipped away at the bottom
+  // shrinks as the handle is pulled.
   const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)
   const clipPath = useMotionTemplate`inset(0px 0px ${bottomInset} 0px)`
   const handleLabel = useTransform(progress, (v) => (v > 0.5 ? 'Unrolling…' : 'Drag to unroll'))
-  // The closed-state cylinder is a self-contained cover, not a piece
-  // dynamically resized frame-by-frame off the clip-path math — that
-  // dynamic-resize approach was what produced the broken-looking
-  // diagonal bars earlier. It simply fades/sinks/shrinks away over the
-  // drag's first half while the real clip-path reveal underneath does
-  // the actual unrolling, and springs right back with `y` on an early
-  // release since it's driven by the same underlying progress value.
-  const closedScrollOpacity = useTransform(progress, [0, 0.45], [1, 0])
-  const closedScrollScale = useTransform(progress, [0, 0.45], [1, 0.86])
-  const closedScrollY = useTransform(progress, [0, 0.45], [0, 34])
+  // The roller cylinder sits at the centre of whatever's still rolled
+  // up — the region from the reveal boundary (v*100%) down to the
+  // window's own bottom (100%), so its centre is at v*50% + 50%. At
+  // rest that's the window's dead centre (a full, unclipped hero shot
+  // of the cylinder); as the boundary advances the roller's centre
+  // tracks it down and rides off the bottom exactly as the last of the
+  // sheet pays out. Never an independent slide/rotate/scale of its
+  // own — that's what previously made it read as a flat card being
+  // dragged across the page instead of paper actually paying out from
+  // behind a solid roller.
+  const rollerTopPct = useTransform(progress, (v) => `${(v * 0.5 + 0.5) * 100}%`)
 
   // Mirrors live drag progress out to the parent (VisitorLayout), which
   // applies it as a --roll-progress CSS variable straight onto the
@@ -106,6 +107,20 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
       : { duration: 0.5, ease: [0.25, 1, 0.5, 1], onComplete: finish })
   }
 
+  // The reverse of `finish` — rolls the sheet back shut so a visitor
+  // can re-watch the reveal without a full page reload. Clearing the
+  // session flag alongside `open` means a reload afterwards starts
+  // closed again too, matching what "reset" implies.
+  function reset() {
+    try {
+      sessionStorage.removeItem(SESSION_KEY)
+    } catch {
+      // best-effort only
+    }
+    setOpen(false)
+    y.set(0)
+  }
+
   return (
     <>
       <div className={`scriptorium-window${open ? ' scriptorium-window--open' : ''}`}>
@@ -115,26 +130,21 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
         >
           {children}
         </motion.div>
-        {!open && <div className="scriptorium-rolled-hint" aria-hidden="true" />}
+
         {!open && (
-          <div className="closed-scroll-view" aria-hidden="true">
-            {/* Centering (left: 50%) lives on this static wrapper. Framer
-                Motion writes its own `transform` from the style props
-                below, which would silently overwrite a translateX(-50%)
-                placed on the same element instead of composing with it —
-                so the animated scale/sink lives one level down, inside. */}
-            <motion.div
-              className="closed-scroll-view-inner"
-              style={{ opacity: closedScrollOpacity, scale: closedScrollScale, y: closedScrollY }}
-            >
-              <span className="closed-scroll-groundshadow" />
-              <div className="closed-scroll-cylinder" />
-              <span className="closed-scroll-tie" />
-              <img className="closed-scroll-seal" src={waxSeal} alt="" />
-            </motion.div>
-          </div>
+          <motion.div className="closed-scroll-view" style={{ top: rollerTopPct }} aria-hidden="true">
+            <div className="closed-scroll-cylinder" />
+            <span className="closed-scroll-tie" />
+            <img className="closed-scroll-seal" src={waxSeal} alt="" />
+          </motion.div>
         )}
       </div>
+
+      {open && (
+        <button type="button" className="scriptorium-reroll" onClick={reset}>
+          ↺ Roll it back up
+        </button>
+      )}
 
       {!open && (
         <>
