@@ -69,6 +69,13 @@ function VisitorLayout({ onBack }) {
   const candleRef = useRef(null)
   const lightRef = useRef(null)
   const dragRef = useRef(null)
+  // Mirrors candleOffset state, but updated synchronously (refs don't
+  // wait for a render) — handleCandlePointerDown reads from this
+  // instead of the candleOffset closure, so a fresh drag started right
+  // after a double-click snap (or any drag) always starts from the
+  // real current position instead of whatever candleOffset happened to
+  // be when React last rendered this handler.
+  const candleOffsetRef = useRef({ dx: 0, dy: 0 })
 
   // Picking up the candle body (not the flame — that still just toggles
   // the theme on click) and dragging it moves the whole candle group,
@@ -90,6 +97,7 @@ function VisitorLayout({ onBack }) {
   }
 
   function applyCandlePosition(dx, dy) {
+    candleOffsetRef.current = { dx, dy }
     if (candleRef.current) {
       candleRef.current.style.transform = `translate(${dx}px, ${dy}px)`
     }
@@ -112,12 +120,18 @@ function VisitorLayout({ onBack }) {
   // under the cursor — which is the more standard way to implement
   // drag-to-move and isn't exposed to that failure mode at all.
   function handleCandlePointerDown(e) {
-    const pointerId = e.pointerId
     const drag = {
       startX: e.clientX,
       startY: e.clientY,
-      origDx: candleOffset.dx,
-      origDy: candleOffset.dy,
+      // From the ref, not the candleOffset state closure — this handler
+      // is bound to whatever render created it, so if the user starts a
+      // new drag before React has re-rendered since the last position
+      // change (e.g. right after the double-click snap's setState call),
+      // the closure could still see the *previous* offset. The ref is
+      // updated synchronously by applyCandlePosition, so it's always
+      // the true current position regardless of render timing.
+      origDx: candleOffsetRef.current.dx,
+      origDy: candleOffsetRef.current.dy,
     }
     dragRef.current = drag
     candleRef.current?.classList.add('is-dragging')
@@ -129,7 +143,6 @@ function VisitorLayout({ onBack }) {
     setCandleActive(true)
 
     function onMove(ev) {
-      if (ev.pointerId !== pointerId) return
       const { dx, dy } = clampOffset(
         drag.origDx + (ev.clientX - drag.startX),
         drag.origDy + (ev.clientY - drag.startY)
@@ -138,7 +151,17 @@ function VisitorLayout({ onBack }) {
     }
 
     function onUp(ev) {
-      if (ev.pointerId !== pointerId) return
+      // Always tear down and finalize on any pointerup/cancel, even one
+      // whose pointerId doesn't match what pointerdown reported — the
+      // previous version bailed out of this whole function on a
+      // mismatch, which skipped removeEventListener entirely and left
+      // onMove/onUp attached to window permanently. Every drag after
+      // that point kept adding *more* listeners on top of the stuck
+      // ones, and their stale `drag` closures (with an outdated
+      // startX/startY/origDx/origDy) fought with the current one over
+      // who last writes the transform — from the outside this reads as
+      // "the candle doesn't move" even though a drag is technically
+      // still being processed.
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
@@ -148,6 +171,7 @@ function VisitorLayout({ onBack }) {
       )
       dragRef.current = null
       candleRef.current?.classList.remove('is-dragging')
+      applyCandlePosition(dx, dy)
       setCandleOffset({ dx, dy })
       // Only keep the spotlight engaged if it was actually released
       // away from its home dock — dropped back at exactly (0,0), it
