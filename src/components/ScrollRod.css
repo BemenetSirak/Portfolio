@@ -19,7 +19,15 @@
   pointer-events: none;
 }
 .scroll-roll--top    { margin-bottom: -6px; }
-.scroll-roll--bottom { margin-top: 16px; min-height: 56px; height: 56px; }
+.scroll-roll--bottom {
+  margin-top: 16px;
+  min-height: 56px;
+  height: 56px;
+  /* Driven live from ScriptoriumGate's drag progress (0 → 1) while the
+     visitor unrolls the sheet — a slight spin, as if the barrel is
+     paying the parchment out, not a static prop it drags free of. */
+  transform: rotate(calc(var(--roll-progress, 0) * -14deg));
+}
 
 .scroll-roll-face {
   position: absolute;
@@ -95,6 +103,35 @@
 }
 #root[data-theme='dark'] .scroll-roll--top::after {
   background: linear-gradient(180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.82) 12%,
+    rgba(0, 0, 0, 0.4) 40%,
+    rgba(0, 0, 0, 0) 100%);
+}
+
+/* The bottom roller casts its own shadow upward onto the freshly
+   exposed parchment as it spins — invisible at rest (0 opacity/height
+   while nothing has unrolled yet), growing with --roll-progress so the
+   rolling edge always reads as a solid object sitting proud of the
+   sheet, never a flat seam. */
+.scroll-roll--bottom::before {
+  content: '';
+  position: absolute;
+  left: 48px;
+  right: 48px;
+  top: calc(-6px - var(--roll-progress, 0) * 26px);
+  height: calc(var(--roll-progress, 0) * 34px);
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--roll-progress, 0);
+  background: linear-gradient(0deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(10, 6, 3, 0.7) 12%,
+    rgba(10, 6, 3, 0.3) 40%,
+    rgba(10, 6, 3, 0) 100%);
+}
+#root[data-theme='dark'] .scroll-roll--bottom::before {
+  background: linear-gradient(0deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 0.82) 12%,
     rgba(0, 0, 0, 0.4) 40%,

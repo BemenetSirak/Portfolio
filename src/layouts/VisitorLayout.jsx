@@ -68,6 +68,7 @@ function VisitorLayout({ onBack }) {
   const unrolled = useUnroll()
   const candleRef = useRef(null)
   const lightRef = useRef(null)
+  const bottomRollRef = useRef(null)
   const dragRef = useRef(null)
   // Mirrors candleOffset state, but updated synchronously (refs don't
   // wait for a render) — handleCandlePointerDown reads from this
@@ -193,6 +194,15 @@ function VisitorLayout({ onBack }) {
     applyCandlePosition(0, 0)
     setCandleOffset({ dx: 0, dy: 0 })
     setCandleActive(false)
+  }
+
+  // Fed straight from ScriptoriumGate's live drag progress (0 → 1) on
+  // every pointer move. Written directly onto the bottom roller's DOM
+  // node as a CSS variable, the same direct-mutation approach the
+  // candle drag already uses, so the roller's spin/shadow track the
+  // drag at full frame rate instead of waiting on a React re-render.
+  function handleGateProgress(v) {
+    bottomRollRef.current?.style.setProperty('--roll-progress', v)
   }
 
   // The background/vignette layers are keyed by theme and force-remounted
@@ -414,7 +424,7 @@ function VisitorLayout({ onBack }) {
         </div>
 
         <main className="visitor-main">
-          <ScriptoriumGate onOpenChange={setGateOpen}>
+          <ScriptoriumGate onOpenChange={setGateOpen} onProgressChange={handleGateProgress}>
             <VisitorHero name={profile.name} />
 
             <div className="v-reveal">
@@ -444,7 +454,7 @@ function VisitorLayout({ onBack }) {
           </ScriptoriumGate>
         </main>
 
-        <ScrollRod position="bottom" />
+        <ScrollRod ref={bottomRollRef} position="bottom" />
 
         {/* Wrapped shut, the binding seal is still intact — it only
             shows cracked apart, as two halves turned away from each

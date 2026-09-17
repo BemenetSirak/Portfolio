@@ -27,6 +27,18 @@
     0 30px 60px rgba(0,0,0,0.6),
     inset 0 0 40px 8px rgba(0,0,0,0.4);
 }
+/* While closed, this is a dark wooden desk the rolled-up scroll rests
+   on — not more parchment — so the closed cylinder reads as a real
+   object sitting on a surface rather than a graphic floating over an
+   otherwise-empty sheet. Swapping only the background (never the
+   element itself) keeps this the same single stable wrapper the whole
+   time — see the component's own comment on why that matters. */
+.scriptorium-window:not(.scriptorium-window--open) {
+  background: radial-gradient(ellipse 90% 70% at 50% 42%, #3a2415 0%, #241407 62%, #150c04 100%);
+}
+#root[data-theme='dark'] .scriptorium-window:not(.scriptorium-window--open) {
+  background: radial-gradient(ellipse 90% 70% at 50% 42%, #1c1108 0%, #100a04 62%, #060302 100%);
+}
 /* Once open, this is no longer a windowed preview — it's just the
    normal flow of the page, full height, nothing clipped or shadowed */
 .scriptorium-window--open {
@@ -62,6 +74,115 @@
 }
 #root[data-theme='dark'] .scriptorium-rolled-hint {
   box-shadow: inset 0 -46px 40px -34px rgba(0,0,0,0.75);
+}
+
+/* ── The closed, rolled-up scroll ─────────────────────
+   At rest, a single horizontal cylinder centered in the window — the
+   same turned-wood end-caps as the real top/bottom rollers (the exact
+   photo asset + cylindrical light-sweep recipe from ScrollRod.css,
+   just scaled up), a wound-vellum body between them, and a wax seal
+   holding it shut. One self-contained cover, not a piece resized
+   frame-by-frame off the drag math. */
+.closed-scroll-view {
+  position: absolute;
+  /* Sits in the lower portion of the window, close to the pull-handle
+     track directly beneath it, rather than dead-centre with a lot of
+     bare desk above and below it. */
+  top: 38%;
+  left: 50%;
+  width: min(760px, 88%);
+  height: min(46vh, 320px);
+  margin-top: calc(-1 * min(46vh, 320px) / 2);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.closed-scroll-view-inner {
+  position: absolute;
+  inset: 0;
+}
+
+.closed-scroll-cylinder {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg,
+      rgba(35, 20, 8, 0.14) 0px, rgba(35, 20, 8, 0.14) 1px,
+      transparent 1px, transparent 7px),
+    linear-gradient(180deg, #e7c98a 0%, #cfa968 45%, #a9824c 100%);
+  border-style: solid;
+  border-width: 0 22%;
+  border-image-source: url('../assets/scroll/roller-top.png');
+  border-image-slice: 0 44 0 44 fill;
+  border-image-repeat: stretch;
+  border-image-width: 0 22%;
+  filter: brightness(0.82) saturate(1.2) contrast(1.05);
+  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6);
+}
+/* Same barrel-roundness sweep the real rollers use, laid over the
+   whole shape (wood ends + vellum middle alike) so it reads as one
+   continuous cylinder rather than three glued-together pieces. */
+.closed-scroll-cylinder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 26%),
+    linear-gradient(90deg,
+      #120a04 0%, #3a2211 12%, #5c381c 50%, #221307 88%, #0b0502 100%);
+}
+#root[data-theme='dark'] .closed-scroll-cylinder { filter: brightness(0.5) saturate(1.1) contrast(1.05); }
+
+/* A single clean binding ribbon, level and horizontal — not a
+   scattering of rotated strips — wrapped around the cylinder's
+   mid-line, with the wax seal pressed on top of it. */
+.closed-scroll-tie {
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  top: 50%;
+  height: 15%;
+  min-height: 22px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg,
+    #4a2e14 0%, #7a4f26 22%, #9c6c38 50%, #6b431f 78%, #38220e 100%);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,220,170,0.25);
+}
+#root[data-theme='dark'] .closed-scroll-tie { filter: brightness(0.7); }
+
+.closed-scroll-seal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15%;
+  min-width: 64px;
+  max-width: 110px;
+  transform: translate(-50%, -48%) rotate(-4deg);
+  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.55));
+}
+#root[data-theme='dark'] .closed-scroll-seal { filter: drop-shadow(0 8px 10px rgba(0,0,0,0.75)) brightness(0.85); }
+
+/* A grounded contact shadow beneath the cylinder, as if it's a heavy
+   physical object resting on the desk rather than floating over the
+   page. */
+.closed-scroll-groundshadow {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: 82%;
+  height: 12%;
+  min-height: 26px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 45%, transparent 75%);
+  filter: blur(4px);
+}
+
+@media (max-width: 720px) {
+  .closed-scroll-view { top: 34%; width: 92%; height: min(38vh, 220px); margin-top: calc(-1 * min(38vh, 220px) / 2); }
+  .closed-scroll-cylinder { border-width: 0 26%; border-image-width: 0 26%; }
+  .closed-scroll-seal { min-width: 46px; }
 }
 
 /* ── Handle track + draggable roller ─────────────────── */

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { motion, useMotionValue, useTransform, useMotionTemplate, useReducedMotion, animate } from 'framer-motion'
+import { motion, useMotionValue, useTransform, useMotionTemplate, useReducedMotion, useMotionValueEvent, animate } from 'framer-motion'
+import waxSeal from '../assets/scroll/wax-seal.png'
 import './ScriptoriumGate.css'
 
 const DRAG_RANGE = 230
@@ -33,7 +34,7 @@ function alreadyOpened() {
 // elements. The new nodes never got marked visible until a full page
 // reload reran everything from scratch. Keeping one stable wrapper
 // avoids the remount entirely.
-export default function ScriptoriumGate({ children, onOpenChange }) {
+export default function ScriptoriumGate({ children, onOpenChange, onProgressChange }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
   const reduceMotion = useReducedMotion()
@@ -51,6 +52,28 @@ export default function ScriptoriumGate({ children, onOpenChange }) {
   const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)
   const clipPath = useMotionTemplate`inset(0px 0px ${bottomInset} 0px)`
   const handleLabel = useTransform(progress, (v) => (v > 0.5 ? 'Unrolling…' : 'Drag to unroll'))
+  // The closed-state cylinder is a self-contained cover, not a piece
+  // dynamically resized frame-by-frame off the clip-path math — that
+  // dynamic-resize approach was what produced the broken-looking
+  // diagonal bars earlier. It simply fades/sinks/shrinks away over the
+  // drag's first half while the real clip-path reveal underneath does
+  // the actual unrolling, and springs right back with `y` on an early
+  // release since it's driven by the same underlying progress value.
+  const closedScrollOpacity = useTransform(progress, [0, 0.45], [1, 0])
+  const closedScrollScale = useTransform(progress, [0, 0.45], [1, 0.86])
+  const closedScrollY = useTransform(progress, [0, 0.45], [0, 34])
+
+  // Mirrors live drag progress out to the parent (VisitorLayout), which
+  // applies it as a --roll-progress CSS variable straight onto the
+  // bottom wooden roller's DOM node — bypassing React state so the
+  // roller's rotation/shadow track the drag at full pointer-move
+  // frequency instead of one render behind it.
+  useMotionValueEvent(progress, 'change', (v) => {
+    onProgressChange?.(v)
+  })
+  useEffect(() => {
+    if (open) onProgressChange?.(1)
+  }, [open, onProgressChange])
 
   function finish() {
     try {
@@ -93,6 +116,24 @@ export default function ScriptoriumGate({ children, onOpenChange }) {
           {children}
         </motion.div>
         {!open && <div className="scriptorium-rolled-hint" aria-hidden="true" />}
+        {!open && (
+          <div className="closed-scroll-view" aria-hidden="true">
+            {/* Centering (left: 50%) lives on this static wrapper. Framer
+                Motion writes its own `transform` from the style props
+                below, which would silently overwrite a translateX(-50%)
+                placed on the same element instead of composing with it —
+                so the animated scale/sink lives one level down, inside. */}
+            <motion.div
+              className="closed-scroll-view-inner"
+              style={{ opacity: closedScrollOpacity, scale: closedScrollScale, y: closedScrollY }}
+            >
+              <span className="closed-scroll-groundshadow" />
+              <div className="closed-scroll-cylinder" />
+              <span className="closed-scroll-tie" />
+              <img className="closed-scroll-seal" src={waxSeal} alt="" />
+            </motion.div>
+          </div>
+        )}
       </div>
 
       {!open && (
