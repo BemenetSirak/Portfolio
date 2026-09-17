@@ -1,70 +1,57 @@
 /* ─────────────────────────────────────────────────────
    The Scriptorium gate — the page's opening reveal, bounded
    to the same width as the rest of the manuscript (the
-   header above it stays visible the whole time). The sheet
-   sits rolled shut; dragging the handle below unrolls it,
-   with a wooden roller riding the exact boundary between
-   revealed and still-rolled content.
+   header above it stays visible the whole time). The real
+   content's own container is height:0 at rest — genuinely
+   nothing of it visible, no separate clip-path needed — and
+   dragging the handle grows that height in real pixels up to
+   the content's own natural size, with a wooden roller
+   riding that same live height so it always sits right on
+   the advancing edge.
 ───────────────────────────────────────────────────── */
 .scriptorium-window {
   position: relative;
   width: 100%;
-  height: min(60vh, 620px);
-  overflow: hidden;
-  border-radius: 3px;
+  min-height: min(50vh, 380px);
   margin-bottom: 14px;
-  /* This sits as a flex item inside .visitor-main (a flex column). Once
-     open, its real content is several times taller than one viewport —
-     without flex-shrink:0, Chrome's flexbox algorithm shrinks it down
-     to whatever space was left in the flex chain above it (its default
-     auto min-height doesn't reliably protect deep block content from
-     this), silently cutting off everything past that point even though
-     overflow is visible and nothing was ever coded to clip it. */
-  flex-shrink: 0;
-  box-shadow:
-    0 30px 60px rgba(0,0,0,0.35),
-    inset 0 0 40px 8px rgba(60,38,14,0.18);
-}
-#root[data-theme='dark'] .scriptorium-window {
-  box-shadow:
-    0 30px 60px rgba(0,0,0,0.6),
-    inset 0 0 40px 8px rgba(0,0,0,0.4);
-}
-/* While closed, this is a dark wooden desk the rolled-up scroll rests
-   on — not more parchment — so the closed cylinder reads as a real
-   object sitting on a surface rather than a graphic floating over an
-   otherwise-empty sheet. Swapping only the background (never the
-   element itself) keeps this the same single stable wrapper the whole
-   time — see the component's own comment on why that matters. */
-.scriptorium-window:not(.scriptorium-window--open) {
+  /* A dark desk the rolled-up scroll rests on while there's nothing
+     else in this box yet — once the real content's height grows past
+     it, this stops constraining anything and just sits behind it. */
   background: radial-gradient(ellipse 90% 70% at 50% 42%, #3a2415 0%, #241407 62%, #150c04 100%);
 }
-#root[data-theme='dark'] .scriptorium-window:not(.scriptorium-window--open) {
+#root[data-theme='dark'] .scriptorium-window {
   background: radial-gradient(ellipse 90% 70% at 50% 42%, #1c1108 0%, #100a04 62%, #060302 100%);
 }
-/* Once open, this is no longer a windowed preview — it's just the
-   normal flow of the page, full height, nothing clipped or shadowed */
+/* Once open, this is no longer a desk backdrop for a growing sheet —
+   it's just the normal flow of the page, nothing behind it. */
 .scriptorium-window--open {
-  height: auto;
-  overflow: visible;
-  border-radius: 0;
+  min-height: 0;
   margin-bottom: 0;
-  box-shadow: none;
+  background: none;
 }
 
 .scriptorium-reveal {
-  position: absolute;
-  inset: 0;
   overflow: hidden;
-  pointer-events: none;
+  /* Real height is set directly on this element's own style by the
+     component (0 at rest, growing in px with the drag, 'auto' once
+     open) — nothing here to fight with a stray CSS height rule. */
 }
-/* Same element, same position in the tree — only these properties
-   change, so React never has to tear the section down and rebuild it */
-.scriptorium-reveal--open {
-  position: static;
-  inset: auto;
-  overflow: visible;
-  pointer-events: auto;
+/* Sections of the real page (hero text, medallions, icons) were built
+   assuming they'd sit on .scroll-backdrop's shared parchment texture
+   behind <main> — some are semi-transparent against it by design.
+   .scriptorium-window's own dark "desk" background sits between that
+   backdrop and this element while closed, so without its own opaque
+   surface here, that darkness bleeds straight through as an incorrect
+   brown wash the instant any content becomes visible mid-drag. Scoped
+   to the closed/dragging state only — once actually open,
+   .scriptorium-window's own background is already cleared (see
+   below), so the real .scroll-backdrop shows through exactly as it
+   always did; giving this its own texture unconditionally left a
+   visible seam where its plain `cover` sizing didn't quite line up
+   with .scroll-backdrop's inset/clipped/filtered one. */
+.scriptorium-window:not(.scriptorium-window--open) .scriptorium-reveal {
+  background: var(--bg-parchment) center 40% / cover no-repeat;
+  background-color: #e8d9b5;
 }
 
 /* ── The closed, rolled-up scroll ─────────────────────
@@ -72,17 +59,23 @@
    real top/bottom rollers (the exact photo asset + cylindrical
    light-sweep recipe from ScrollRod.css, just scaled up), a
    wound-vellum body between them, a binding strap and a wax seal
-   holding it shut. Its `top` is set inline from the component to the
-   exact same percentage driving the content's own clip-path — never
-   an independent slide/rotate/scale of its own, so it always reads as
-   the object physically sitting on the advancing edge of the unrolled
-   sheet rather than a flat card sliding across the window. */
+   holding it shut. Its `top` is written in real pixels straight onto
+   this element by the component, on every drag frame, to the exact
+   same value the growing content container's own height is set to —
+   never an independent slide/rotate/scale of its own, so it always
+   sits right on the advancing edge of the unrolled sheet rather than
+   a flat card sliding across the window. */
 .closed-scroll-view {
   position: absolute;
+  top: 0;
   left: 50%;
   width: min(760px, 88%);
   height: min(46vh, 320px);
-  transform: translate(-50%, -50%);
+  /* Top edge sits exactly on the boundary and extends downward from
+     it — centering it on the boundary instead (translateY(-50%)) made
+     it stick up half its own height above the window at rest, poking
+     into the header above. */
+  transform: translate(-50%, 0);
   pointer-events: none;
 }
 

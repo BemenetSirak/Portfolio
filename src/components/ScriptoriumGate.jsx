@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { motion, useMotionValue, useTransform, useMotionTemplate, useReducedMotion, useMotionValueEvent, animate } from 'framer-motion'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import { motion, useMotionValue, useTransform, useReducedMotion, useMotionValueEvent, animate } from 'framer-motion'
 import waxSeal from '../assets/scroll/wax-seal.png'
 import './ScriptoriumGate.css'
 
@@ -15,26 +15,33 @@ function alreadyOpened() {
   }
 }
 
-// The visitor page's initial reveal, bounded to the same width as the
-// rest of the manuscript (the header above it — masthead, nav, brand
-// medallion — is never itself part of this and stays visible the
-// whole time, exactly as it always has). At rest this window shows a
-// rolled-up cylinder resting on the dark desk; dragging the handle
-// unspools it, clipping the real content in from the top while a
-// wooden roller rides the exact boundary between revealed and still-
-// rolled — one `progress` value drives both, so they can never drift
-// out of sync or read as a flat card sliding independently over the
-// page.
+// The visitor page's initial reveal. At rest the real content's
+// container is height:0 (nothing of it visible, no need to unmount
+// anything to hide it) with just the rolled-up cylinder sitting over
+// it. Dragging the handle grows that container's real height from 0
+// up to its full natural content height — the top edge never moves,
+// so this genuinely unspools downward like a window shade, rather
+// than a fixed-size box getting clip-revealed. The wooden roller rides
+// the container's own live height (the two are driven from the exact
+// same ref-mutation, one frame apart from nothing), and because
+// everything below this in the DOM is in normal flow, the real bottom
+// roller and the drag handle simply get pushed down as the container
+// grows — no separate position tracking needed for either.
 //
 // `children` render in the exact same wrapper the whole time regardless
 // of open/closed — an earlier version swapped element shapes on open,
 // which forced React to unmount and remount the entire subtree
 // (destroying every section's IntersectionObserver-driven `.v-reveal`
-// state along with it). Keeping one stable wrapper avoids that.
+// state along with it). Keeping one stable wrapper avoids that; height
+// alone hides the content while closed, the same way `overflow:hidden`
+// on a 0-height box would, without ever tearing the subtree down.
 export default function ScriptoriumGate({ children, onOpenChange, onProgressChange }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
   const reduceMotion = useReducedMotion()
+  const revealRef = useRef(null)
+  const rollerRef = useRef(null)
+  const naturalHeightRef = useRef(0)
 
   // Tells the parent when the gate's actually open — including the
   // very first render if this is a repeat visit within the same
@@ -45,31 +52,52 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
     onOpenChange?.(open)
   }, [open, onOpenChange])
 
-  const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
-  // The real content reveals from the top down — its own top edge
-  // never moves, only how much of it is clipped away at the bottom
-  // shrinks as the handle is pulled.
-  const bottomInset = useTransform(progress, (v) => `${(1 - v) * 100}%`)
-  const clipPath = useMotionTemplate`inset(0px 0px ${bottomInset} 0px)`
-  const handleLabel = useTransform(progress, (v) => (v > 0.5 ? 'Unrolling…' : 'Drag to unroll'))
-  // The roller cylinder sits at the centre of whatever's still rolled
-  // up — the region from the reveal boundary (v*100%) down to the
-  // window's own bottom (100%), so its centre is at v*50% + 50%. At
-  // rest that's the window's dead centre (a full, unclipped hero shot
-  // of the cylinder); as the boundary advances the roller's centre
-  // tracks it down and rides off the bottom exactly as the last of the
-  // sheet pays out. Never an independent slide/rotate/scale of its
-  // own — that's what previously made it read as a flat card being
-  // dragged across the page instead of paper actually paying out from
-  // behind a solid roller.
-  const rollerTopPct = useTransform(progress, (v) => `${(v * 0.5 + 0.5) * 100}%`)
+  // scrollHeight always reports the content's real, unclipped height
+  // regardless of the explicit height this same element also carries
+  // — so this is measured continuously (content can change size: a
+  // Things I Love panel opening, an image finishing its load, a
+  // viewport resize) and applied on every drag frame below rather than
+  // captured once and gone stale.
+  useLayoutEffect(() => {
+    if (open) return
+    const el = revealRef.current
+    if (!el) return
+    const measure = () => { naturalHeightRef.current = el.scrollHeight }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [open])
 
-  // Mirrors live drag progress out to the parent (VisitorLayout), which
-  // applies it as a --roll-progress CSS variable straight onto the
-  // bottom wooden roller's DOM node — bypassing React state so the
-  // roller's rotation/shadow track the drag at full pointer-move
-  // frequency instead of one render behind it.
+  // Height lives here, never in a React style prop. VisitorLayout
+  // re-renders often (every candle-drag frame, every theme toggle) —
+  // if height came from a style object recomputed each render, one of
+  // those unrelated re-renders would reset it to a fixed value and
+  // fight with the live drag mutation below it, snapping the sheet
+  // shut for a frame in the middle of an otherwise-smooth drag. This
+  // only reruns when `open` itself actually flips.
+  useLayoutEffect(() => {
+    if (!revealRef.current) return
+    revealRef.current.style.height = open ? 'auto' : '0px'
+    // Content this tall genuinely does need to escape its own box once
+    // it's the real page (a dropdown or tooltip meant to overflow it
+    // deliberately) — the CSS default stays `hidden` for the closed/
+    // dragging states, this only lifts it once actually open.
+    revealRef.current.style.overflow = open ? 'visible' : 'hidden'
+  }, [open])
+
+  const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
+  const handleLabel = useTransform(progress, (v) => (v > 0.5 ? 'Unrolling…' : 'Drag to unroll'))
+
+  // Both the growing container's real height and the roller's position
+  // are set directly on the DOM here, from the same `v`, on every
+  // pointer-move frame — bypassing React state so this tracks the drag
+  // at full frequency instead of one render behind it (the same
+  // direct-mutation approach the desk candle's drag already uses).
   useMotionValueEvent(progress, 'change', (v) => {
+    const px = v * naturalHeightRef.current
+    if (revealRef.current) revealRef.current.style.height = `${px}px`
+    if (rollerRef.current) rollerRef.current.style.top = `${px}px`
     onProgressChange?.(v)
   })
   useEffect(() => {
@@ -124,19 +152,16 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
   return (
     <>
       <div className={`scriptorium-window${open ? ' scriptorium-window--open' : ''}`}>
-        <motion.div
-          className={`scriptorium-reveal${open ? ' scriptorium-reveal--open' : ''}`}
-          style={open ? undefined : { clipPath }}
-        >
+        <div ref={revealRef} className="scriptorium-reveal">
           {children}
-        </motion.div>
+        </div>
 
         {!open && (
-          <motion.div className="closed-scroll-view" style={{ top: rollerTopPct }} aria-hidden="true">
+          <div ref={rollerRef} className="closed-scroll-view" aria-hidden="true">
             <div className="closed-scroll-cylinder" />
             <span className="closed-scroll-tie" />
             <img className="closed-scroll-seal" src={waxSeal} alt="" />
-          </motion.div>
+          </div>
         )}
       </div>
 
