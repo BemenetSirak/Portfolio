@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { motion, useMotionValue, useTransform, useReducedMotion, useMotionValueEvent, animate } from 'framer-motion'
-import waxSeal from '../assets/scroll/wax-seal.png'
 import './ScriptoriumGate.css'
 
 const DRAG_RANGE = 230
@@ -15,89 +14,59 @@ function alreadyOpened() {
   }
 }
 
-// The visitor page's initial reveal. At rest the real content's
-// container is height:0 (nothing of it visible, no need to unmount
-// anything to hide it) with just the rolled-up cylinder sitting over
-// it. Dragging the handle grows that container's real height from 0
-// up to its full natural content height — the top edge never moves,
-// so this genuinely unspools downward like a window shade, rather
-// than a fixed-size box getting clip-revealed. The wooden roller rides
-// the container's own live height (the two are driven from the exact
-// same ref-mutation, one frame apart from nothing), and because
-// everything below this in the DOM is in normal flow, the real bottom
-// roller and the drag handle simply get pushed down as the container
-// grows — no separate position tracking needed for either.
-//
-// `children` render in the exact same wrapper the whole time regardless
-// of open/closed — an earlier version swapped element shapes on open,
-// which forced React to unmount and remount the entire subtree
-// (destroying every section's IntersectionObserver-driven `.v-reveal`
-// state along with it). Keeping one stable wrapper avoids that; height
-// alone hides the content while closed, the same way `overflow:hidden`
-// on a 0-height box would, without ever tearing the subtree down.
-export default function ScriptoriumGate({ children, onOpenChange, onProgressChange }) {
+// The visitor page's initial reveal. This component renders none of
+// the actual manuscript — no wrapper div, no stand-in cylinder
+// graphic, no second copy of anything. It only ever touches the real,
+// single `.scroll-sheet` element (passed in as `sheetRef`) that
+// VisitorLayout already renders once: while closed, a `--gated` class
+// clips it down to just the closed height and a `--gate-progress` CSS
+// variable (written straight onto that element on every drag frame)
+// grows it back out toward a full viewport as the handle is pulled.
+// The top roller is simply the first thing in that same element's own
+// flex column, so it never moves on its own; the bottom roller and
+// this component's own drag handle live together in one small wrapper
+// VisitorLayout pins to the sheet's bottom edge while gated, so they
+// ride the growing edge for free, in plain CSS, with no JS position
+// tracking of any kind.
+export default function ScriptoriumGate({ sheetRef, onOpenChange, onProgressChange }) {
   const [open, setOpen] = useState(alreadyOpened)
   const y = useMotionValue(0)
   const reduceMotion = useReducedMotion()
-  const revealRef = useRef(null)
-  const rollerRef = useRef(null)
-  const naturalHeightRef = useRef(0)
 
-  // Tells the parent when the gate's actually open — including the
-  // very first render if this is a repeat visit within the same
-  // session (state initializes straight to `true` then, so `finish()`
-  // never runs to report it otherwise). Elements outside the gate
-  // (the bottom seal) key their own look off this.
   useEffect(() => {
     onOpenChange?.(open)
   }, [open, onOpenChange])
 
-  // scrollHeight always reports the content's real, unclipped height
-  // regardless of the explicit height this same element also carries
-  // — so this is measured continuously (content can change size: a
-  // Things I Love panel opening, an image finishing its load, a
-  // viewport resize) and applied on every drag frame below rather than
-  // captured once and gone stale.
+  // The `scroll-sheet--gated` class itself is computed by VisitorLayout
+  // as part of the sheet's own React-owned className (keyed off the
+  // `open` state this component reports up via onOpenChange) — not
+  // toggled here with classList, because that element re-renders
+  // constantly for reasons that have nothing to do with the gate (a
+  // candle drag frame, a theme toggle), and each one would reset any
+  // class added out-of-band back to whatever VisitorLayout's JSX says.
+  // The `--gate-progress` custom property is safe to own here directly
+  // instead: no `style` prop is ever passed to that element, so React
+  // never touches or resets its `style` attribute on re-render.
   useLayoutEffect(() => {
-    if (open) return
-    const el = revealRef.current
+    const el = sheetRef.current
     if (!el) return
-    const measure = () => { naturalHeightRef.current = el.scrollHeight }
-    measure()
-    const ro = new ResizeObserver(measure)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [open])
-
-  // Height lives here, never in a React style prop. VisitorLayout
-  // re-renders often (every candle-drag frame, every theme toggle) —
-  // if height came from a style object recomputed each render, one of
-  // those unrelated re-renders would reset it to a fixed value and
-  // fight with the live drag mutation below it, snapping the sheet
-  // shut for a frame in the middle of an otherwise-smooth drag. This
-  // only reruns when `open` itself actually flips.
-  useLayoutEffect(() => {
-    if (!revealRef.current) return
-    revealRef.current.style.height = open ? 'auto' : '0px'
-    // Content this tall genuinely does need to escape its own box once
-    // it's the real page (a dropdown or tooltip meant to overflow it
-    // deliberately) — the CSS default stays `hidden` for the closed/
-    // dragging states, this only lifts it once actually open.
-    revealRef.current.style.overflow = open ? 'visible' : 'hidden'
-  }, [open])
+    if (open) {
+      el.style.removeProperty('--gate-progress')
+    } else {
+      el.style.setProperty('--gate-progress', '0')
+    }
+  }, [open, sheetRef])
 
   const progress = useTransform(y, [0, DRAG_RANGE], [0, 1])
   const handleLabel = useTransform(progress, (v) => (v > 0.5 ? 'Unrolling…' : 'Drag to unroll'))
 
-  // Both the growing container's real height and the roller's position
-  // are set directly on the DOM here, from the same `v`, on every
-  // pointer-move frame — bypassing React state so this tracks the drag
-  // at full frequency instead of one render behind it (the same
-  // direct-mutation approach the desk candle's drag already uses).
+  // Written straight onto the real sheet on every drag frame — this is
+  // the one and only thing driving the CSS height calc() in
+  // ScriptoriumGate.css, and also mirrored out to VisitorLayout, which
+  // applies it as --roll-progress on the bottom roller's own DOM node
+  // for its rotation/shadow.
   useMotionValueEvent(progress, 'change', (v) => {
-    const px = v * naturalHeightRef.current
-    if (revealRef.current) revealRef.current.style.height = `${px}px`
-    if (rollerRef.current) rollerRef.current.style.top = `${px}px`
+    sheetRef.current?.style.setProperty('--gate-progress', v)
     onProgressChange?.(v)
   })
   useEffect(() => {
@@ -149,58 +118,42 @@ export default function ScriptoriumGate({ children, onOpenChange, onProgressChan
     y.set(0)
   }
 
+  if (open) {
+    return (
+      <button type="button" className="scriptorium-reroll" onClick={reset}>
+        ↺ Roll it back up
+      </button>
+    )
+  }
+
   return (
     <>
-      <div className={`scriptorium-window${open ? ' scriptorium-window--open' : ''}`}>
-        <div ref={revealRef} className="scriptorium-reveal">
-          {children}
-        </div>
-
-        {!open && (
-          <div ref={rollerRef} className="closed-scroll-view" aria-hidden="true">
-            <div className="closed-scroll-cylinder" />
-            <span className="closed-scroll-tie" />
-            <img className="closed-scroll-seal" src={waxSeal} alt="" />
-          </div>
-        )}
+      <div className="scriptorium-track">
+        {!reduceMotion && <span className="scriptorium-drag-cue" aria-hidden="true" />}
+        <motion.button
+          type="button"
+          className="scriptorium-handle"
+          drag="y"
+          dragConstraints={{ top: 0, bottom: DRAG_RANGE }}
+          dragElastic={0.18}
+          dragMomentum={false}
+          style={{ y }}
+          onDragEnd={handleDragEnd}
+          onClick={skip}
+          aria-label="Drag down to unroll the page"
+          aria-describedby="scriptorium-instructions"
+        >
+          <span className="scriptorium-handle-bar" />
+        </motion.button>
       </div>
 
-      {open && (
-        <button type="button" className="scriptorium-reroll" onClick={reset}>
-          ↺ Roll it back up
-        </button>
-      )}
-
-      {!open && (
-        <>
-          <div className="scriptorium-track">
-            {!reduceMotion && <span className="scriptorium-drag-cue" aria-hidden="true" />}
-            <motion.button
-              type="button"
-              className="scriptorium-handle"
-              drag="y"
-              dragConstraints={{ top: 0, bottom: DRAG_RANGE }}
-              dragElastic={0.18}
-              dragMomentum={false}
-              style={{ y }}
-              onDragEnd={handleDragEnd}
-              onClick={skip}
-              aria-label="Drag down to unroll the page"
-              aria-describedby="scriptorium-instructions"
-            >
-              <span className="scriptorium-handle-bar" />
-            </motion.button>
-          </div>
-
-          <motion.p className="scriptorium-hint">{handleLabel}</motion.p>
-          <button type="button" className="scriptorium-skip" onClick={skip}>
-            Skip ▸
-          </button>
-          <span id="scriptorium-instructions" className="visually-hidden">
-            Drag the handle down, or activate it with Enter or Space, to unroll the page. A Skip button is also available if dragging isn't convenient.
-          </span>
-        </>
-      )}
+      <motion.p className="scriptorium-hint">{handleLabel}</motion.p>
+      <button type="button" className="scriptorium-skip" onClick={skip}>
+        Skip ▸
+      </button>
+      <span id="scriptorium-instructions" className="visually-hidden">
+        Drag the handle down, or activate it with Enter or Space, to unroll the page. A Skip button is also available if dragging isn't convenient.
+      </span>
     </>
   )
 }

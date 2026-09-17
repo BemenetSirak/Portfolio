@@ -660,6 +660,135 @@ html:has(.visitor-layout) {
   backface-visibility: hidden;
   transform: translateZ(0);
 }
+
+/* ── The Scriptorium gate's closed/unrolling state ────
+   Applied directly to this exact element by ScriptoriumGate (never a
+   separate wrapper or stand-in graphic) while the visitor hasn't
+   opened the page yet. Clips it down to a short strip — just enough
+   for the top and bottom rollers to sit close together with the real
+   wax seal between them — and grows it back out toward a full
+   viewport as --gate-progress climbs from 0 to 1 on every drag frame.
+   flex-grow has to be switched off here too: left at the sheet's
+   normal 1, it would still stretch to fill .visitor-layout's full
+   height regardless of this height value, since flex-grow overrides a
+   flex item's own main-axis size whenever the container has spare
+   room to hand out. */
+/* .scroll-sheet.scroll-sheet--gated (both classes), not just
+   .scroll-sheet--gated alone: a later mobile media-query rule
+   (`.scroll-sheet { margin-top: 10px; ... }`, further down this same
+   file) is also a single class selector at equal specificity, so
+   without the extra class here that rule would win purely on source
+   order at narrow widths and pin this back to the top instead of
+   centering it. */
+.scroll-sheet.scroll-sheet--gated {
+  flex: 0 0 auto;
+  overflow: hidden;
+  /* 150px — just the closed cylinder itself (top + bottom roller
+     sitting close together, the way an actually rolled-up scroll
+     looks). The handle/hint/skip text tucked below the bottom roller
+     fade in with --gate-progress (see .scroll-bottom-pin's own
+     children further down) rather than needing to be accounted for in
+     this height, so they don't force it taller than the cylinder
+     itself just to avoid overlapping it. */
+  height: calc(150px + (100vh - 150px) * var(--gate-progress, 0));
+  /* Centred in the viewport at rest — closed-height/2 above the
+     midpoint — and settling smoothly up to the sheet's own normal
+     resting margin (16px) as --gate-progress climbs, so the top
+     roller reads as anchoring itself to the top of the page rather
+     than the box just growing downward from mid-screen forever. */
+  margin-top: calc((50vh - 75px) * (1 - var(--gate-progress, 0)) + 16px * var(--gate-progress, 0));
+  /* .scroll-backdrop's parchment texture is inset 34px/27px from this
+     element's own edges and clipped to a fixed torn-edge shape tuned
+     for the sheet at its real, full-content height — at the much
+     shorter heights this takes on mid-drag, that torn edge lands
+     nowhere near the actual (short) bottom edge, leaving a real gap
+     where revealed content had nothing opaque behind it and it
+     visibly floated on the bare desk. A plain parchment-toned fallback
+     directly on the sheet itself (painted before .scroll-backdrop,
+     since -1 only means "behind this element's own background", not
+     behind nothing) closes that gap regardless of the exact geometry. */
+  background: var(--bg-parchment) center 40% / cover no-repeat;
+  background-color: #e8d9b5;
+}
+/* .scroll-vignette carries this same 34px/27px inset and torn-edge
+   clip-path, so it's the vignette's own night-mode darkening — not
+   this fallback's own color — that's meant to dim the parchment for
+   dark mode; anywhere that darkening doesn't reach for the same
+   short-height-mismatch reason above, the plain light-mode fallback
+   color would sit there bright and undimmed, a stark, out-of-place
+   patch against the rest of the dark desk. Overriding the fallback's
+   own color here for dark mode is simpler than trying to extend the
+   vignette's coverage math. */
+#root[data-theme='dark'] .scroll-sheet.scroll-sheet--gated {
+  /* The light-mode rule's background-image is the (opaque, bright)
+     parchment photo itself — overriding just background-color here
+     would do nothing, since that photo would still fully cover the
+     box regardless. Dropping the image and using a plain dark fill
+     instead is what actually darkens this for night mode. */
+  background-image: none;
+  background-color: #2b2013;
+}
+
+/* Holds the bottom roller and the gate's own drag handle together as
+   one visual/layout unit. Ordinary flex item (docked in the sheet's
+   real document flow) once open; see .scroll-sheet--gated below for
+   the closed/dragging treatment. */
+.scroll-bottom-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* The bottom roller and the drag handle beneath it move as one unit,
+   riding the sheet's own advancing bottom edge — plain CSS, no JS
+   position-tracking, because position:absolute + bottom:0 against a
+   container whose height is itself animating just does this for
+   free. */
+.scroll-sheet--gated .scroll-bottom-pin {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Higher than .sticky-header's own 100 — while gated, the header
+     sits inside the same short clipped strip as this group at some
+     drag positions, and the handle needs to stay clickable above it. */
+  z-index: 150;
+}
+
+/* The masthead (quill, written title, nav) sits in normal document
+   flow right after the top roller, so at a closed height generous
+   enough to actually fit the bottom roller + handle group without the
+   two overlapping, some of it would otherwise already be sitting
+   inside the visible strip — legible text fighting for the same few
+   pixels as the roller/handle. A plain linear opacity: var(--gate-
+   progress) still leaves it faintly visible (and, since the quill in
+   particular is a large graphic, reading as a stray half-transparent
+   image rather than "hidden") the moment any drag starts at all — the
+   clamp() below holds it at 0 for the first fifth of the drag, then
+   ramps it to fully opaque over the next third, so it stays genuinely
+   invisible while the view still reads as "just the closed cylinder"
+   and only appears once the reveal is clearly already underway. The
+   wax seal brooch is deliberately left out of this — that's meant to
+   read as part of the closed cylinder itself, not the header. */
+.scroll-sheet--gated .scroll-quill,
+.scroll-sheet--gated .scroll-title,
+.scroll-sheet--gated .sticky-header {
+  opacity: clamp(0, (var(--gate-progress, 0) - 0.2) * 3, 1);
+  pointer-events: none;
+}
+
+/* Same reasoning applied to the gate's own hint/skip text: at a 150px
+   closed height there isn't room for the bottom roller AND readable
+   "Drag to unroll"/"Skip" text without the two crowding each other.
+   This one starts its ramp immediately (no held-at-zero delay) since,
+   unlike the quill, it's meant to be legible very early in the drag —
+   it's the visitor's only feedback that dragging is doing anything. */
+.scroll-sheet--gated .scriptorium-hint,
+.scroll-sheet--gated .scriptorium-skip {
+  opacity: clamp(0, var(--gate-progress, 0) * 3, 1);
+}
+.scroll-sheet--gated .scriptorium-skip {
+  pointer-events: none;
+}
 /* A faint static wash of the candle's own warm tone across the whole
    sheet, left to right — sitting above the corner vignette (15) but
    below the rollers (25) so it never dulls their own wood shading. */

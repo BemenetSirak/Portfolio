@@ -69,6 +69,7 @@ function VisitorLayout({ onBack }) {
   const candleRef = useRef(null)
   const lightRef = useRef(null)
   const bottomRollRef = useRef(null)
+  const sheetRef = useRef(null)
   const dragRef = useRef(null)
   // Mirrors candleOffset state, but updated synchronously (refs don't
   // wait for a render) — handleCandlePointerDown reads from this
@@ -327,7 +328,14 @@ function VisitorLayout({ onBack }) {
         />
       </div>
 
-      <div className={`scroll-sheet scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
+      {/* scroll-sheet--gated has to be computed here, by React, rather
+          than toggled with classList from inside ScriptoriumGate —
+          this element's className is recomputed by React on every
+          VisitorLayout re-render (a candle drag frame, a theme
+          toggle), which happens constantly and unrelated to the gate
+          itself, and each one would silently reset any class added
+          out-of-band back to whatever this template string says. */}
+      <div ref={sheetRef} className={`scroll-sheet scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}${!gateOpen ? ' scroll-sheet--gated' : ''}`}>
         <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
         <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
 
@@ -424,37 +432,42 @@ function VisitorLayout({ onBack }) {
         </div>
 
         <main className="visitor-main">
-          <ScriptoriumGate onOpenChange={setGateOpen} onProgressChange={handleGateProgress}>
-            <VisitorHero name={profile.name} />
+          <VisitorHero name={profile.name} />
 
-            <div className="v-reveal">
-              <ThingsILove />
-            </div>
+          <div className="v-reveal">
+            <ThingsILove />
+          </div>
 
-            <div className="scroll-divider" aria-hidden="true">
-              <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
-                <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
-                <circle cx="23" cy="10" r="1.6" />
-              </svg>
-            </div>
-            <div className="facts-gallery-row v-reveal">
-              <FunZone />
-              <Gallery />
-            </div>
+          <div className="scroll-divider" aria-hidden="true">
+            <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
+              <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
+              <circle cx="23" cy="10" r="1.6" />
+            </svg>
+          </div>
+          <div className="facts-gallery-row v-reveal">
+            <FunZone />
+            <Gallery />
+          </div>
 
-            <div className="scroll-divider" aria-hidden="true">
-              <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
-                <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
-                <circle cx="23" cy="10" r="1.6" />
-              </svg>
-            </div>
-            <div id="visitor-contact" className="v-reveal">
-              <ContactStrip contact={profile.contact} />
-            </div>
-          </ScriptoriumGate>
+          <div className="scroll-divider" aria-hidden="true">
+            <svg className="scroll-divider-flourish" viewBox="0 0 46 20" aria-hidden="true">
+              <path d="M2 10c6-8 11-8 14 0s8 8 14 0 11-8 14 0" />
+              <circle cx="23" cy="10" r="1.6" />
+            </svg>
+          </div>
+          <div id="visitor-contact" className="v-reveal">
+            <ContactStrip contact={profile.contact} />
+          </div>
         </main>
 
-        <ScrollRod ref={bottomRollRef} position="bottom" />
+        {/* The bottom roller and the gate's own drag handle move as one
+            unit, pinned to the real sheet's advancing bottom edge while
+            closed (see .scroll-sheet--gated .scroll-bottom-pin) — not a
+            second scroll graphic, the same ScrollRod used at the top. */}
+        <div className="scroll-bottom-pin">
+          <ScrollRod ref={bottomRollRef} position="bottom" />
+          <ScriptoriumGate sheetRef={sheetRef} onOpenChange={setGateOpen} onProgressChange={handleGateProgress} />
+        </div>
 
         {/* Wrapped shut, the binding seal is still intact — it only
             shows cracked apart, as two halves turned away from each
