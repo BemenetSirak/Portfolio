@@ -1189,6 +1189,50 @@ html:has(.visitor-layout) {
 .scroll-tack--bl { bottom: 44px; left: -6px; }
 .scroll-tack--br { bottom: 40px; right: -8px; }
 
+/* While shut/mid-drag, these percentage-based positions (tuned to
+   spread evenly down a full-height open page) all collapse into
+   whatever short vertical range the closed bundle currently occupies,
+   bunching every tack into a tight cluster with nothing visible for
+   any of them to actually pin down — the parchment they're meant to
+   hold flat is hidden or a bare sliver at this height. Hiding all but
+   the bottom pair and re-anchoring those two directly under the
+   bottom roller's own end-knobs turns them into what they actually
+   read as here: a matched pair of decorative pull-weights hanging off
+   the roller's brackets, the way a real roller blind's cord-ends do,
+   rather than free-floating dots with nothing attaching them to
+   anything. `bottom` rather than `top` keeps them correctly anchored
+   to the bottom roller's position as --closed-clip-h grows during the
+   drag: .scroll-bottom-pin is always the last child, so it — and the
+   knobs inside it — sit at a fixed distance from .scroll-sheet's own
+   bottom edge regardless of how tall .scroll-clip has grown. */
+.scroll-sheet--gated .scroll-tack:not(.scroll-tack--bl):not(.scroll-tack--br) {
+  opacity: 0;
+}
+.scroll-sheet--gated .scroll-tack--bl,
+.scroll-sheet--gated .scroll-tack--br {
+  bottom: 48px;
+}
+.scroll-sheet--gated .scroll-tack--bl { left: -50px; }
+.scroll-sheet--gated .scroll-tack--br { right: -50px; }
+/* The short cord is what actually reads the bead as hanging rather
+   than just sitting at a different fixed spot — without it, the same
+   repositioned dot still looks unanchored, just in a new place. */
+.scroll-sheet--gated .scroll-tack--bl::before,
+.scroll-sheet--gated .scroll-tack--br::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 2px;
+  height: 20px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(20, 12, 4, 0.7), rgba(20, 12, 4, 0.32));
+}
+@media (max-width: 720px) {
+  .scroll-sheet--gated .scroll-tack--bl { left: -19px; }
+  .scroll-sheet--gated .scroll-tack--br { right: -19px; }
+}
+
 /* ── Base type ─────────────────────────────────────── */
 .visitor-layout,
 .visitor-layout button,

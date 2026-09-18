@@ -11,6 +11,16 @@
 ───────────────────────────────────────────────────── */
 .scroll-roll {
   --overhang: 78px;
+  /* A tileable grayscale noise pattern, shared by the knob and the
+     barrel below, blended in at low opacity on both — a purely smooth
+     gradient/radial-gradient reads as an obviously computed shape no
+     matter how many light/shadow layers sit on it; real turned wood
+     and real photographed vellum both have constant small-scale random
+     variation that a human eye reads as "physically textured" almost
+     instantly, and nothing built purely from clean gradient math has
+     it. Defined once here (custom properties inherit) since it's
+     identical in both places. */
+  --organic-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   position: relative;
   /* above the sheet's torn edge + vignette (15) so the cylinders read
      as solid objects the paper winds into, never sliced by its spikes */
@@ -54,9 +64,17 @@
   z-index: 20;
   pointer-events: none;
   border-radius: 50%;
+  /* The noise layer blended on top via overlay is what breaks up the
+     radial-gradient's own perfectly smooth, mathematically clean
+     falloff into something with actual small-scale grain, the way real
+     lathe-turned end-grain always has some visible irregularity even
+     under a glossy varnish. */
   background:
+    var(--organic-noise),
     radial-gradient(circle at 34% 28%,
       #f0bb78 0%, #c17c3a 22%, #8a5226 48%, #4a2a14 78%, #150c05 100%);
+  background-blend-mode: overlay, normal;
+  background-size: 90px 90px, cover;
   /* The knob's own rim: a crisp dark ring right at its circumference,
      then two more concentric rings stepping inward (the lathe-turned
      bevel a real finial has, not a single smooth dome), then the
@@ -140,14 +158,23 @@
      repeat; covering instead just crops one continuous, seamless slice
      out of its (much taller) middle, which is exactly what a thin
      horizontal strip of a much larger sheet of parchment should look
-     like. Layers, back to front: the wood/paper transition fading in
-     at each end, then the real photo, then a plain tan fallback color
-     in case the image is ever slow to load. */
-  background:
-    linear-gradient(90deg,
-      #3a2211 0%, #3a2211 5%, rgba(58, 34, 17, 0) 13%,
-      rgba(58, 34, 17, 0) 87%, #3a2211 95%, #3a2211 100%),
-    url('../assets/scroll/parchment-texture.jpeg') center / cover no-repeat;
+     like. The wood/paper transition at each end lives on ::after
+     instead of stacked in here — see that rule for why a flat gradient
+     layered directly on this photo read as an obviously synthetic
+     rectangle.
+
+     `200% auto` rather than plain `cover`: the source photo is a
+     square product shot with its own baked-in white margin around the
+     mottled parchment square (like a Polaroid border), roughly the
+     outer 10% of the image on every side. `cover` only guarantees the
+     image is big enough to fill the box — at this box's own extreme
+     aspect ratio (over 20:1, a couple thousand px wide by well under
+     100px tall) that still lands well within the white margin at both
+     ends, which is exactly the "gray/white band" that showed up at
+     each roller's tips. Zooming in to 200% pushes the crop window
+     comfortably past that border into the interior, actual-parchment
+     part of the photo everywhere. */
+  background: url('../assets/scroll/parchment-texture.jpeg') center / 200% auto no-repeat;
   background-color: #c2a873;
   border-radius: 6px;
   /* A curving inset shadow along the top and bottom — much heavier
@@ -159,15 +186,24 @@
   box-shadow:
     0 14px 24px rgba(0, 0, 0, 0.92),
     0 26px 42px rgba(0, 0, 0, 0.38),
+    /* A third, much larger and softer layer under the two above — real
+       ambient occlusion diffuses over a wider area than a single hard
+       drop shadow does, which is what actually sells the join between
+       the cylinder and the desk behind it as soft and physical rather
+       than a crisp CG cutout. */
+    0 48px 70px rgba(0, 0, 0, 0.3),
     0 -8px 16px rgba(0, 0, 0, 0.35),
+    0 -30px 46px rgba(0, 0, 0, 0.2),
     inset 0 10px 15px rgba(0, 0, 0, 0.8),
     inset 0 -10px 15px rgba(0, 0, 0, 0.8);
 }
 
-/* Cylindrical light physics laid over the real wood photo: a dark-
-   light-dark sweep left-to-right (the barrel's roundness) plus a thin
-   specular catch-line across the top equator — blended with the
-   underlying grain rather than flattened over it. */
+/* Cylindrical light physics laid over the real photo: a dark-light-
+   dark sweep left-to-right (the barrel's roundness) plus a grayscale
+   noise layer, blended with the underlying grain rather than
+   flattened over it — the noise is what keeps the sweep itself from
+   reading as a clean, mathematically smooth gradient sitting on top of
+   an otherwise organic photo. */
 .scroll-roll-face::before {
   content: '';
   position: absolute;
@@ -175,21 +211,50 @@
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: overlay;
-  /* Lower than the previous 0.5 — the top/bottom curvature is now
-     mostly carried by .scroll-roll-face's own heavy inset shadows
-     above, so this layer only needs to add the left-right sweep along
-     the rod's length on top of that, not repeat the same vertical
-     shading a second time and double-darken the edges. */
+  /* Lower than an earlier 0.5 — the top/bottom curvature is now mostly
+     carried by .scroll-roll-face's own heavy inset shadows above, so
+     this layer only needs to add the left-right sweep along the rod's
+     length on top of that, not repeat the same vertical shading a
+     second time and double-darken the edges. */
   opacity: 0.32;
   background:
+    var(--organic-noise),
     linear-gradient(180deg,
       rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 22%,
       transparent 62%, rgba(0, 0, 0, 0.35) 100%),
     linear-gradient(90deg,
       #2a1c0c 0%, #5c4423 15%, #8a6c42 50%, #4a3618 85%, #201509 100%);
+  background-blend-mode: overlay, normal, normal;
+  background-size: 140px 140px, auto, auto;
 }
 
-/* No centre collar here on purpose: unlike the earlier version of this
+/* The bare-wood stretch of dowel between each knob and where the
+   wound paper begins — a soft, blurred multiply tint fading in from
+   each end, rather than the flat, hard-edged linear-gradient rectangle
+   this used to be layered directly into .scroll-roll-face's own
+   background. That flat version painted an opaque, perfectly straight-
+   edged block of colour over the photo, which read as an obviously
+   synthetic cutout rather than one material gradually giving way to
+   another. Multiply blend lets the photo's own texture and mottling
+   keep showing through even where the tint is strongest, and the blur
+   feathers the edge into an irregular, organic transition instead of a
+   ruler-straight line. */
+.scroll-roll-face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  filter: blur(9px);
+  background:
+    radial-gradient(ellipse 70px 100% at 0% 50%,
+      rgba(58, 34, 17, 0.92) 0%, rgba(58, 34, 17, 0.55) 45%, rgba(58, 34, 17, 0) 78%),
+    radial-gradient(ellipse 70px 100% at 100% 50%,
+      rgba(58, 34, 17, 0.92) 0%, rgba(58, 34, 17, 0.55) 45%, rgba(58, 34, 17, 0) 78%);
+}
+
+/* No centre collar here on purpose: unlike an earlier version of this
    rod, the visible body is the parchment wound around it, and real
    wound paper doesn't show a wood joint partway along its own length —
    only true bare wood, right at the two ends, does. A collar there
@@ -204,7 +269,9 @@
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.92),
     0 20px 34px rgba(0, 0, 0, 0.4),
+    0 48px 70px rgba(0, 0, 0, 0.3),
     0 -8px 16px rgba(0, 0, 0, 0.35),
+    0 -30px 46px rgba(0, 0, 0, 0.2),
     inset 0 10px 15px rgba(0, 0, 0, 0.8),
     inset 0 -10px 15px rgba(0, 0, 0, 0.8);
 }
