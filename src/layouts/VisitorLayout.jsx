@@ -334,7 +334,7 @@ function VisitorLayout({ onBack }) {
           toggle), which happens constantly and unrelated to the gate
           itself, and each one would silently reset any class added
           out-of-band back to whatever this template string says. */}
-      <div ref={sheetRef} className={`scroll-sheet scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}${!gateOpen ? ' scroll-sheet--gated' : ''}`}>
+      <div ref={sheetRef} className={`scroll-sheet${!gateOpen ? ' scroll-sheet--gated' : ''}`}>
         <div className="scroll-backdrop" key={`backdrop-${themeKey}`} aria-hidden="true" />
         <div className="scroll-vignette" key={`vignette-${themeKey}`} aria-hidden="true" />
 
@@ -348,8 +348,18 @@ function VisitorLayout({ onBack }) {
             entirely any time the gate was closed or mid-drag. Scoping
             the clip to just this inner wrapper keeps the rollers (and
             .scroll-bottom-pin, a sibling of this div) permanently
-            outside it, free to overhang regardless of gate state. */}
-        <div className="scroll-clip">
+            outside it, free to overhang regardless of gate state.
+
+            The page-entrance "unroll" reveal (.scroll-unroll) lives
+            here too, not on .scroll-sheet — clip-path clips descendants
+            unconditionally, with no exception for z-index or intended
+            overhang, so putting it on .scroll-sheet was silently
+            cropping the rollers at their exact final rest state
+            (inset(0%), i.e. flush with the parchment's own edges) even
+            after every other clipping fix in this file. Scoping it to
+            just the parchment content matches the real metaphor anyway:
+            the cylinders stay put while the paper between them unrolls. */}
+        <div className={`scroll-clip scroll-unroll${unrolled ? ' scroll-unroll--in' : ''}`}>
           <div className="scroll-seal-brand">
             <BrandLogo onBack={onBack} />
           </div>
