@@ -1,13 +1,13 @@
 /* ─────────────────────────────────────────────────────
-   Wooden rollers — barrel and turned ball-knobs are both
-   built from CSS gradients, not a photo asset. (A border-
-   image slice of a decorative "rolled scroll" graphic was
-   used previously, but that art has no real knob geometry
-   in it — just a tan paper texture with a faint dark ring
-   at each tip — so the ends never read as a defined turned
-   knob no matter how the filter/collar decoration on top
-   of it was tuned. Painting the knob shape directly fixes
-   that at the source.)
+   The rollers, all built from CSS gradients rather than a photo
+   asset. True scroll anatomy: a single wooden dowel runs the whole
+   width, but the parchment sheet is wound tightly around its central
+   body, so the wood itself only actually shows at the two ends — a
+   short bare stretch of dowel plus the turned ball-knob — with the
+   long middle section reading as the wound paper's own tan, aged
+   surface rather than bare mahogany. .scroll-roll-face carries that
+   parchment-body gradient (with the wood tone fading in at each end);
+   .scroll-roll-knob is the separate ball-finial sitting past it.
 ───────────────────────────────────────────────────── */
 .scroll-roll {
   --overhang: 78px;
@@ -92,33 +92,34 @@
   display: flex;
   align-items: center;
   padding: 0 84px;
-  /* Rich reddish-brown mahogany base the roundness sweep (::before)
-     shades on top of. Three grain layers rather than one uniform
-     repeat — fine streaks, a coarser irregular ring pattern, and the
-     vertical body-color gradient underneath — so the barrel reads as
-     real turned wood grain instead of a flat painted tube with a
-     mechanical stripe. */
+  /* True scroll anatomy: this is the parchment wound around the rod's
+     own central body, not the rod itself — the wood only actually
+     shows at the two ends, where the knobs sit and the paper hasn't
+     reached. So the bulk of this gradient is an aged-parchment tan,
+     with a short wood-toned stretch fading in at each end (the bare
+     dowel between the knob and where the wound paper begins) rather
+     than the mahogany color running the type's full length. Layers,
+     back to front: a faint paper-fibre streak texture, the wood/paper
+     transition at each end, then the vertical body-color gradient
+     that gives the cylinder its own base shading. */
   background:
     repeating-linear-gradient(90deg,
-      rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px,
-      transparent 1.5px, transparent 3px,
-      rgba(0, 0, 0, 0.05) 3px, rgba(0, 0, 0, 0.05) 4px,
-      transparent 4.5px, transparent 7px),
-    repeating-linear-gradient(90deg,
-      rgba(30, 16, 6, 0.22) 0px, rgba(30, 16, 6, 0.22) 2px,
-      transparent 7px, transparent 19px,
-      rgba(255, 200, 140, 0.06) 19px, transparent 23px, transparent 31px),
-    linear-gradient(180deg, #8a5226 0%, #6b3d1f 45%, #4a2a14 75%, #2c1a0d 100%);
+      rgba(90, 65, 35, 0.07) 0px, rgba(90, 65, 35, 0.07) 1px,
+      transparent 1.5px, transparent 5px),
+    linear-gradient(90deg,
+      #3a2211 0%, #3a2211 5%, rgba(58, 34, 17, 0) 13%,
+      rgba(58, 34, 17, 0) 87%, #3a2211 95%, #3a2211 100%),
+    linear-gradient(180deg, #e9dbb2 0%, #d5bf8c 42%, #b89a68 76%, #8a6c42 100%);
   border-radius: 6px;
   /* A crisp rim line along the barrel's own top/bottom so it reads as
      one defined solid edge against the parchment and desk, not a soft
-     blend that fades into the background — plus two drop shadows, a
-     tight contact one and a softer, wider one, so the rod reads as
-     sitting proud above whatever's beneath it rather than pasted flat
-     onto it. */
+     blend that fades into the background — plus drop shadows both
+     above and below, so the rod reads as a heavy object sitting proud
+     of whatever's on either side of it, not pasted flat onto it. */
   box-shadow:
     0 14px 24px rgba(0, 0, 0, 0.92),
     0 26px 42px rgba(0, 0, 0, 0.38),
+    0 -8px 16px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 224, 180, 0.4),
     inset 0 -2px 3px rgba(0, 0, 0, 0.55);
 }
@@ -134,51 +135,30 @@
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: overlay;
-  opacity: 0.6;
+  opacity: 0.5;
   /* A brighter specular catch-line along the top equator, blending
      down into a deep ambient-occlusion shadow along the bottom edge —
      the two together are what actually sell a flat strip as a lit,
      rounded cylinder — layered over the same left-right dark-light-dark
-     sweep that reads as the barrel's own roundness. */
+     sweep that reads as the barrel's own roundness. Warmer, lighter
+     browns than the mahogany version of this sweep: this is shading a
+     paper-wrapped cylinder now, not bare wood, and the old near-black
+     tones read as grimy rather than shadowed on top of a pale parchment
+     base. */
   background:
     linear-gradient(180deg,
-      rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 22%,
-      transparent 62%, rgba(0, 0, 0, 0.4) 100%),
+      rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 22%,
+      transparent 62%, rgba(0, 0, 0, 0.35) 100%),
     linear-gradient(90deg,
-      #120a04 0%, #3a2211 15%, #5c381c 50%, #221307 85%, #0b0502 100%);
+      #2a1c0c 0%, #5c4423 15%, #8a6c42 50%, #4a3618 85%, #201509 100%);
 }
 
-/* A turned decorative collar at the exact centre of the dowel — a
-   second, narrower "joint" the way a real lathe-turned rod often has
-   one partway along its own length, not just at the ends. Purely a
-   CSS ring (the underlying photo asset only has end-cap detail), so
-   it's built the same way the candle chamberstick's dowel caps are:
-   a radial-gradient barrel cross-section rather than a flat painted
-   stripe. */
-.scroll-roll-face::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 30px;
-  height: 128%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  pointer-events: none;
-  border-radius: 5px;
-  background: linear-gradient(90deg,
-    #0e0703 0%, #2c1a0d 10%, #6b3d1f 30%, #a3672f 50%, #6b3d1f 70%, #2c1a0d 90%, #0e0703 100%);
-  /* The extra inset rings are the collar's own lathe-turned bevel — a
-     narrow dark groove then a thin bright step in from the edge,
-     before the usual top/bottom sheen — rather than one flat rounded
-     rectangle. */
-  box-shadow:
-    0 5px 10px rgba(0, 0, 0, 0.6),
-    inset 0 0 0 3px rgba(0, 0, 0, 0.35),
-    inset 0 0 0 5px rgba(255, 214, 170, 0.2),
-    inset 0 2px 3px rgba(255, 214, 170, 0.35),
-    inset 0 -3px 5px rgba(20, 10, 4, 0.6);
-}
+/* No centre collar here on purpose: unlike the earlier version of this
+   rod, the visible body is the parchment wound around it, and real
+   wound paper doesn't show a wood joint partway along its own length —
+   only true bare wood, right at the two ends, does. A collar there
+   would read as a second rod stuck through the middle of the paper
+   rather than one continuous dowel underneath it. */
 /* The top roller is the one actually gripping/feeding the sheet, so
    its own drop shadow sits tighter and closer than the shared one set
    on .scroll-roll-face above — more like real pressure at the point of
@@ -188,6 +168,7 @@
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.92),
     0 20px 34px rgba(0, 0, 0, 0.4),
+    0 -8px 16px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 224, 180, 0.4),
     inset 0 -2px 3px rgba(0, 0, 0, 0.55);
 }
@@ -251,9 +232,12 @@
     rgba(0, 0, 0, 0) 100%);
 }
 
-/* Night: the wood dims and takes the candle's warmth from the left */
+/* Night: the wound parchment dims and takes the candle's warmth from
+   the left — less brightness reduction than bare wood would need
+   (0.42 there), since a pale paper cylinder needs to stay legible as
+   paper rather than crush down to near-black. */
 #root[data-theme='dark'] .scroll-roll-face {
-  filter: brightness(0.42) saturate(1.1) sepia(0.2) hue-rotate(-6deg) contrast(1.08)
+  filter: brightness(0.5) saturate(1.05) sepia(0.15) hue-rotate(-4deg) contrast(1.05)
           drop-shadow(0 10px 16px rgba(0, 0, 0, 0.8));
 }
 
