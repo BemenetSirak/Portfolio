@@ -32,7 +32,10 @@
 }
 .scroll-roll--top    { margin-bottom: -6px; }
 .scroll-roll--bottom {
-  margin-top: 16px;
+  /* Tightened from an old 16px so the closed cylinder reads as one
+     tightly-wound bundle (see --closed-clip-h in VisitorScroll.css)
+     instead of leaving a visible gap between the two rods at rest. */
+  margin-top: 8px;
   min-height: 56px;
   height: 56px;
 }
@@ -54,16 +57,19 @@
   background:
     radial-gradient(circle at 34% 28%,
       #f0bb78 0%, #c17c3a 22%, #8a5226 48%, #4a2a14 78%, #150c05 100%);
-  /* The knob's own rim: a crisp dark ring right at its circumference
-     plus a warm glow just outside it, so it reads as one clearly-edged
-     solid object instead of fading into the desk behind it — the
-     actual "defined edge" a lathe-turned finial has that the old
-     border-image cap never carried. */
+  /* The knob's own rim: a crisp dark ring right at its circumference,
+     then two more concentric rings stepping inward (the lathe-turned
+     bevel a real finial has, not a single smooth dome), then the
+     directional light/shadow that makes it read as a lit sphere rather
+     than a flat painted disc. */
   box-shadow:
     inset 0 0 0 3px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 9px rgba(255, 214, 170, 0.14),
+    inset 0 0 0 13px rgba(0, 0, 0, 0.3),
     inset -8px -10px 14px rgba(0, 0, 0, 0.6),
     inset 7px 8px 11px rgba(255, 224, 180, 0.55),
     0 6px 14px rgba(0, 0, 0, 0.8),
+    0 10px 20px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(255, 214, 170, 0.32);
 }
 .scroll-roll-knob--left { left: calc(-1 * var(--overhang)); }
@@ -87,19 +93,32 @@
   align-items: center;
   padding: 0 84px;
   /* Rich reddish-brown mahogany base the roundness sweep (::before)
-     shades on top of, plus a fine repeating grain texture so the
-     barrel doesn't read as a flat painted tube. */
+     shades on top of. Three grain layers rather than one uniform
+     repeat — fine streaks, a coarser irregular ring pattern, and the
+     vertical body-color gradient underneath — so the barrel reads as
+     real turned wood grain instead of a flat painted tube with a
+     mechanical stripe. */
   background:
     repeating-linear-gradient(90deg,
-      rgba(0, 0, 0, 0.08) 0px, rgba(0, 0, 0, 0.08) 1px,
-      transparent 1px, transparent 4px),
+      rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px,
+      transparent 1.5px, transparent 3px,
+      rgba(0, 0, 0, 0.05) 3px, rgba(0, 0, 0, 0.05) 4px,
+      transparent 4.5px, transparent 7px),
+    repeating-linear-gradient(90deg,
+      rgba(30, 16, 6, 0.22) 0px, rgba(30, 16, 6, 0.22) 2px,
+      transparent 7px, transparent 19px,
+      rgba(255, 200, 140, 0.06) 19px, transparent 23px, transparent 31px),
     linear-gradient(180deg, #8a5226 0%, #6b3d1f 45%, #4a2a14 75%, #2c1a0d 100%);
   border-radius: 6px;
   /* A crisp rim line along the barrel's own top/bottom so it reads as
      one defined solid edge against the parchment and desk, not a soft
-     blend that fades into the background. */
+     blend that fades into the background — plus two drop shadows, a
+     tight contact one and a softer, wider one, so the rod reads as
+     sitting proud above whatever's beneath it rather than pasted flat
+     onto it. */
   box-shadow:
     0 14px 24px rgba(0, 0, 0, 0.92),
+    0 26px 42px rgba(0, 0, 0, 0.38),
     inset 0 1px 0 rgba(255, 224, 180, 0.4),
     inset 0 -2px 3px rgba(0, 0, 0, 0.55);
 }
@@ -115,12 +134,16 @@
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: overlay;
-  opacity: 0.55;
-  /* A brighter specular catch-line than the matte-mahogany pass this
-     used to carry — polished turned wood, like the reference photo,
-     wants a real glossy highlight running along its top equator. */
+  opacity: 0.6;
+  /* A brighter specular catch-line along the top equator, blending
+     down into a deep ambient-occlusion shadow along the bottom edge —
+     the two together are what actually sell a flat strip as a lit,
+     rounded cylinder — layered over the same left-right dark-light-dark
+     sweep that reads as the barrel's own roundness. */
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 24%),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 22%,
+      transparent 62%, rgba(0, 0, 0, 0.4) 100%),
     linear-gradient(90deg,
       #120a04 0%, #3a2211 15%, #5c381c 50%, #221307 85%, #0b0502 100%);
 }
@@ -145,8 +168,14 @@
   border-radius: 5px;
   background: linear-gradient(90deg,
     #0e0703 0%, #2c1a0d 10%, #6b3d1f 30%, #a3672f 50%, #6b3d1f 70%, #2c1a0d 90%, #0e0703 100%);
+  /* The extra inset rings are the collar's own lathe-turned bevel — a
+     narrow dark groove then a thin bright step in from the edge,
+     before the usual top/bottom sheen — rather than one flat rounded
+     rectangle. */
   box-shadow:
     0 5px 10px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 5px rgba(255, 214, 170, 0.2),
     inset 0 2px 3px rgba(255, 214, 170, 0.35),
     inset 0 -3px 5px rgba(20, 10, 4, 0.6);
 }
@@ -158,6 +187,7 @@
 .scroll-roll--top .scroll-roll-face {
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.92),
+    0 20px 34px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 224, 180, 0.4),
     inset 0 -2px 3px rgba(0, 0, 0, 0.55);
 }

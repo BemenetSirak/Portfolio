@@ -685,6 +685,12 @@ html:has(.visitor-layout) {
      because it also has to change together with the real ScrollRod
      height at the 720px breakpoint. */
   --top-roll-h: 64px;
+  /* .scroll-clip's own height while gated shut — just enough of a
+     sliver for the seam shadow between the two rollers to read as a
+     tight wind, not an actual visible window of parchment. Real scroll
+     mechanics: fully rolled, only the wood (and its end-knobs) show;
+     the paper itself shouldn't be visible as a distinct band at all. */
+  --closed-clip-h: 14px;
 }
 @media (max-width: 720px) {
   .scroll-sheet { --top-roll-h: 46px; }
@@ -722,12 +728,12 @@ html:has(.visitor-layout) {
 .scroll-sheet.scroll-sheet--gated {
   flex: 0 0 auto;
   /* Centred in the viewport at rest — half the closed bundle's total
-     height (the top roller plus .scroll-clip's own 150px) above the
-     midpoint — and settling smoothly up to the sheet's own normal
-     resting margin (16px) as --gate-progress climbs, so the top
+     height (the top roller plus .scroll-clip's own closed sliver)
+     above the midpoint — and settling smoothly up to the sheet's own
+     normal resting margin (16px) as --gate-progress climbs, so the top
      roller reads as anchoring itself to the top of the page rather
      than the bundle just growing downward from mid-screen forever. */
-  margin-top: calc((50vh - (var(--top-roll-h) + 150px) / 2) * (1 - var(--gate-progress, 0)) + 16px * var(--gate-progress, 0));
+  margin-top: calc((50vh - (var(--top-roll-h) + var(--closed-clip-h)) / 2) * (1 - var(--gate-progress, 0)) + 16px * var(--gate-progress, 0));
 }
 /* .scroll-sheet.scroll-sheet--gated (both classes) rather than just
    .scroll-sheet--gated alone: a later mobile media-query rule
@@ -739,14 +745,15 @@ html:has(.visitor-layout) {
 
 .scroll-sheet--gated .scroll-clip {
   overflow: hidden;
-  /* 150px — just the closed cylinder itself (top + bottom roller
-     sitting close together, the way an actually rolled-up scroll
-     looks). The handle/hint/skip text tucked below the bottom roller
-     fade in with --gate-progress (see .scroll-bottom-pin's own
+  /* --closed-clip-h at rest — just a sliver, so the two rollers read as
+     sitting almost flush against each other with the sheet wound
+     tightly around them, not a visible window of parchment between two
+     separate rods. The handle/hint/skip text tucked below the bottom
+     roller fade in with --gate-progress (see .scroll-bottom-pin's own
      children further down) rather than needing to be accounted for in
      this height, so they don't force it taller than the cylinder
      itself just to avoid overlapping it. */
-  height: calc(150px + (100vh - 150px) * var(--gate-progress, 0));
+  height: calc(var(--closed-clip-h) + (100vh - var(--closed-clip-h)) * var(--gate-progress, 0));
   /* .scroll-backdrop's parchment texture is inset 34px/27px from this
      element's own edges and clipped to a fixed torn-edge shape tuned
      for the sheet at its real, full-content height — at the much
@@ -762,8 +769,18 @@ html:has(.visitor-layout) {
      drag, `cover`-fitting the real photo crops it down to a sliver
      blown up large enough to show as an oddly pale, washed-out patch
      of its own — a plain colour has no such crop to go wrong
-     regardless of the box's aspect ratio. */
-  background-color: #e8d9b5;
+     regardless of the box's aspect ratio.
+
+     A dark seam tone rather than the bright parchment colour this used
+     to be: .scroll-backdrop/.scroll-vignette now fade in with --gate-
+     progress themselves (below) instead of relying on this fallback to
+     paper over their own size mismatch, so this only needs to look
+     right on its own at the tiny --closed-clip-h sliver the box sits
+     at when shut — a visible patch of full-brightness paper there,
+     even briefly, read as an actual strip of unrolled parchment,
+     working against the "fully wound, only wood showing" look real
+     scroll mechanics have. */
+  background-color: #241608;
 }
 /* .scroll-vignette carries this same 34px/27px inset and torn-edge
    clip-path, so it's the vignette's own night-mode darkening — not
@@ -781,7 +798,25 @@ html:has(.visitor-layout) {
      box regardless. Dropping the image and using a plain dark fill
      instead is what actually darkens this for night mode. */
   background-image: none;
-  background-color: #2b2013;
+  background-color: #150d05;
+}
+
+/* .scroll-backdrop and .scroll-vignette are both sized off .scroll-
+   sheet's own box (inset 34px/27px), not .scroll-clip's — while gated,
+   .scroll-sheet's total height is the whole closed bundle (both
+   rollers, handle and all), well taller than .scroll-clip's own tiny
+   --closed-clip-h sliver, so at rest these two would otherwise sit
+   there at close to full size regardless of how little of .scroll-clip
+   is actually showing, their pale parchment texture and vignette
+   spilling out past the sliver and past the rollers' own edges into
+   plain view. Real scroll mechanics call for no parchment at all to be
+   visible once fully wound — fading these two out at low --gate-
+   progress and in as it climbs makes the parchment genuinely appear to
+   unspool alongside .scroll-clip's own growing window, instead of
+   sitting there as a static, oversized patch the whole time. */
+.scroll-sheet--gated .scroll-backdrop,
+.scroll-sheet--gated .scroll-vignette {
+  opacity: var(--gate-progress, 0);
 }
 
 /* Holds the bottom roller and the gate's own drag handle together as
@@ -1461,12 +1496,25 @@ html:has(.visitor-layout) {
    own background is the last line of defense so text still sits on a
    parchment-colored surface rather than the bare dark desk showing
    through. Costs nothing when the texture is rendering fine, which is
-   the case in every mobile browser this was actually tested in. */
+   the case in every mobile browser this was actually tested in.
+
+   Excluded while gated: .scroll-sheet's box while shut spans the whole
+   closed bundle (both rollers, the handle/hint gap below the bottom
+   one, all of it) — not just the area .scroll-backdrop actually
+   covers — so this fallback used to sit there completely hidden
+   behind .scroll-clip's own (then much taller, 150px) opaque fill.
+   Once that shrank to a true closed-cylinder sliver (see
+   --closed-clip-h), this dormant fallback started showing through in
+   the newly-uncovered gaps as a stray bright parchment patch behind
+   the wound-shut rollers — exactly the "still visible paper" look real
+   scroll mechanics don't have. */
 @media (max-width: 768px) {
   .scroll-sheet {
-    background-color: var(--bg);
     position: relative;
     z-index: 2;
+  }
+  .scroll-sheet:not(.scroll-sheet--gated) {
+    background-color: var(--bg);
   }
 }
 
