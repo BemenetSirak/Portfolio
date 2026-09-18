@@ -639,16 +639,31 @@ html:has(.visitor-layout) {
 .scroll-sheet {
   /* The torn silhouette shared by the backdrop and the vignette above
      it, so both layers rip in exactly the same place: ragged, fiber-
-     frayed top and bottom where the paper meets the rollers, and
-     softly organic (not ruler-straight) side edges, like a hand-cut
-     sheet rather than a printed rectangle. */
+     frayed top and bottom where the paper meets the rollers, and a
+     matching deckled tear down both sides — not a gentle handful-of-
+     points wobble. Percentage-based clip-path points stretch with
+     this box's own height, though: a sparse set that reads as
+     "hand-torn" on the ~200px closed cylinder stretches into an
+     almost-straight line with a few occasional bumps once open on a
+     multi-thousand-pixel page, since the same points end up hundreds
+     of pixels apart. The side runs below use ~22 points each instead
+     of the original 9, close enough together to still read as
+     genuinely torn paper at any sheet height, with irregular
+     (non-repeating) amplitude so it doesn't look like a mechanical
+     zigzag either. */
   --rip-edge: polygon(
     0% 2.4%, 3% 0%, 7% 1.6%, 12% 0%, 18% 1.8%, 25% 0%, 32% 1.6%, 40% 0%, 48% 1.8%, 56% 0%,
     64% 1.6%, 72% 0%, 80% 1.8%, 88% 0%, 94% 1.6%, 100% 2.4%,
-    99.3% 12%, 100.4% 22%, 99.2% 32%, 100.4% 42%, 99.3% 52%, 100.4% 62%, 99.2% 72%, 100.4% 82%, 99.3% 90%,
+    99.18% 10%, 100.88% 13.64%, 99.23% 17.27%, 100.72% 20.91%, 99.2% 24.55%, 100.77% 28.18%,
+    99.12% 31.82%, 100.9% 35.45%, 99.49% 39.09%, 100.74% 42.73%, 99.35% 46.36%, 100.59% 50%,
+    99.53% 53.64%, 100.7% 57.27%, 99.22% 60.91%, 100.5% 64.55%, 99.47% 68.18%, 100.84% 71.82%,
+    99.21% 75.45%, 100.58% 79.09%, 99.47% 82.73%, 100.75% 86.36%, 99.26% 90%,
     100% 97.6%, 94% 100%, 88% 98.2%, 80% 100%, 72% 98.4%, 64% 100%, 56% 98.2%, 48% 100%, 40% 98.4%, 32% 100%,
     25% 98.2%, 18% 100%, 12% 98.4%, 7% 100%, 3% 98.2%, 0% 97.6%,
-    0.7% 90%, -0.4% 82%, 0.8% 72%, -0.4% 62%, 0.7% 52%, -0.4% 42%, 0.8% 32%, -0.4% 22%, 0.7% 12%
+    -0.66% 90%, 0.83% 86.36%, -0.54% 82.73%, 0.48% 79.09%, -0.78% 75.45%, 0.68% 71.82%,
+    -0.54% 68.18%, 0.74% 64.55%, -0.65% 60.91%, 0.81% 57.27%, -0.63% 53.64%, 0.81% 50%,
+    -0.5% 46.36%, 0.87% 42.73%, -0.74% 39.09%, 0.82% 35.45%, -0.66% 31.82%, 0.81% 28.18%,
+    -0.7% 24.55%, 0.49% 20.91%, -0.52% 17.27%, 0.67% 13.64%, -0.58% 10%
   );
   position: relative;
   overflow: visible;
@@ -665,29 +680,64 @@ html:has(.visitor-layout) {
      theme toggles) can't force it to repaint from scratch and flash. */
   backface-visibility: hidden;
   transform: translateZ(0);
+  /* Read by .scroll-bottom-pin below to find .scroll-clip's own bottom
+     edge, and by the centering math further down — kept as a variable
+     because it also has to change together with the real ScrollRod
+     height at the 720px breakpoint. */
+  --top-roll-h: 64px;
+}
+@media (max-width: 720px) {
+  .scroll-sheet { --top-roll-h: 46px; }
+}
+
+/* Wraps everything between the top and bottom rollers (masthead,
+   header/nav, main content) in the same flex column .scroll-sheet
+   used to arrange these children in directly — needed since they're
+   now nested one level deeper, inside this wrapper, rather than being
+   .scroll-sheet's own direct children. See the long comment on
+   .scroll-sheet--gated below for why this split exists at all. */
+.scroll-clip {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 /* ── The Scriptorium gate's closed/unrolling state ────
-   Applied directly to this exact element by ScriptoriumGate (never a
-   separate wrapper or stand-in graphic) while the visitor hasn't
-   opened the page yet. Clips it down to a short strip — just enough
-   for the top and bottom rollers to sit close together with the real
-   wax seal between them — and grows it back out toward a full
-   viewport as --gate-progress climbs from 0 to 1 on every drag frame.
-   flex-grow has to be switched off here too: left at the sheet's
-   normal 1, it would still stretch to fill .visitor-layout's full
-   height regardless of this height value, since flex-grow overrides a
-   flex item's own main-axis size whenever the container has spare
-   room to hand out. */
-/* .scroll-sheet.scroll-sheet--gated (both classes), not just
+   .scroll-sheet itself is NEVER the thing that clips or resizes —
+   only .scroll-clip, a wrapper one level in, is. .scroll-sheet's own
+   overflow used to be set to hidden here directly, which clips every
+   descendant's paint, including the top and bottom rollers'
+   negative-margin overhang (see ScrollRod.css) — so any time the gate
+   was closed or mid-drag, both rollers' turned end-caps were silently
+   cropped off at the sheet's own edges instead of overhanging past
+   them the way they do once open. Scoping the clip to .scroll-clip
+   instead — a child that holds everything except the two rollers and
+   .scroll-bottom-pin — means .scroll-sheet can stay overflow:visible
+   permanently, and the rollers are never inside the clipped box at
+   all. flex-grow also has to be switched off here on the real flex
+   item (.scroll-sheet): left at its normal 1, it would still stretch
+   to fill .visitor-layout's full height regardless of .scroll-clip's
+   height, since flex-grow overrides a flex item's own main-axis size
+   whenever the container has spare room to hand out. */
+.scroll-sheet.scroll-sheet--gated {
+  flex: 0 0 auto;
+  /* Centred in the viewport at rest — half the closed bundle's total
+     height (the top roller plus .scroll-clip's own 150px) above the
+     midpoint — and settling smoothly up to the sheet's own normal
+     resting margin (16px) as --gate-progress climbs, so the top
+     roller reads as anchoring itself to the top of the page rather
+     than the bundle just growing downward from mid-screen forever. */
+  margin-top: calc((50vh - (var(--top-roll-h) + 150px) / 2) * (1 - var(--gate-progress, 0)) + 16px * var(--gate-progress, 0));
+}
+/* .scroll-sheet.scroll-sheet--gated (both classes) rather than just
    .scroll-sheet--gated alone: a later mobile media-query rule
    (`.scroll-sheet { margin-top: 10px; ... }`, further down this same
    file) is also a single class selector at equal specificity, so
    without the extra class here that rule would win purely on source
    order at narrow widths and pin this back to the top instead of
    centering it. */
-.scroll-sheet.scroll-sheet--gated {
-  flex: 0 0 auto;
+
+.scroll-sheet--gated .scroll-clip {
   overflow: hidden;
   /* 150px — just the closed cylinder itself (top + bottom roller
      sitting close together, the way an actually rolled-up scroll
@@ -697,12 +747,6 @@ html:has(.visitor-layout) {
      this height, so they don't force it taller than the cylinder
      itself just to avoid overlapping it. */
   height: calc(150px + (100vh - 150px) * var(--gate-progress, 0));
-  /* Centred in the viewport at rest — closed-height/2 above the
-     midpoint — and settling smoothly up to the sheet's own normal
-     resting margin (16px) as --gate-progress climbs, so the top
-     roller reads as anchoring itself to the top of the page rather
-     than the box just growing downward from mid-screen forever. */
-  margin-top: calc((50vh - 75px) * (1 - var(--gate-progress, 0)) + 16px * var(--gate-progress, 0));
   /* .scroll-backdrop's parchment texture is inset 34px/27px from this
      element's own edges and clipped to a fixed torn-edge shape tuned
      for the sheet at its real, full-content height — at the much
@@ -710,15 +754,15 @@ html:has(.visitor-layout) {
      nowhere near the actual (short) bottom edge, leaving a real gap
      where revealed content had nothing opaque behind it and it
      visibly floated on the bare desk. A plain parchment-toned colour
-     fallback directly on the sheet itself (painted before
-     .scroll-backdrop, since -1 only means "behind this element's own
-     background", not behind nothing) closes that gap regardless of
-     the exact geometry. A flat colour rather than the actual texture
-     image: at the extreme wide/short aspect this box has near the
-     start of the drag, `cover`-fitting the real photo crops it down
-     to a sliver blown up large enough to show as an oddly pale,
-     washed-out patch of its own — a plain colour has no such crop to
-     go wrong regardless of the box's aspect ratio. */
+     fallback directly on this wrapper (painted before .scroll-backdrop,
+     since -1 only means "behind this element's own background", not
+     behind nothing) closes that gap regardless of the exact geometry.
+     A flat colour rather than the actual texture image: at the
+     extreme wide/short aspect this box has near the start of the
+     drag, `cover`-fitting the real photo crops it down to a sliver
+     blown up large enough to show as an oddly pale, washed-out patch
+     of its own — a plain colour has no such crop to go wrong
+     regardless of the box's aspect ratio. */
   background-color: #e8d9b5;
 }
 /* .scroll-vignette carries this same 34px/27px inset and torn-edge
@@ -730,7 +774,7 @@ html:has(.visitor-layout) {
    patch against the rest of the dark desk. Overriding the fallback's
    own color here for dark mode is simpler than trying to extend the
    vignette's coverage math. */
-#root[data-theme='dark'] .scroll-sheet.scroll-sheet--gated {
+#root[data-theme='dark'] .scroll-sheet--gated .scroll-clip {
   /* The light-mode rule's background-image is the (opaque, bright)
      parchment photo itself — overriding just background-color here
      would do nothing, since that photo would still fully cover the
@@ -764,15 +808,22 @@ html:has(.visitor-layout) {
   align-self: stretch;
 }
 /* The bottom roller and the drag handle beneath it move as one unit,
-   riding the sheet's own advancing bottom edge — plain CSS, no JS
-   position-tracking, because position:absolute + bottom:0 against a
-   container whose height is itself animating just does this for
-   free. */
+   riding .scroll-clip's own advancing bottom edge — for free, with no
+   `top` math at all: this is a normal-flow sibling immediately after
+   .scroll-clip in the DOM, so it already lands exactly at whatever
+   .scroll-clip's own live height currently ends at, the same way any
+   next sibling follows a preceding element's height. (An earlier
+   version used position:absolute with a computed `top` instead, to
+   mimic the bottom:0-against-an-animating-container trick .scroll-clip
+   itself can't offer here since this is a sibling, not a child, of it
+   — but a `top` offset landing outside .scroll-sheet's own flex-
+   determined box turned out to silently stop this entire subtree from
+   painting at all, verified by toggling position:static and watching
+   it reappear.) position:relative rather than plain static only to
+   let z-index keep applying — it makes no layout difference on its
+   own with no offset properties set. */
 .scroll-sheet--gated .scroll-bottom-pin {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   /* Higher than .sticky-header's own 100 — while gated, the header
      sits inside the same short clipped strip as this group at some
      drag positions, and the handle needs to stay clickable above it. */
@@ -1064,56 +1115,11 @@ html:has(.visitor-layout) {
     contrast(1.1) saturate(1.05) brightness(0.72) sepia(0.35);
 }
 
-.scroll-seal {
-  position: absolute;
-  z-index: 32;
-  height: auto;
-  pointer-events: none;
-  /* Same reasoning as the brand seal — see the comment there. */
-  filter: drop-shadow(0 4px 3px rgba(0,0,0,0.8)) drop-shadow(0 12px 24px rgba(0,0,0,0.6));
-}
-
-/* The intact seal shown only while the scroll is still wrapped shut —
-   same spot the broken one takes over once it's been unrolled. Sits
-   toward the bottom-left of the sheet, not dead-centre — this is
-   meant to read as the one prominent authenticating stamp resting on
-   the vellum, not a seam-closure indicator spanning the whole width. */
-.scroll-seal--bottom {
-  bottom: -30px;
-  left: 8%;
-  width: 84px;
-  transform: rotate(3deg);
-}
-
-/* A cracked-open wax seal at the foot of the sheet — two fragments of
-   the same stamp, split apart and turned away from each other, as if
-   the scroll had actually been broken open to read rather than still
-   being sealed shut. */
-.scroll-seal-broken {
-  position: absolute;
-  bottom: -28px;
-  left: 8%;
-  width: 92px;
-  height: 100px;
-  pointer-events: none;
-  z-index: 32;
-}
-.scroll-seal-broken-half {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 92px;
-  height: auto;
-  filter: drop-shadow(0 4px 3px rgba(0,0,0,0.8)) drop-shadow(0 12px 24px rgba(0,0,0,0.6));
-}
-.scroll-seal-broken-half--left {
-  clip-path: polygon(0 0, 42% 4%, 47% 46%, 30% 100%, 0 100%);
-  transform: translate(-9px, 1px) rotate(-11deg);
-}
-.scroll-seal-broken-half--right {
-  clip-path: polygon(42% 4%, 100% 0, 100% 100%, 30% 100%, 47% 46%);
-  transform: translate(8px, 3px) rotate(9deg);
-}
+/* The one authentic wax seal lives on the parchment face itself (see
+   .vh-explore-coin in VisitorHero.css) — this used to be a second seal
+   riding the bottom roller, plus a "cracked open" variant swapped in
+   once the gate opened, both removed as duplicate/floating decoration
+   competing with the real one. */
 
 .scroll-tack {
   position: absolute;
@@ -1482,13 +1488,25 @@ html:has(.visitor-layout) {
      text sitting just below it. Shrinking the y-amplitude here keeps
      the tooth's aspect ratio close to what it looks like on desktop. */
   .scroll-sheet {
+    /* Same denser ~22-point side runs as the desktop rule above (see
+       its own comment for why the original 9 points per side don't
+       hold up once stretched over the sheet's full open height) —
+       only the top/bottom amplitude shrinks here, per the comment
+       above, since that's the one that scales with each tooth's own
+       (viewport-dependent) width rather than the sheet's height. */
     --rip-edge: polygon(
       0% 0.8%, 3% 0%, 7% 0.55%, 12% 0%, 18% 0.6%, 25% 0%, 32% 0.55%, 40% 0%, 48% 0.6%, 56% 0%,
       64% 0.55%, 72% 0%, 80% 0.6%, 88% 0%, 94% 0.55%, 100% 0.8%,
-      99.3% 12%, 100.4% 22%, 99.2% 32%, 100.4% 42%, 99.3% 52%, 100.4% 62%, 99.2% 72%, 100.4% 82%, 99.3% 90%,
+      99.18% 10%, 100.88% 13.64%, 99.23% 17.27%, 100.72% 20.91%, 99.2% 24.55%, 100.77% 28.18%,
+      99.12% 31.82%, 100.9% 35.45%, 99.49% 39.09%, 100.74% 42.73%, 99.35% 46.36%, 100.59% 50%,
+      99.53% 53.64%, 100.7% 57.27%, 99.22% 60.91%, 100.5% 64.55%, 99.47% 68.18%, 100.84% 71.82%,
+      99.21% 75.45%, 100.58% 79.09%, 99.47% 82.73%, 100.75% 86.36%, 99.26% 90%,
       100% 99.2%, 94% 100%, 88% 99.45%, 80% 100%, 72% 99.4%, 64% 100%, 56% 99.45%, 48% 100%, 40% 99.4%, 32% 100%,
       25% 99.45%, 18% 100%, 12% 99.4%, 7% 100%, 3% 99.45%, 0% 99.2%,
-      0.7% 90%, -0.4% 82%, 0.8% 72%, -0.4% 62%, 0.7% 52%, -0.4% 42%, 0.8% 32%, -0.4% 22%, 0.7% 12%
+      -0.66% 90%, 0.83% 86.36%, -0.54% 82.73%, 0.48% 79.09%, -0.78% 75.45%, 0.68% 71.82%,
+      -0.54% 68.18%, 0.74% 64.55%, -0.65% 60.91%, 0.81% 57.27%, -0.63% 53.64%, 0.81% 50%,
+      -0.5% 46.36%, 0.87% 42.73%, -0.74% 39.09%, 0.82% 35.45%, -0.66% 31.82%, 0.81% 28.18%,
+      -0.7% 24.55%, 0.49% 20.91%, -0.52% 17.27%, 0.67% 13.64%, -0.58% 10%
     );
   }
   .scroll-sheet { margin-top: 10px; margin-bottom: 30px; }
@@ -1498,9 +1516,6 @@ html:has(.visitor-layout) {
   .scroll-seal-brand { top: -8px; left: -16px; }
   .scroll-seal-brand .brand-logo-seal { width: 62px; }
   .scroll-quill { width: 150px; top: -6px; right: 2px; }
-  .scroll-seal--bottom { width: 60px; bottom: -24px; }
-  .scroll-seal-broken { width: 66px; height: 72px; bottom: -24px; }
-  .scroll-seal-broken-half { width: 66px; }
   .scroll-tack { width: 16px; height: 16px; }
   .desk-candle { display: none !important; }
   /* A separate sibling element, not a child of .desk-candle, so it

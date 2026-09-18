@@ -17,7 +17,6 @@ import ScriptoriumGate from '../components/ScriptoriumGate'
 import useUnroll from '../hooks/useUnroll'
 import { getTheme, setTheme } from '../utils/theme'
 import quillInkwell from '../assets/scroll/quill-inkwell.png'
-import waxSeal from '../assets/scroll/wax-seal.png'
 import './VisitorLayout.css'
 import './VisitorScroll.css'
 
@@ -341,15 +340,25 @@ function VisitorLayout({ onBack }) {
 
         <ScrollRod position="top" />
 
-        <div className="scroll-seal-brand">
-          <BrandLogo onBack={onBack} />
-        </div>
-        <img className="scroll-quill" src={quillInkwell} alt="" aria-hidden="true" />
-        {/* The name written on the parchment itself, not on the wooden
-            roller above it — ink doesn't sit on a turned dowel. */}
-        <p className="scroll-title">Bemenet Mesgune</p>
+        {/* Everything that actually needs to clip/grow with the gate
+            lives in here — never .scroll-sheet itself. That element's
+            own overflow:hidden would clip ALL of its children,
+            including the top/bottom rollers' negative-margin overhang
+            (see ScrollRod.css), cropping their turned end-caps off
+            entirely any time the gate was closed or mid-drag. Scoping
+            the clip to just this inner wrapper keeps the rollers (and
+            .scroll-bottom-pin, a sibling of this div) permanently
+            outside it, free to overhang regardless of gate state. */}
+        <div className="scroll-clip">
+          <div className="scroll-seal-brand">
+            <BrandLogo onBack={onBack} />
+          </div>
+          <img className="scroll-quill" src={quillInkwell} alt="" aria-hidden="true" />
+          {/* The name written on the parchment itself, not on the wooden
+              roller above it — ink doesn't sit on a turned dowel. */}
+          <p className="scroll-title">Bemenet Mesgune</p>
 
-        <div className="sticky-header">
+          <div className="sticky-header">
           <header className="layout-header">
             <div className="header-start">
               <nav className="visitor-nav">
@@ -459,27 +468,18 @@ function VisitorLayout({ onBack }) {
             <ContactStrip contact={profile.contact} />
           </div>
         </main>
+        </div>
 
         {/* The bottom roller and the gate's own drag handle move as one
-            unit, pinned to the real sheet's advancing bottom edge while
-            closed (see .scroll-sheet--gated .scroll-bottom-pin) — not a
-            second scroll graphic, the same ScrollRod used at the top. */}
+            unit, pinned to the advancing bottom edge of .scroll-clip
+            above (a sibling, not a parent — see the comment on that
+            div for why) while closed. Not a second scroll graphic, the
+            same ScrollRod used at the top. */}
         <div className="scroll-bottom-pin">
           <ScrollRod ref={bottomRollRef} position="bottom" />
           <ScriptoriumGate sheetRef={sheetRef} onOpenChange={setGateOpen} onProgressChange={handleGateProgress} />
         </div>
 
-        {/* Wrapped shut, the binding seal is still intact — it only
-            shows cracked apart, as two halves turned away from each
-            other, once the visitor has actually unrolled the scroll. */}
-        {gateOpen ? (
-          <div className="scroll-seal-broken" aria-hidden="true">
-            <img className="scroll-seal-broken-half scroll-seal-broken-half--left" src={waxSeal} alt="" />
-            <img className="scroll-seal-broken-half scroll-seal-broken-half--right" src={waxSeal} alt="" />
-          </div>
-        ) : (
-          <img className="scroll-seal scroll-seal--bottom" src={waxSeal} alt="" aria-hidden="true" />
-        )}
         {TACKS.map(t => (
           <span key={t} className={`scroll-tack scroll-tack--${t}`} aria-hidden="true" />
         ))}
