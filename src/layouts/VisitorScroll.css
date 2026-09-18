@@ -47,8 +47,14 @@ html:has(.visitor-layout) {
   --border-gold: linear-gradient(135deg, #f3e5ab, #8b6b23);
 
   --desk-base: #2a1a0f;
-  --sheet-inset-left: 52px;
-  --sheet-inset-right: 44px;
+  /* Fixed px, not a percentage — deliberately so this desk margin
+     stays constant regardless of viewport width. It has to clear the
+     roller's own 78px overhang (see .scroll-roll in ScrollRod.css)
+     with room to spare, or the turned end-knobs get clipped by the
+     browser's own viewport edge on every window size rather than
+     sitting visibly on the desk the way they're meant to. */
+  --sheet-inset-left: 96px;
+  --sheet-inset-right: 88px;
 
   position: relative;
   isolation: isolate;
@@ -703,11 +709,16 @@ html:has(.visitor-layout) {
      shorter heights this takes on mid-drag, that torn edge lands
      nowhere near the actual (short) bottom edge, leaving a real gap
      where revealed content had nothing opaque behind it and it
-     visibly floated on the bare desk. A plain parchment-toned fallback
-     directly on the sheet itself (painted before .scroll-backdrop,
-     since -1 only means "behind this element's own background", not
-     behind nothing) closes that gap regardless of the exact geometry. */
-  background: var(--bg-parchment) center 40% / cover no-repeat;
+     visibly floated on the bare desk. A plain parchment-toned colour
+     fallback directly on the sheet itself (painted before
+     .scroll-backdrop, since -1 only means "behind this element's own
+     background", not behind nothing) closes that gap regardless of
+     the exact geometry. A flat colour rather than the actual texture
+     image: at the extreme wide/short aspect this box has near the
+     start of the drag, `cover`-fitting the real photo crops it down
+     to a sliver blown up large enough to show as an oddly pale,
+     washed-out patch of its own — a plain colour has no such crop to
+     go wrong regardless of the box's aspect ratio. */
   background-color: #e8d9b5;
 }
 /* .scroll-vignette carries this same 34px/27px inset and torn-edge
@@ -737,6 +748,20 @@ html:has(.visitor-layout) {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+/* .scroll-roll expects to be a full-width block, the way it is at the
+   top of the sheet (its border-image end-caps + negative side margins
+   only read as a proper wide cylinder at that width) — but
+   align-items:center above sizes flex children to their own shrink-
+   to-fit content width by default, and this element has no actual
+   content dictating one. Left unset it collapsed to a ~5px sliver,
+   which is what actually read as "a small stray floating thumbnail"
+   rather than a proper bottom roller matching the top one. Restoring
+   stretch here needs no other changes at all — it's the exact same
+   ScrollRod component and CSS as the top roller, so matching width is
+   the only thing it was ever missing. */
+.scroll-bottom-pin .scroll-roll {
+  align-self: stretch;
 }
 /* The bottom roller and the drag handle beneath it move as one unit,
    riding the sheet's own advancing bottom edge — plain CSS, no JS
@@ -842,19 +867,28 @@ html:has(.visitor-layout) {
   content: '';
   position: absolute;
   inset: -11%;
-  /* A fine fibrous noise, multiplied over the real parchment photo, so
-     the surface reads as cotton-rag fibre grain rather than a flat
-     digital beige — the photo alone is a bit too smooth/clean. */
+  /* Two multiplied noise layers over the real parchment photo: the
+     original fine fibrous grain, plus a much finer, sparser one (a
+     narrow feComponentTransfer threshold band picks out only a thin
+     slice of the turbulence function's range, the standard trick for
+     rendering it as wandering hairline contours instead of a blotchy
+     cloud) reading as fine surface cracking/aged fibre breaks running
+     across the sheet — subtle enough to notice up close without
+     reading as a leopard-print pattern from a distance, which a wider
+     threshold band and lower spatial frequency produced at first. */
   background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='c' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05 0.065' numOctaves='2' seed='23' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 0 0 0 0 0.09 0 0 0 0 0 0 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23c)'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
     var(--bg-parchment);
-  background-blend-mode: multiply, normal;
-  background-size: 300px 300px, cover;
-  background-position: center, center 40%;
-  background-repeat: repeat, no-repeat;
-  /* A touch darker/deeper overall — the sheet was reading a bit too
-     bright and clean for how aged everything else on it looks. */
-  filter: contrast(1.1) saturate(1.16) brightness(0.91);
+  background-blend-mode: multiply, multiply, normal;
+  background-size: 400px 400px, 300px 300px, cover;
+  background-position: center, center, center 40%;
+  background-repeat: repeat, repeat, no-repeat;
+  /* Deeper and warmer than before — a richer amber yellowing rather
+     than a merely darker one; the light sepia push keeps that warmth
+     from just reading as "dimmer" the way brightness/contrast alone
+     would. */
+  filter: contrast(1.16) saturate(1.24) sepia(0.16) brightness(0.87);
 }
 .scroll-backdrop::after {
   content: '';
@@ -875,12 +909,22 @@ html:has(.visitor-layout) {
     linear-gradient(180deg, rgba(15,9,4,0.55) 0%, rgba(15,9,4,0.22) 5%, rgba(15,9,4,0) 11%),
     linear-gradient(0deg, rgba(15,9,4,0.5) 0%, rgba(15,9,4,0.18) 5%, rgba(15,9,4,0) 11%);
 }
+/* This used to include a page-wide `linear-gradient(rgba(24,14,6,0.80),
+   rgba(24,14,6,0.80))` layer at normal blending — a flat, nearly-opaque
+   wash that didn't read as light falling on the page at night, it read
+   as the vellum itself having a different, more uniform brown base
+   colour than it does in daylight. Dropping to `multiply` darkens the
+   same underlying texture/foxing proportionally (highlights and
+   variation still show through, just dimmer) instead of painting over
+   it, which is what actually keeps the parchment's own aged colour
+   profile stable across the toggle the way it's meant to. */
 #root[data-theme='dark'] .scroll-backdrop::after {
   background:
     radial-gradient(ellipse 58% 46% at 0% 10%, rgba(255,170,70,0.34) 0%, rgba(255,140,40,0.10) 42%, rgba(0,0,0,0) 72%),
-    linear-gradient(rgba(24,14,6,0.80), rgba(24,14,6,0.80)),
+    linear-gradient(rgba(24,14,6,0.55), rgba(24,14,6,0.55)),
     linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 5%, rgba(0,0,0,0) 11%),
     linear-gradient(0deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.26) 5%, rgba(0,0,0,0) 11%);
+  background-blend-mode: normal, multiply, normal, normal;
 }
 
 /* Sepia vignette above the content, so the corners of the sheet always
@@ -908,10 +952,12 @@ html:has(.visitor-layout) {
      linear gradients keep the actual edges consistently shaded
      regardless of the sheet's total height; the ellipse still handles
      the corner/centre aging on top of that. */
+  /* Deeper edge browning than before — old vellum stains and darkens
+     most right at its outer edges and corners, not just a light tint. */
   background:
-    linear-gradient(to right, rgba(35,20,8,0.4) 0%, transparent 70px),
-    linear-gradient(to left, rgba(35,20,8,0.4) 0%, transparent 70px),
-    radial-gradient(ellipse 80% 62% at 50% 34%, transparent 46%, rgba(35,20,8,0.50) 100%);
+    linear-gradient(to right, rgba(42,24,8,0.52) 0%, transparent 85px),
+    linear-gradient(to left, rgba(42,24,8,0.52) 0%, transparent 85px),
+    radial-gradient(ellipse 80% 62% at 50% 34%, transparent 42%, rgba(40,23,8,0.6) 100%);
 }
 #root[data-theme='dark'] .scroll-vignette {
   background:
@@ -1028,12 +1074,15 @@ html:has(.visitor-layout) {
 }
 
 /* The intact seal shown only while the scroll is still wrapped shut —
-   same spot the broken one takes over once it's been unrolled. */
+   same spot the broken one takes over once it's been unrolled. Sits
+   toward the bottom-left of the sheet, not dead-centre — this is
+   meant to read as the one prominent authenticating stamp resting on
+   the vellum, not a seam-closure indicator spanning the whole width. */
 .scroll-seal--bottom {
-  bottom: -36px;
-  left: 50%;
+  bottom: -30px;
+  left: 8%;
   width: 84px;
-  transform: translateX(-50%) rotate(3deg);
+  transform: rotate(3deg);
 }
 
 /* A cracked-open wax seal at the foot of the sheet — two fragments of
@@ -1042,11 +1091,10 @@ html:has(.visitor-layout) {
    being sealed shut. */
 .scroll-seal-broken {
   position: absolute;
-  bottom: -34px;
-  left: 50%;
+  bottom: -28px;
+  left: 8%;
   width: 92px;
   height: 100px;
-  transform: translateX(-50%);
   pointer-events: none;
   z-index: 32;
 }
@@ -1418,8 +1466,11 @@ html:has(.visitor-layout) {
 
 @media (max-width: 720px) {
   .visitor-layout {
-    --sheet-inset-left: 18px;
-    --sheet-inset-right: 16px;
+    /* Clears the mobile roller overhang (34px, see ScrollRod.css's own
+       720px breakpoint) rather than the old 18/16px, which was smaller
+       than even the desktop overhang used to be. */
+    --sheet-inset-left: 40px;
+    --sheet-inset-right: 36px;
   }
   /* The top/bottom teeth's height amplitude is a % of the sheet's
      total height, which stays roughly constant regardless of screen
