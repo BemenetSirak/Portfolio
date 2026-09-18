@@ -45,12 +45,11 @@
   border-image-slice: 0 44 0 44 fill;
   border-image-repeat: stretch;
   border-image-width: 0 70px;
-  /* The artwork's dowel is a pale tan; deepen it toward a matte dark
-     mahogany rather than a glossy amber — the higher saturation this
-     used to carry pushed it toward a bright golden-orange instead of
-     the flatter, deeper reddish-brown a real turned mahogany rod
-     reads as. */
-  filter: brightness(0.68) saturate(0.85) sepia(0.18) hue-rotate(-6deg) contrast(1.08)
+  /* Deepened toward a rich, glossy reddish-brown mahogany — enough
+     saturation and contrast to catch a real polished-wood highlight,
+     without the hue drifting toward the bright golden-orange the
+     artwork's own pale-tan photo reads as unfiltered. */
+  filter: brightness(0.7) saturate(1.15) sepia(0.2) hue-rotate(-6deg) contrast(1.12)
           drop-shadow(0 10px 16px rgba(0, 0, 0, 0.55));
 }
 .scroll-roll--bottom .scroll-roll-face {
@@ -68,14 +67,40 @@
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: overlay;
-  opacity: 0.5;
-  /* A softer specular catch-line (was 0.55 — glossy enough to read as
-     lacquered/golden rather than a matte, worn wooden barrel) over the
-     same dark-light-dark roundness sweep. */
+  opacity: 0.55;
+  /* A brighter specular catch-line than the matte-mahogany pass this
+     used to carry — polished turned wood, like the reference photo,
+     wants a real glossy highlight running along its top equator. */
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 24%),
     linear-gradient(90deg,
       #120a04 0%, #3a2211 15%, #5c381c 50%, #221307 85%, #0b0502 100%);
+}
+
+/* A turned decorative collar at the exact centre of the dowel — a
+   second, narrower "joint" the way a real lathe-turned rod often has
+   one partway along its own length, not just at the ends. Purely a
+   CSS ring (the underlying photo asset only has end-cap detail), so
+   it's built the same way the candle chamberstick's dowel caps are:
+   a radial-gradient barrel cross-section rather than a flat painted
+   stripe. */
+.scroll-roll-face::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 128%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 5px;
+  background: linear-gradient(90deg,
+    #0e0703 0%, #2c1a0d 10%, #6b3d1f 30%, #a3672f 50%, #6b3d1f 70%, #2c1a0d 90%, #0e0703 100%);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.6),
+    inset 0 2px 3px rgba(255, 214, 170, 0.35),
+    inset 0 -3px 5px rgba(20, 10, 4, 0.6);
 }
 /* Hard occlusion — the barrel is a heavy solid object, not a flat
    painted strip, so it casts its own tight contact shadow at all times */
@@ -147,7 +172,7 @@
 
 /* Night: the wood dims and takes the candle's warmth from the left */
 #root[data-theme='dark'] .scroll-roll-face {
-  filter: brightness(0.4) saturate(0.85) sepia(0.18) hue-rotate(-6deg) contrast(1.05)
+  filter: brightness(0.42) saturate(1.1) sepia(0.2) hue-rotate(-6deg) contrast(1.08)
           drop-shadow(0 10px 16px rgba(0, 0, 0, 0.8));
 }
 
