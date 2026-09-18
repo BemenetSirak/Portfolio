@@ -1197,36 +1197,44 @@ html:has(.visitor-layout) {
    hold flat is hidden or a bare sliver at this height. Hiding all but
    the bottom pair and re-anchoring those two directly under the
    bottom roller's own end-knobs turns them into what they actually
-   read as here: a matched pair of decorative pull-weights hanging off
-   the roller's brackets, the way a real roller blind's cord-ends do,
-   rather than free-floating dots with nothing attaching them to
-   anything. `bottom` rather than `top` keeps them correctly anchored
-   to the bottom roller's position as --closed-clip-h grows during the
-   drag: .scroll-bottom-pin is always the last child, so it — and the
-   knobs inside it — sit at a fixed distance from .scroll-sheet's own
-   bottom edge regardless of how tall .scroll-clip has grown. */
+   read as here: a matched pair of decorative pull-weights mounted to
+   the roller's own end brackets. `bottom` rather than `top` keeps them
+   correctly anchored to the bottom roller's position as --closed-
+   clip-h grows during the drag: .scroll-bottom-pin is always the last
+   child, so it — and the knobs inside it — sit at a fixed distance
+   from .scroll-sheet's own bottom edge regardless of how tall
+   .scroll-clip has grown. */
 .scroll-sheet--gated .scroll-tack:not(.scroll-tack--bl):not(.scroll-tack--br) {
   opacity: 0;
 }
 .scroll-sheet--gated .scroll-tack--bl,
 .scroll-sheet--gated .scroll-tack--br {
-  bottom: 48px;
+  /* Reshaped from the plain round tack into an elongated brass finial
+     — flatter across the top, rounding out toward the bottom — plus a
+     short, thick mounting post right above it (::before) rather than a
+     thin thread with a visible gap. A thread reads as something limply
+     dangling; a short solid post reads as bolted directly to the
+     bracket above it, which is what a decorative pull-weight actually
+     is on a real fitting. */
+  bottom: 50px;
+  width: 22px;
+  height: 28px;
+  border-radius: 45% 45% 50% 50% / 34% 34% 58% 58%;
 }
-.scroll-sheet--gated .scroll-tack--bl { left: -50px; }
-.scroll-sheet--gated .scroll-tack--br { right: -50px; }
-/* The short cord is what actually reads the bead as hanging rather
-   than just sitting at a different fixed spot — without it, the same
-   repositioned dot still looks unanchored, just in a new place. */
+.scroll-sheet--gated .scroll-tack--bl { left: -49px; }
+.scroll-sheet--gated .scroll-tack--br { right: -49px; }
 .scroll-sheet--gated .scroll-tack--bl::before,
 .scroll-sheet--gated .scroll-tack--br::before {
   content: '';
   position: absolute;
   left: 50%;
   bottom: 100%;
-  width: 2px;
-  height: 20px;
+  width: 6px;
+  height: 9px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, rgba(20, 12, 4, 0.7), rgba(20, 12, 4, 0.32));
+  border-radius: 2px;
+  background: linear-gradient(90deg, #2a1c0c 0%, #7a5a34 45%, #4c3612 70%, #2a1c0c 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 @media (max-width: 720px) {
   .scroll-sheet--gated .scroll-tack--bl { left: -19px; }

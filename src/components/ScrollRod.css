@@ -21,6 +21,15 @@
      it. Defined once here (custom properties inherit) since it's
      identical in both places. */
   --organic-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Directional wood-grain streaks — the same asymmetric-baseFrequency
+     trick the desk's own wood-plank texture uses (a much lower X than
+     Y frequency stretches the noise into long streaks along X rather
+     than an isotropic speckle), scaled down to the knob's own size and
+     oriented along the rod's length, the way a lathe-turned dowel's
+     grain actually runs. This is what was still missing from the
+     knob's smooth radial-gradient sphere — the isotropic noise above
+     adds fine grit, but nothing that reads as directional wood grain. */
+  --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Cfilter id='w' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05 0.32' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0.06 0.9'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='140' height='70' filter='url(%23w)'/%3E%3C/svg%3E");
   position: relative;
   /* above the sheet's torn edge + vignette (15) so the cylinders read
      as solid objects the paper winds into, never sliced by its spikes */
@@ -64,17 +73,25 @@
   z-index: 20;
   pointer-events: none;
   border-radius: 50%;
-  /* The noise layer blended on top via overlay is what breaks up the
-     radial-gradient's own perfectly smooth, mathematically clean
-     falloff into something with actual small-scale grain, the way real
-     lathe-turned end-grain always has some visible irregularity even
-     under a glossy varnish. */
+  /* Grain, back to front: the fine isotropic noise and the directional
+     wood-grain streaks both blended on top via overlay, which is what
+     breaks up the radial-gradient's own perfectly smooth, mathematically
+     clean falloff into something with actual visible grain — real
+     lathe-turned end-grain always has some texture even under a glossy
+     varnish, and a bare gradient sphere never does no matter how many
+     light/shadow layers sit on it. */
   background:
     var(--organic-noise),
+    var(--wood-grain),
     radial-gradient(circle at 34% 28%,
-      #f0bb78 0%, #c17c3a 22%, #8a5226 48%, #4a2a14 78%, #150c05 100%);
-  background-blend-mode: overlay, normal;
-  background-size: 90px 90px, cover;
+      #f5c583 0%, #d68f45 18%, #a35f28 40%, #6b3d1f 62%, #3a2211 85%, #170d05 100%);
+  background-blend-mode: overlay, overlay, normal;
+  /* The wood-grain tile at roughly a third of the knob's own width, so
+     a handful of individual streaks actually show across it rather
+     than one soft turbulence blob stretched to fill the whole face —
+     real end-grain reads as several distinct lines within a knob this
+     size, not a single smear. */
+  background-size: 90px 90px, 22px 22px, cover;
   /* The knob's own rim: a crisp dark ring right at its circumference,
      then two more concentric rings stepping inward (the lathe-turned
      bevel a real finial has, not a single smooth dome), then the
@@ -113,7 +130,7 @@
     0 6px 14px rgba(0, 0, 0, 0.8),
     0 10px 20px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(255, 214, 170, 0.32),
-    14px 0 18px -4px rgba(0, 0, 0, 0.65);
+    22px 0 28px -3px rgba(0, 0, 0, 0.75);
 }
 .scroll-roll-knob--right {
   box-shadow:
@@ -125,7 +142,7 @@
     0 6px 14px rgba(0, 0, 0, 0.8),
     0 10px 20px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(255, 214, 170, 0.32),
-    -14px 0 18px -4px rgba(0, 0, 0, 0.65);
+    -22px 0 28px -3px rgba(0, 0, 0, 0.75);
 }
 
 #root[data-theme='dark'] .scroll-roll-knob {
@@ -236,9 +253,11 @@
    edged block of colour over the photo, which read as an obviously
    synthetic cutout rather than one material gradually giving way to
    another. Multiply blend lets the photo's own texture and mottling
-   keep showing through even where the tint is strongest, and the blur
-   feathers the edge into an irregular, organic transition instead of a
-   ruler-straight line. */
+   keep showing through even where the tint is strongest, the wood-
+   grain layer gives the tinted zone actual streak texture instead of a
+   flat wash of brown, and the wide blur feathers the edge into a long,
+   gradual, genuinely seamless transition rather than a short, blurry
+   patch that still reads as a distinct band once you know it's there. */
 .scroll-roll-face::after {
   content: '';
   position: absolute;
@@ -246,12 +265,18 @@
   z-index: 3;
   pointer-events: none;
   mix-blend-mode: multiply;
-  filter: blur(9px);
+  filter: blur(16px);
   background:
-    radial-gradient(ellipse 70px 100% at 0% 50%,
-      rgba(58, 34, 17, 0.92) 0%, rgba(58, 34, 17, 0.55) 45%, rgba(58, 34, 17, 0) 78%),
-    radial-gradient(ellipse 70px 100% at 100% 50%,
-      rgba(58, 34, 17, 0.92) 0%, rgba(58, 34, 17, 0.55) 45%, rgba(58, 34, 17, 0) 78%);
+    var(--wood-grain),
+    radial-gradient(ellipse 130px 100% at 0% 50%,
+      rgba(58, 34, 17, 0.85) 0%, rgba(58, 34, 17, 0.5) 50%, rgba(58, 34, 17, 0) 85%),
+    radial-gradient(ellipse 130px 100% at 100% 50%,
+      rgba(58, 34, 17, 0.85) 0%, rgba(58, 34, 17, 0.5) 50%, rgba(58, 34, 17, 0) 85%);
+  background-blend-mode: overlay, normal, normal;
+  /* A coarser tile than the knob's own 22px — this layer sits under a
+     16px blur, so anything finer just washes out and wastes the
+     detail rather than surviving as visible streaks. */
+  background-size: 36px 36px, auto, auto;
 }
 
 /* No centre collar here on purpose: unlike an earlier version of this
